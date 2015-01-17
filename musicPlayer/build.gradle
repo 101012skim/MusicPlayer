@@ -1,7 +1,7 @@
 apply plugin: 'android'
 
 android {
-    buildToolsVersion '21.0.1'
+    buildToolsVersion '21.1.1'
     defaultConfig {
         applicationId 'com.andreadec.musicplayer'
         minSdkVersion 16
@@ -15,7 +15,7 @@ android {
             resValue "string", "app_name", "Music Player DEBUG"
         }
         release {
-            runProguard true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue "string", "app_name", "Music Player"
         }
