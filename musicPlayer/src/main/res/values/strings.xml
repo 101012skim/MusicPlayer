@@ -1,6 +1,6 @@
 <!--
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,8 +78,6 @@
 	<string name="importConfirm">Import from file %1$s?</string>
 	<string name="exportConfirm">Export to file %1$s?</string>
 	<string name="cache">Cache</string>
-	<string name="enableCache">Enable cache</string>
-	<string name="enableCacheSummary">If enabled, inserts songs\' info into a cache, to speed up loading time and enable songs search.</string>
 	<string name="clearCache">Clear cache</string>
 	<string name="clearCacheConfirm">Clear the cache?</string>
 	<string name="cacheCleared">Cache cleared!</string>
@@ -119,7 +117,6 @@
 	<string name="baseFolderInstructions">To choose a base folder long press on it in the directory browser and choose "Set as base folder".</string>
 	<string name="notSet">Not set</string>
 	<string name="search">Search</string>
-	<string name="searchNotPossible">To use search function you must enable cache in the preferences and index your folders.</string>
 	<string name="noResultsFoundTitle">Nothing found!</string>
 	<string name="noResultsFoundMessage">No song matching the input was found.\nSearch is performed in indexed folders only!</string>
 	<string name="bassBoost">Bass boost</string>
@@ -160,7 +157,6 @@
 	<string name="repeatLastSearch">Repeat last search</string>
     <string name="reloadSongInfo">Reload song info</string>
     <string name="reloadSongInfoDone">Song info reloaded</string>
-    <string name="noPlaylists">No playlists available. Please create one first!</string>
     <string name="playlistsEmpty">To add a playlist touch the + button!</string>
     <string name="playlistEmpty">No songs in this playlist. Add them from the file browser!</string>
     <string name="folderEmpty">There are no files in this folder.</string>
@@ -230,4 +226,9 @@
 	
 	<string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+
+    <!-- Vector graphics paths -->
+    <string name="play_pathData" translatable="false">M 4.94745,2 L 4.94745,24 L 43.05255,24 L 4.94745,2 Z  M 4.94745,24 L 4.94745,46 L 43.05255,24 L 4.94745,24 Z</string>
+    <string name="pause_pathData" translatable="false">M 4.94745,2 L 4.94745,46 L 21.526275,46 L 21.526275,2 Z  M 26.473725,2 L 26.473725,46 L 43.05255,46 L 43.05255,2 Z</string>
 </resources>

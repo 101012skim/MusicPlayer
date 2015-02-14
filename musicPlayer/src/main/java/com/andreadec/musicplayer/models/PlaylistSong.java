@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.models;
 
 import java.util.*;
-
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.os.Build;
+import com.andreadec.musicplayer.*;
 
 /* Class representing a song in a playlist */
 public class PlaylistSong implements PlayableItem {
@@ -115,7 +113,6 @@ public class PlaylistSong implements PlayableItem {
 		return true;
 	}
 	
-	@SuppressLint("InlinedApi")
 	@Override
 	public ArrayList<Information> getInformation() {
 		String bitrate=null, album=null, year=null;

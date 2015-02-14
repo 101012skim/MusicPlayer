@@ -1,6 +1,6 @@
 <!--
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,25 +54,32 @@
         <item name="android:background">@drawable/navigation_button_off</item>
     </style>
 
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="actionBarStyle">@style/ActionBar</item>
+        <item name="android:textViewStyle">@style/TextViewsStyle</item>
+        <!--<item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>-->
     </style>
 
-    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/actionBarBackground</item>
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+    <style name="ActionBar" parent="style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="elevation">0dp</item>
     </style>
 
-    <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/white</item>
+    <style name="TextViewsStyle" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="MainActivityTheme" parent="AppTheme">
         <item name="android:windowBackground">@color/lightGrey</item>
     </style>
 
-    <style name="floatingButton">
+    <style name="floatingButton.Base">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@drawable/floating_button</item>
@@ -81,7 +88,15 @@
         <item name="android:layout_marginBottom">20dp</item>
         <item name="android:layout_marginRight">20dp</item>
     </style>
+    <style name="floatingButton" parent="floatingButton.Base"/>
 
+
+    <style name="buttonNext">
+        <item name="android:src">@drawable/next</item>
+    </style>
+    <style name="buttonPrevious">
+        <item name="android:src">@drawable/previous</item>
+    </style>
 
 
     <!-- Generated with http://android-holo-colors.com -->

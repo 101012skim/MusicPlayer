@@ -17,10 +17,10 @@
 package com.andreadec.musicplayer;
 
 import java.io.*;
-
 import android.app.*;
 import android.content.*;
 import android.util.Log;
+import com.andreadec.musicplayer.models.*;
 
 public class MusicPlayerApplication extends Application {
 	private static Context context;

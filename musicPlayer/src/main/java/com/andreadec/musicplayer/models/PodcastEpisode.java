@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Andrea De Cesare
+ * Copyright 2013-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.models;
 
 import java.io.*;
 import java.util.*;
-
 import android.content.*;
 import android.content.res.*;
 import android.database.sqlite.*;
 import android.graphics.Bitmap;
-
+import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.database.*;
 
 public class PodcastEpisode implements PlayableItem {

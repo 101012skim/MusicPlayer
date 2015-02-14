@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 package com.andreadec.musicplayer;
 
 import java.io.*;
-
-import com.andreadec.musicplayer.database.*;
-import com.andreadec.musicplayer.filters.*;
-
 import android.app.*;
 import android.content.*;
 import android.database.sqlite.*;
 import android.os.*;
 import android.support.v4.app.*;
+import com.andreadec.musicplayer.database.*;
+import com.andreadec.musicplayer.filters.*;
+import com.andreadec.musicplayer.models.*;
 
 /* This service indexes a folder and all its subfolders */
 /* The operation may require some time, depending on the number of audio files in the directories */

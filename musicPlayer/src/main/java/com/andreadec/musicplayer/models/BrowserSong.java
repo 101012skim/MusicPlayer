@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.models;
 
 import java.io.*;
 import java.util.*;
-import android.annotation.SuppressLint;
 import android.graphics.*;
 import android.media.*;
-import android.os.Build;
+import com.andreadec.musicplayer.*;
 
 public class BrowserSong implements PlayableItem, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -156,7 +155,6 @@ public class BrowserSong implements PlayableItem, Serializable {
         return browserDirectory;
     }
 	
-	@SuppressLint("InlinedApi")
 	@Override
 	public ArrayList<Information> getInformation() {
 		String bitrate=null, album=null, year=null;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.models;
 
 public class Information {
 	public int key;

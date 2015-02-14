@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Andrea De Cesare
+ * Copyright 2014-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
  */
 
 package com.andreadec.musicplayer;
-
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
+import com.andreadec.musicplayer.models.*;
 
 public class ImagesCache {
     private int imagesSize;
@@ -92,6 +92,8 @@ public class ImagesCache {
             if(image!=null) {
                 imageView.setImageBitmap(image);
                 imageView.setVisibility(View.VISIBLE);
+            } else {
+                imageView.setImageDrawable(null);
             }
         }
     }

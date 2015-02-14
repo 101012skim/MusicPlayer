@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@
 package com.andreadec.musicplayer.adapters;
 
 import java.util.*;
-
 import android.view.*;
 import android.widget.*;
-
 import com.andreadec.musicplayer.*;
+import com.andreadec.musicplayer.models.*;
 
 public class RadioArrayAdapter extends ArrayAdapter<Radio> {
 	private Radio playingRadio;

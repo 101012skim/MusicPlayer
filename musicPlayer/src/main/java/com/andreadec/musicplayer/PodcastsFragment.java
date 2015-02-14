@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Andrea De Cesare
+ * Copyright 2013-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,14 @@ package com.andreadec.musicplayer;
 
 import java.io.File;
 import java.util.*;
-
-import com.andreadec.musicplayer.adapters.*;
-
 import android.app.*;
 import android.content.*;
 import android.graphics.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+import com.andreadec.musicplayer.adapters.*;
+import com.andreadec.musicplayer.models.*;
 
 public class PodcastsFragment extends MusicPlayerFragment {
 	private Podcast currentPodcast; // if null, show podcasts' list
@@ -213,15 +212,14 @@ public class PodcastsFragment extends MusicPlayerFragment {
 	
 	public void deletePodcast(final Podcast podcast) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(podcast.getName());
 		builder.setMessage(R.string.removePodcastConfirm);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				podcast.remove();
 				updateListView();
 			}
 		});
-		builder.setNegativeButton(R.string.no, null);
+		builder.setNegativeButton(R.string.cancel, null);
 		builder.show();
 	}
 

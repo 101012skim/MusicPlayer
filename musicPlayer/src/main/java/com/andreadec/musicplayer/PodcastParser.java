@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Andrea De Cesare
+ * Copyright 2013-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import android.graphics.*;
+import com.andreadec.musicplayer.models.*;
 
 public class PodcastParser {
 	private String title;

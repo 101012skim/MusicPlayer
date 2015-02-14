@@ -28,12 +28,6 @@
     	    android:summary="@string/songsSortingSummary"
     	    android:key="songsSortingMethod"
     	    android:defaultValue="nat" />
-    	<ListPreference android:title="@string/titleLines"
-    	    android:summary="@string/titleLinesSummary"
-    	    android:entryValues="@array/titleLinesValues"
-    	    android:entries="@array/titleLinesKeys"
-    	    android:key="titleLines"
-    	    android:defaultValue="1" />
     	<CheckBoxPreference
     	    android:key="showRelativePathUnderBaseDirectory"
     	    android:title="@string/showRelativePathUnderBaseDirectory"
@@ -94,11 +88,6 @@
 	</PreferenceCategory>
 	
     <PreferenceCategory android:title="@string/cache">
-        <CheckBoxPreference
-            android:key="enableCache"
-            android:title="@string/enableCache"
-            android:summary="@string/enableCacheSummary"
-            android:defaultValue="true" />
         <Preference
             android:key="clearCache"
             android:title="@string/clearCache" />

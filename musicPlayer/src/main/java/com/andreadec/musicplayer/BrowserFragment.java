@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import android.os.*;
 import android.view.*;
 import android.widget.*;
 import com.andreadec.musicplayer.adapters.*;
+import com.andreadec.musicplayer.models.*;
 
 public class BrowserFragment extends MusicPlayerFragment {
     private int lastFolderPosition; // Used to save the index of the first visible element in the previous folder list. This info will be used to restore list position when browsing back to the last directory. If <=0 no restore is performed.
@@ -70,7 +71,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 		
     	ArrayList<File> browsingSubdirs = currentDirectory.getSubdirs();
         ArrayList<BrowserSong> browsingSongs = currentDirectory.getSongs();
-        ArrayList<Object> items = new ArrayList<Object>();
+        ArrayList<Object> items = new ArrayList<>();
         items.addAll(browsingSubdirs);
         items.addAll(browsingSongs);
         BrowserSong playingSong = null;
@@ -103,7 +104,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 		for(int i=0; i<adapter.getCount(); i++) {
 			Object item = adapter.getItem(i);
 			if(item instanceof BrowserSong) {
-				if(((BrowserSong)item).equals(song)) {
+				if(item.equals(song)) {
 					final int position = i;
 					list.post(new Runnable() {
 						@Override
@@ -185,10 +186,6 @@ public class BrowserFragment extends MusicPlayerFragment {
 		lastFolderPosition = list.getFirstVisiblePosition();
 		new ChangeDirTask(newDirectory, scrollToSong, -1).execute();
 	}
-	
-	public void addFolderToPlaylist(Playlist playlist, File folder) {
-		new AddFolderToPlaylistTask(playlist, folder).execute();
-	}
 
     private class ChangeDirTask extends AsyncTask<Void, Void, Boolean> {
 		private File newDirectory;
@@ -226,36 +223,6 @@ public class BrowserFragment extends MusicPlayerFragment {
 				Toast.makeText(activity, R.string.dirError, Toast.LENGTH_SHORT).show();
 			}
 			activity.setProgressBarIndeterminateVisibility(false);
-		}
-	}
-	
-	private class AddFolderToPlaylistTask extends AsyncTask<Void, Void, Void> {
-		private ProgressDialog progressDialog;
-		private Playlist playlist;
-		private File folder;
-		public AddFolderToPlaylistTask(Playlist playlist, File folder) {
-			this.playlist = playlist;
-			this.folder = folder;
-		}
-		@Override
-		protected void onPreExecute() {
-			progressDialog = new ProgressDialog(activity);
-	        progressDialog.setIndeterminate(true);
-	        progressDialog.setCancelable(false);
-	        progressDialog.setMessage(activity.getResources().getString(R.string.addingSongsToPlaylist));
-			progressDialog.show();
-	    }
-		@Override
-		protected Void doInBackground(Void... params) {
-			List<BrowserSong> songs = BrowserDirectory.getSongsInDirectory(folder, preferences.getString(Constants.PREFERENCE_SONGSSORTINGMETHOD, Constants.DEFAULT_SONGSSORTINGMETHOD), preferences.getBoolean(Constants.PREFERENCE_ENABLECACHE, Constants.DEFAULT_ENABLECACHE), null);
-			for(BrowserSong song : songs) {
-				playlist.addSong(song);
-			}
-			return null;
-		}
-		@Override
-		protected void onPostExecute(final Void success) {
-			if(progressDialog.isShowing()) progressDialog.dismiss();
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Andrea De Cesare
+ * Copyright 2013-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.models;
 
 import java.io.*;
 import java.util.*;
@@ -22,6 +22,7 @@ import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
 import android.preference.*;
+import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.comparators.*;
 import com.andreadec.musicplayer.database.*;
 import com.andreadec.musicplayer.filters.*;
@@ -36,7 +37,7 @@ public class BrowserDirectory {
 		preferences = PreferenceManager.getDefaultSharedPreferences(MusicPlayerApplication.getContext());
 		this.directory = directory;
 		subdirs = getSubfoldersInDirectory(directory);
-		songs = getSongsInDirectory(directory, preferences.getString(Constants.PREFERENCE_SONGSSORTINGMETHOD, Constants.DEFAULT_SONGSSORTINGMETHOD), preferences.getBoolean(Constants.PREFERENCE_ENABLECACHE, Constants.DEFAULT_ENABLECACHE), this);
+		songs = getSongsInDirectory(directory, preferences.getString(Constants.PREFERENCE_SONGSSORTINGMETHOD, Constants.DEFAULT_SONGSSORTINGMETHOD), this);
 	}
 	
 	public File getDirectory() {
@@ -51,28 +52,7 @@ public class BrowserDirectory {
 		return songs;
 	}
 	
-	
-	
-	public static ArrayList<BrowserSong> getSongsInDirectory(File directory, String sortingMethod, boolean enableCache, BrowserDirectory browserDirectory) {
-		if(enableCache) {
-			return getSongsInDirectoryWithCache(directory, sortingMethod, browserDirectory);
-		} else {
-			return getSongsInDirectoryWithoutCache(directory, sortingMethod, browserDirectory);
-		}
-	}
-	
-	private static ArrayList<BrowserSong> getSongsInDirectoryWithoutCache(File directory, String sortingMethod, BrowserDirectory browserDirectory) {
-		ArrayList<BrowserSong> songs = new ArrayList<BrowserSong>();
-		File files[] = directory.listFiles(new AudioFileFilter());
-		for (File file : files) {
-			BrowserSong song = new BrowserSong(file.getAbsolutePath(), browserDirectory);
-			songs.add(song);
-		}
-		Collections.sort(songs, new BrowserSongsComparator(sortingMethod));
-		return songs;
-	}
-	
-	private static ArrayList<BrowserSong> getSongsInDirectoryWithCache(File directory, String sortingMethod, BrowserDirectory browserDirectory) {
+	public static ArrayList<BrowserSong> getSongsInDirectory(File directory, String sortingMethod, BrowserDirectory browserDirectory) {
 		ArrayList<BrowserSong> songs = new ArrayList<BrowserSong>();
 		File files[] = directory.listFiles(new AudioFileFilter());
 		

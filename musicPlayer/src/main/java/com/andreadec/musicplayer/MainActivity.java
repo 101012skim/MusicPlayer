@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,38 +19,40 @@ package com.andreadec.musicplayer;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
-import com.andreadec.musicplayer.adapters.*;
-
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.os.*;
 import android.preference.*;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.app.*;
-import android.text.TextUtils;
-import android.annotation.SuppressLint;
+import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CompoundButton.*;
 import android.widget.SeekBar.*;
+import com.andreadec.musicplayer.adapters.*;
+import com.andreadec.musicplayer.models.*;
+import com.andreadec.musicplayer.ui.*;
 
-public class MainActivity extends FragmentActivity implements OnClickListener, OnSeekBarChangeListener {
+public class MainActivity extends ActionBarActivity implements OnClickListener, OnSeekBarChangeListener {
 	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1, PAGE_RADIOS=2, PAGE_PODCASTS=3;
 
     private MusicPlayerApplication app;
 	
 	private TextView textViewArtist, textViewTitle, textViewTime;
-	private ImageButton imageButtonPrevious, imageButtonPlayPause, imageButtonNext, imageButtonShowSeekbar2;
+    private CheckableImageButton imageButtonPlayPause;
+	private ImageButton imageButtonPrevious, imageButtonNext, imageButtonShowSeekbar2;
 	private SeekBar seekBar1, seekBar2;
 	private ImageView imageViewSongImage;
 	private ImageButton imageButtonShuffle, imageButtonRepeat, imageButtonRepeatAll;
@@ -91,7 +93,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        //supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -99,12 +102,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         	getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); // Disable lock screen for this activity
         }
         
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        
         if(preferences.getBoolean(Constants.PREFERENCE_SHOWHELPOVERLAYMAINACTIVITY, true)) {
         	final FrameLayout frameLayout = new FrameLayout(this);
         	LayoutInflater layoutInflater = getLayoutInflater();
-        	layoutInflater.inflate(R.layout.layout_main, frameLayout);
+        	layoutInflater.inflate(R.layout.activity_main, frameLayout);
         	layoutInflater.inflate(R.layout.layout_helpoverlay_main, frameLayout);
         	final View overlayView = frameLayout.getChildAt(1);
         	overlayView.setOnClickListener(new OnClickListener() {
@@ -117,7 +118,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
             });
         	setContentView(frameLayout);
         } else {
-        	setContentView(R.layout.layout_main);
+        	setContentView(R.layout.activity_main);
         }
 
         app = (MusicPlayerApplication)getApplication();
@@ -139,7 +140,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         
         /* NAVIGATION DRAWER */
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 setTitle(pages[app.currentPage]);
@@ -150,7 +151,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerContainer = (RelativeLayout)findViewById(R.id.navigation_container);
         drawerList = (ListView)findViewById(R.id.navigation_list);
         navigationAdapter = new NavigationDrawerArrayAdapter(this, pages);
@@ -170,7 +171,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         textViewTime = (TextView)findViewById(R.id.textViewTime);
         imageViewSongImage = (ImageView)findViewById(R.id.imageViewSongImage);
         imageButtonPrevious = (ImageButton)findViewById(R.id.imageButtonPrevious);
-        imageButtonPlayPause = (ImageButton)findViewById(R.id.imageButtonPlayPause);
+        imageButtonPlayPause = (CheckableImageButton)findViewById(R.id.imageButtonPlayPause);
         imageButtonNext = (ImageButton)findViewById(R.id.imageButtonNext);
         seekBar1 = (SeekBar)findViewById(R.id.seekBar1);
         seekBar2 = (SeekBar)findViewById(R.id.seekBar2);
@@ -287,11 +288,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         updatePlayPauseButton();
     }
     
-    @SuppressLint("NewApi")
-	@Override
+    @Override
     public void setTitle(CharSequence title) {
     	super.setTitle(title);
-    	getActionBar().setTitle(title);
+    	getSupportActionBar().setTitle(title);
     }
     
     private void openPage(int page) {
@@ -344,22 +344,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     private void updatePlayingItem() {
     	PlayableItem playingItem = musicService.getCurrentPlayingItem();
     	
-    	String titleLines = preferences.getString(Constants.PREFERENCE_TITLELINES, Constants.DEFAULT_TITLELINES);
-    	if(titleLines.equals("Auto")) {
-    		textViewTitle.setMinLines(1);
-    		textViewTitle.setMaxLines(5);
-    	} else {
-    		int lines = Integer.parseInt(titleLines);
-    		textViewTitle.setLines(lines);
-    		if(lines==1) {
-    			textViewTitle.setSingleLine();
-    			textViewTitle.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-    			textViewTitle.setHorizontallyScrolling(true);
-    			textViewTitle.setMarqueeRepeatLimit(-1);
-    			textViewTitle.setSelected(true);
-    		}
-    	}
-    	
     	if(playingItem!=null) {
     		// Song loaded
 	    	textViewTitle.setText(playingItem.getTitle());
@@ -410,8 +394,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     
     /* Updates the play/pause button status according to the playing song. */
     private void updatePlayPauseButton() {
-    	if (musicService!=null && musicService.isPlaying()) imageButtonPlayPause.setImageResource(R.drawable.pause);
-		else imageButtonPlayPause.setImageResource(R.drawable.play);
+    	imageButtonPlayPause.setChecked(musicService!=null && musicService.isPlaying());
     }
     
     /* Updates the seekbar and the position information according to the playing song. */
@@ -577,11 +560,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			((BrowserFragment)currentFragment).gotoBaseFolder();
 			return true;
 		case R.id.menu_search:
-			if(preferences.getBoolean(Constants.PREFERENCE_ENABLECACHE, Constants.DEFAULT_ENABLECACHE)) {
-				startActivityForResult(new Intent(this, SearchActivity.class), 1);
-			} else {
-				Utils.showMessageDialog(this, R.string.search, R.string.searchNotPossible);
-			}
+			startActivityForResult(new Intent(this, SearchActivity.class), 1);
 			return true;
 		case R.id.menu_songInfo:
 			showItemInfo(musicService.getCurrentPlayingItem());
@@ -757,11 +736,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			backPressedOnce = true;
 			Toast.makeText(this, R.string.pressAgainToQuitApp, Toast.LENGTH_SHORT).show();
 			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					backPressedOnce = false;   
-				}
-			}, 2000);
+                @Override
+                public void run() {
+                    backPressedOnce = false;
+                }
+            }, 2000);
 		}
 	}
 

@@ -33,9 +33,7 @@ public class Constants {
 	public final static String PREFERENCE_EQUALIZERPRESET = "equalizerPreset";
 	public final static String PREFERENCE_SHAKEENABLED = "shakeEnabled";
 	public final static String PREFERENCE_SONGSSORTINGMETHOD = "songsSortingMethod";
-	public final static String PREFERENCE_ENABLECACHE = "enableCache";
 	public final static String PREFERENCE_DISABLELOCKSCREEN = "disableLockScreen";
-	public final static String PREFERENCE_TITLELINES = "titleLines";
 	public final static String PREFERENCE_STOPPLAYINGWHENHEADSETDISCONNECTED = "stopPlayingWhenHeadsetDisconnected";
 	public final static String PREFERENCE_OPENLASTSONGONSTART = "openLastSongOnStart";
 	public final static String PREFERENCE_SAVESONGPOSITION = "saveSongPosition";
@@ -57,9 +55,7 @@ public class Constants {
 	
 	// Default preferences values
 	public final static String DEFAULT_SONGSSORTINGMETHOD = "nat";
-	public final static boolean DEFAULT_ENABLECACHE = true;
 	public final static boolean DEFAULT_DISABLELOCKSCREEN = false;
-	public final static String DEFAULT_TITLELINES = "1";
 	public final static String DEFAULT_BASEFOLDER = null;
 	public final static boolean DEFAULT_SHUFFLE = false;
 	public final static boolean DEFAULT_REPEAT = false;

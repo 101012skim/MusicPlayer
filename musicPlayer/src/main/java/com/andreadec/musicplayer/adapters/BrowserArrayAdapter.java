@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,11 @@ package com.andreadec.musicplayer.adapters;
 
 import java.io.*;
 import java.util.*;
-
-import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.view.*;
 import android.widget.*;
-
 import com.andreadec.musicplayer.*;
+import com.andreadec.musicplayer.models.*;
 
 public class BrowserArrayAdapter extends ArrayAdapter<Object> {
 	private BrowserSong playingSong;
@@ -89,7 +87,7 @@ public class BrowserArrayAdapter extends ArrayAdapter<Object> {
                 public boolean onMenuItemClick(MenuItem item) {
                     switch(item.getItemId()) {
                         case R.id.menu_addFolderToPlaylist:
-                            addToPlaylist(file);
+                            AddToPlaylistDialog.showDialog(activity, file);
                             return true;
                         case R.id.menu_setAsBaseFolder:
                             activity.setBaseFolder(file);
@@ -120,34 +118,10 @@ public class BrowserArrayAdapter extends ArrayAdapter<Object> {
                     imagesCache.getImageAsync(song, viewHolder.image);
                 }
 			}
-            /*final PopupMenu popup = new PopupMenu(fragment.getActivity(), viewHolder.menu);
-            popup.getMenuInflater().inflate(R.menu.contextmenu_browsersong, popup.getMenu());
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch(item.getItemId()) {
-                        case R.id.menu_addToPlaylist:
-                            addToPlaylist(song);
-                            return true;
-                        case R.id.menu_reloadSongInfo:
-                            BrowserDirectory.reloadSongFromDisk(song);
-                            Toast.makeText(activity, R.string.reloadSongInfoDone, Toast.LENGTH_SHORT).show();
-                            fragment.updateListView();
-                            return true;
-                    }
-                    return true;
-                }
-            });
             viewHolder.menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    popup.show();
-                }
-            });
-            viewHolder.menu.setFocusable(false);*/
-            viewHolder.menu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    addToPlaylist(song);
+                AddToPlaylistDialog.showDialog(activity, song);
                 }
             });
 		}
@@ -163,33 +137,4 @@ public class BrowserArrayAdapter extends ArrayAdapter<Object> {
 		public View card;
         public ImageButton menu;
 	}
-
-    private void addToPlaylist(final Object item) {
-        ArrayList<Playlist> playlists = Playlists.getPlaylists();
-        if(playlists.size()==0) {
-            Utils.showMessageDialog(activity, R.string.error, R.string.noPlaylists);
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.addToPlaylist);
-        ListView list = new ListView(activity);
-        builder.setView(list);
-        final AlertDialog dialog = builder.create();
-        final ArrayAdapter<Playlist> adapter = new ArrayAdapter<Playlist>(activity, android.R.layout.simple_list_item_1, android.R.id.text1, playlists);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Playlist playlist = adapter.getItem(position);
-                if (item instanceof File) {
-                    fragment.addFolderToPlaylist(playlist, (File)item);
-                } else {
-                    playlist.addSong((BrowserSong)item);
-                }
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 }

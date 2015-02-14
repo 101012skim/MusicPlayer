@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/pause"
+        android:state_checked="true"
+        android:id="@+id/pause_state" />
+    <item
+        android:drawable="@drawable/play"
+        android:id="@+id/play_state" />
+</selector>

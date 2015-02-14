@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import android.view.*;
 import android.widget.*;
 import com.andreadec.musicplayer.*;
 import com.nhaarman.listviewanimations.ArrayAdapter;
-
 import java.util.ArrayList;
+import com.andreadec.musicplayer.models.*;
 
 public class PlaylistArrayAdapter extends ArrayAdapter<Object> {
 	private PlaylistSong playingSong;

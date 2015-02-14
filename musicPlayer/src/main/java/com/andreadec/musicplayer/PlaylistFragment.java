@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import android.os.*;
 import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.*;
-
-import com.andreadec.musicplayer.adapters.*;
 import com.nhaarman.listviewanimations.itemmanipulation.*;
 import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.*;
 import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+import com.andreadec.musicplayer.adapters.*;
+import com.andreadec.musicplayer.models.*;
 
 public class PlaylistFragment extends MusicPlayerFragment implements OnItemMovedListener {
     private PlaylistArrayAdapter playlistArrayAdapter;
@@ -82,7 +82,6 @@ public class PlaylistFragment extends MusicPlayerFragment implements OnItemMoved
 		builder.setView(view);
 		
 		final EditText editTextName = (EditText)view.findViewById(R.id.editTextPlaylistName);
-		editTextName.setSingleLine();
 		if(playlist!=null) editTextName.setText(playlist.getName());
 		
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -108,16 +107,15 @@ public class PlaylistFragment extends MusicPlayerFragment implements OnItemMoved
 	
 	public void deletePlaylist(final Playlist playlist) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(playlist.getName());
 		builder.setMessage(R.string.deletePlaylistConfirm);
         builder.setCancelable(false);
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Playlists.deletePlaylist(playlist);
                 updateListView();
             }
 		});
-		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 updateListView();

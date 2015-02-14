@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,11 @@
 
 package com.andreadec.musicplayer.adapters;
 
-import java.io.File;
 import java.util.*;
-
-import android.app.AlertDialog;
 import android.view.*;
 import android.widget.*;
-
 import com.andreadec.musicplayer.*;
+import com.andreadec.musicplayer.models.*;
 
 public class SearchResultsArrayAdapter extends ArrayAdapter<BrowserSong> {
 	private final ArrayList<BrowserSong> songs;
@@ -61,7 +58,7 @@ public class SearchResultsArrayAdapter extends ArrayAdapter<BrowserSong> {
         viewHolder.menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addToPlaylist(song);
+            AddToPlaylistDialog.showDialog(activity, song);
             }
         });
         viewHolder.menu.setFocusable(false);
@@ -76,29 +73,4 @@ public class SearchResultsArrayAdapter extends ArrayAdapter<BrowserSong> {
 		public ImageView image;
         public ImageButton menu;
 	}
-
-    private void addToPlaylist(final BrowserSong song) {
-        ArrayList<Playlist> playlists = Playlists.getPlaylists();
-        if(playlists.size()==0) {
-            Utils.showMessageDialog(activity, R.string.error, R.string.noPlaylists);
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.addToPlaylist);
-        ListView list = new ListView(activity);
-        builder.setView(list);
-        final AlertDialog dialog = builder.create();
-        final ArrayAdapter<Playlist> adapter = new ArrayAdapter<Playlist>(activity, android.R.layout.simple_list_item_1, android.R.id.text1, playlists);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Playlist playlist = adapter.getItem(position);
-                playlist.addSong(song);
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 }

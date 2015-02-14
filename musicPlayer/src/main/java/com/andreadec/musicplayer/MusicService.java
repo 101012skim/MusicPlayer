@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package com.andreadec.musicplayer;
 
 import java.io.*;
 import java.util.*;
-
-import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.*;
 import android.graphics.*;
@@ -31,8 +29,8 @@ import android.preference.*;
 import android.telephony.*;
 import android.view.KeyEvent;
 import android.widget.RemoteViews;
+import com.andreadec.musicplayer.models.*;
 
-@SuppressLint("NewApi")
 public class MusicService extends Service implements OnCompletionListener {
 	private final static int METADATA_KEY_ARTWORK = 100;
 	
@@ -407,39 +405,62 @@ public class MusicService extends Service implements OnCompletionListener {
 		/* Update notification */
 		Notification.Builder notificationBuilder = new Notification.Builder(this);
 		notificationBuilder.setSmallIcon(R.drawable.audio_white);
-		//notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-        notificationBuilder.setOngoing(true);
         notificationBuilder.setContentIntent(pendingIntent);
-        notificationBuilder.setContentTitle(getResources().getString(R.string.app_name));
-		
-		int playPauseIcon = isPlaying() ? R.drawable.pause : R.drawable.play;
-		
-		RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.layout_notification);
-		
-		if(currentPlayingItem==null) {
-			notificationLayout.setTextViewText(R.id.textViewArtist, getString(R.string.app_name));
-			notificationLayout.setTextViewText(R.id.textViewTitle, getString(R.string.noSong));
-			notificationLayout.setImageViewBitmap(R.id.imageViewNotification, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-		} else {
-            String title = currentPlayingItem.getArtist();
-            if(!title.equals("")) title += " - ";
-            title += currentPlayingItem.getTitle();
-            notificationBuilder.setContentText(title);
-			notificationLayout.setTextViewText(R.id.textViewArtist, currentPlayingItem.getArtist());
-			notificationLayout.setTextViewText(R.id.textViewTitle, currentPlayingItem.getTitle());
-			if(image!=null) {
-				notificationLayout.setImageViewBitmap(R.id.imageViewNotification, image);
-			} else {
-				notificationLayout.setImageViewBitmap(R.id.imageViewNotification, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-			}
-		}
-		notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationQuit, quitPendingIntent);
-		notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationPrevious, previousPendingIntent);
-		notificationLayout.setImageViewResource(R.id.buttonNotificationPlayPause, playPauseIcon);
-		notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationPlayPause, playpausePendingIntent);
-		notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationNext, nextPendingIntent);
-        notification = notificationBuilder.build();
-        notification.bigContentView = notificationLayout;
+        notificationBuilder.setOngoing(true);
+
+        if(Build.VERSION.SDK_INT >= 21) {
+            int playPauseIcon = isPlaying() ? R.drawable.button_pause : R.drawable.button_play;
+            if (currentPlayingItem == null) {
+                notificationBuilder.setContentTitle(getString(R.string.noSong));
+                notificationBuilder.setContentText(getString(R.string.app_name));
+                notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+            } else {
+                notificationBuilder.setContentTitle(currentPlayingItem.getTitle());
+                notificationBuilder.setContentText(currentPlayingItem.getArtist());
+                if (image == null) {
+                    notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                } else {
+                    notificationBuilder.setLargeIcon(image);
+                }
+            }
+            notificationBuilder.addAction(R.drawable.button_quit, getString(R.string.quit), quitPendingIntent);
+            notificationBuilder.addAction(R.drawable.button_previous, getString(R.string.previous), previousPendingIntent);
+            notificationBuilder.addAction(playPauseIcon, getString(R.string.pause), playpausePendingIntent);
+            notificationBuilder.addAction(R.drawable.button_next, getString(R.string.next), nextPendingIntent);
+            notificationBuilder.setColor(getResources().getColor(R.color.primaryDark));
+            notificationBuilder.setStyle(new Notification.MediaStyle().setShowActionsInCompactView(2));
+            notification = notificationBuilder.build();
+        } else {
+            int playPauseIcon = isPlaying() ? R.drawable.pause : R.drawable.play;
+            notificationBuilder.setContentTitle(getResources().getString(R.string.app_name));
+
+            RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.layout_notification);
+
+            if (currentPlayingItem == null) {
+                notificationLayout.setTextViewText(R.id.textViewArtist, getString(R.string.app_name));
+                notificationLayout.setTextViewText(R.id.textViewTitle, getString(R.string.noSong));
+                notificationLayout.setImageViewBitmap(R.id.imageViewNotification, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+            } else {
+                String title = currentPlayingItem.getArtist();
+                if (!title.equals("")) title += " - ";
+                title += currentPlayingItem.getTitle();
+                notificationBuilder.setContentText(title);
+                notificationLayout.setTextViewText(R.id.textViewArtist, currentPlayingItem.getArtist());
+                notificationLayout.setTextViewText(R.id.textViewTitle, currentPlayingItem.getTitle());
+                if (image != null) {
+                    notificationLayout.setImageViewBitmap(R.id.imageViewNotification, image);
+                } else {
+                    notificationLayout.setImageViewBitmap(R.id.imageViewNotification, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                }
+            }
+            notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationQuit, quitPendingIntent);
+            notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationPrevious, previousPendingIntent);
+            notificationLayout.setImageViewResource(R.id.buttonNotificationPlayPause, playPauseIcon);
+            notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationPlayPause, playpausePendingIntent);
+            notificationLayout.setOnClickPendingIntent(R.id.buttonNotificationNext, nextPendingIntent);
+            notification = notificationBuilder.build();
+            notification.bigContentView = notificationLayout;
+        }
 		
 		notificationManager.notify(Constants.NOTIFICATION_MAIN, notification);
 	}

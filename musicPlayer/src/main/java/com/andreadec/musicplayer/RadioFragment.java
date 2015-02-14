@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import android.content.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
-
 import com.andreadec.musicplayer.adapters.*;
+import com.andreadec.musicplayer.models.*;
 
 public class RadioFragment extends MusicPlayerFragment {
 	@Override
@@ -53,15 +53,14 @@ public class RadioFragment extends MusicPlayerFragment {
 	
 	public void deleteRadio(final Radio radio) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(R.string.delete);
 		builder.setMessage(getResources().getString(R.string.deleteRadioConfirm));
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 		      public void onClick(DialogInterface dialog, int which) {
 		    	  Radio.deleteRadio(radio);
 		    	  updateListView();
 		      }
 		});
-		builder.setNegativeButton(R.string.no, null);
+		builder.setNegativeButton(R.string.cancel, null);
 		builder.show();
 	}
 	

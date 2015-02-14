@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,68 +21,151 @@ import java.util.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xmlpull.v1.*;
-import android.annotation.*;
 import android.app.*;
 import android.content.*;
 import android.database.sqlite.*;
 import android.os.*;
 import android.preference.*;
 import android.preference.Preference.*;
+import android.support.v7.app.ActionBarActivity;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
-
 import com.andreadec.musicplayer.database.*;
+import com.andreadec.musicplayer.models.*;
 
-public class PreferencesActivity extends PreferenceActivity implements OnPreferenceClickListener, OnPreferenceChangeListener {
+public class PreferencesActivity extends ActionBarActivity {
 	private final static String DEFAULT_IMPORTEXPORT_FILENAME = Environment.getExternalStorageDirectory() + "/musicplayer_info.xml";
 	
-	private SharedPreferences preferences;
-	private Preference preferenceClearCache, preferenceIndexBaseFolder, preferenceAbout, preferenceImport, preferenceExport, preferencePodcastsDirectory;
-	private Preference preferenceDisableLockScreen, preferenceEnableGestures, preferenceShowPlaybackControls;
-	
 	private boolean needsRestart;
-	
-	@SuppressWarnings("deprecation")
-	@Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-    	
-    	preferences = PreferenceManager.getDefaultSharedPreferences(this);
-    	
-    	preferenceClearCache = findPreference("clearCache");
-    	preferenceIndexBaseFolder = findPreference("indexBaseFolder");
-    	preferenceAbout = findPreference("about");
-    	preferenceImport = findPreference("import");
-    	preferenceExport = findPreference("export");
-    	preferencePodcastsDirectory = findPreference("podcastsDirectory");
-    	
-    	updateBaseFolder();
-    	
-    	preferenceClearCache.setOnPreferenceClickListener(this);
-    	preferenceIndexBaseFolder.setOnPreferenceClickListener(this);
-    	preferenceAbout.setOnPreferenceClickListener(this);
-    	preferenceImport.setOnPreferenceClickListener(this);
-    	preferenceExport.setOnPreferenceClickListener(this);
-    	preferencePodcastsDirectory.setOnPreferenceClickListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        PreferencesFragment preferencesFragment = new PreferencesFragment();
+        fragmentTransaction.replace(android.R.id.content, preferencesFragment);
+        fragmentTransaction.commit();
+    }
 
-    	preferenceDisableLockScreen = findPreference("disableLockScreen");
-    	preferenceEnableGestures = findPreference("enableGestures");
-    	preferenceShowPlaybackControls = findPreference("showPlaybackControls");
-    	preferenceDisableLockScreen.setOnPreferenceChangeListener(this);
-    	preferenceEnableGestures.setOnPreferenceChangeListener(this);
-    	preferenceShowPlaybackControls.setOnPreferenceChangeListener(this);
-	}
+    public static class PreferencesFragment extends PreferenceFragment implements OnPreferenceClickListener, OnPreferenceChangeListener {
+        private SharedPreferences preferences;
+        private Preference preferenceClearCache, preferenceIndexBaseFolder, preferenceAbout, preferenceImport, preferenceExport, preferencePodcastsDirectory;
+        private Preference preferenceDisableLockScreen, preferenceEnableGestures, preferenceShowPlaybackControls;
+        private PreferencesActivity activity;
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.preferences);
+            activity = (PreferencesActivity)getActivity();
+
+            preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            preferenceClearCache = findPreference("clearCache");
+            preferenceIndexBaseFolder = findPreference("indexBaseFolder");
+            preferenceAbout = findPreference("about");
+            preferenceImport = findPreference("import");
+            preferenceExport = findPreference("export");
+            preferencePodcastsDirectory = findPreference("podcastsDirectory");
+
+            updateBaseFolder();
+
+            preferenceClearCache.setOnPreferenceClickListener(this);
+            preferenceIndexBaseFolder.setOnPreferenceClickListener(this);
+            preferenceAbout.setOnPreferenceClickListener(this);
+            preferenceImport.setOnPreferenceClickListener(this);
+            preferenceExport.setOnPreferenceClickListener(this);
+            preferencePodcastsDirectory.setOnPreferenceClickListener(this);
+
+            preferenceDisableLockScreen = findPreference("disableLockScreen");
+            preferenceEnableGestures = findPreference("enableGestures");
+            preferenceShowPlaybackControls = findPreference("showPlaybackControls");
+            preferenceDisableLockScreen.setOnPreferenceChangeListener(this);
+            preferenceEnableGestures.setOnPreferenceChangeListener(this);
+            preferenceShowPlaybackControls.setOnPreferenceChangeListener(this);
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if(preference.equals(preferenceClearCache)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(R.string.clearCache);
+                builder.setMessage(R.string.clearCacheConfirm);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        activity.clearCache();
+                    }
+                });
+                builder.setNegativeButton(R.string.no, null);
+                builder.show();
+                return true;
+            } else if(preference.equals(preferenceIndexBaseFolder)) {
+                String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, "/");
+                if(baseFolder.equals("/")) {
+                    Utils.showMessageDialog(activity, R.string.baseFolderNotSetTitle, R.string.baseFolderNotSetMessage);
+                    return true;
+                }
+                updateBaseFolder();
+                preferenceIndexBaseFolder.setEnabled(false);
+                Intent indexIntent = new Intent(activity, IndexFolderService.class);
+                indexIntent.putExtra("folder", baseFolder);
+                activity.startService(indexIntent);
+            } else if(preference.equals(preferenceAbout)) {
+                startActivity(new Intent(activity, AboutActivity.class));
+            } else if(preference.equals(preferenceImport)) {
+                activity.doImport();
+            } else if(preference.equals(preferenceExport)) {
+                activity.doExport();
+            } else if(preference.equals(preferencePodcastsDirectory)) {
+                String podcastsDirectory = preferences.getString(Constants.PREFERENCE_PODCASTSDIRECTORY, null);
+                if(podcastsDirectory==null || podcastsDirectory.equals("")) {
+                    podcastsDirectory = Podcast.DEFAULT_PODCASTS_PATH;
+                }
+                DirectoryChooserDialog chooser = new DirectoryChooserDialog(activity, podcastsDirectory, new DirectoryChooserDialog.OnFileChosen() {
+                    @Override
+                    public void onFileChosen(String directory) {
+                        if(directory==null) return;
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(Constants.PREFERENCE_PODCASTSDIRECTORY, directory);
+                        editor.commit();
+                    }
+                });
+                chooser.show();
+            }
+            return false;
+        }
+
+        private void updateBaseFolder() {
+            String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, null);
+            String summary = getResources().getString(R.string.indexBaseFolderSummary) + "\n\n";
+            summary += getResources().getString(R.string.currentBaseFolder) + " ";
+            if(baseFolder==null) {
+                summary += getResources().getString(R.string.notSet);
+                summary += "\n\n";
+                summary += getResources().getString(R.string.baseFolderInstructions);
+            } else {
+                summary += baseFolder;
+            }
+            preferenceIndexBaseFolder.setSummary(summary);
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if(preference.equals(preferenceDisableLockScreen) || preference.equals(preferenceEnableGestures) || preference.equals(preferenceShowPlaybackControls)) {
+                activity.needsRestart = true;
+            }
+            return true;
+        }
+    }
 	
 	@Override
 	public void onBackPressed() {
 		close();
 	}
-	
-	@SuppressLint("InlinedApi")
+
 	private void close() {
 		final Intent intent = new Intent(this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -101,70 +184,6 @@ public class PreferencesActivity extends PreferenceActivity implements OnPrefere
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	@Override
-	public boolean onPreferenceClick(Preference preference) {
-		if(preference.equals(preferenceClearCache)) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.clearCache);
-			builder.setMessage(R.string.clearCacheConfirm);
-			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			      public void onClick(DialogInterface dialog, int which) {
-			    	  clearCache();
-			      }
-			});
-			builder.setNegativeButton(R.string.no, null);
-			builder.show();
-			return true;
-		} else if(preference.equals(preferenceIndexBaseFolder)) {
-			String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, "/");
-			if(baseFolder.equals("/")) {
-				Utils.showMessageDialog(this, R.string.baseFolderNotSetTitle, R.string.baseFolderNotSetMessage);
-				return true;
-			}
-			updateBaseFolder();
-			preferenceIndexBaseFolder.setEnabled(false);
-			Intent indexIntent = new Intent(this, IndexFolderService.class);
-			indexIntent.putExtra("folder", baseFolder);
-			startService(indexIntent);
-		} else if(preference.equals(preferenceAbout)) {
-			startActivity(new Intent(this, AboutActivity.class));
-		} else if(preference.equals(preferenceImport)) {
-			doImport();
-		} else if(preference.equals(preferenceExport)) {
-			doExport();
-		} else if(preference.equals(preferencePodcastsDirectory)) {
-			String podcastsDirectory = preferences.getString(Constants.PREFERENCE_PODCASTSDIRECTORY, null);
-	    	if(podcastsDirectory==null || podcastsDirectory.equals("")) {
-	    		podcastsDirectory = Podcast.DEFAULT_PODCASTS_PATH;
-	    	}
-	    	DirectoryChooserDialog chooser = new DirectoryChooserDialog(this, podcastsDirectory, new DirectoryChooserDialog.OnFileChosen() {
-				@Override
-				public void onFileChosen(String directory) {
-					if(directory==null) return;
-					SharedPreferences.Editor editor = preferences.edit();
-					editor.putString(Constants.PREFERENCE_PODCASTSDIRECTORY, directory);
-					editor.commit();
-				}
-			});
-	    	chooser.show();
-		}
-		return false;
-	}
-	
-	private void updateBaseFolder() {
-		String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, null);
-		String summary = getResources().getString(R.string.indexBaseFolderSummary) + "\n\n";
-		summary += getResources().getString(R.string.currentBaseFolder) + " ";
-		if(baseFolder==null) {
-			summary += getResources().getString(R.string.notSet);
-			summary += "\n\n";
-			summary += getResources().getString(R.string.baseFolderInstructions);
-		} else {
-			summary += baseFolder;
-		}
-		preferenceIndexBaseFolder.setSummary(summary);
 	}
 	
 	private void clearCache() {
@@ -281,13 +300,5 @@ public class PreferencesActivity extends PreferenceActivity implements OnPrefere
 			Toast.makeText(this, R.string.exportError, Toast.LENGTH_LONG).show();
 			Log.e("WebRadioAcitivity", "doExport", e);
 		}
-	}
-
-	@Override
-	public boolean onPreferenceChange(Preference preference, Object newValue) {
-		if(preference.equals(preferenceDisableLockScreen) || preference.equals(preferenceEnableGestures) || preference.equals(preferenceShowPlaybackControls)) {
-			needsRestart = true;
-		}
-		return true;
 	}
 }

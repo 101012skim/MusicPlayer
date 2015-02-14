@@ -1,6 +1,6 @@
 <!--
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,8 +78,6 @@
 	<string name="importConfirm">Importare dal file %1$s?</string>
 	<string name="exportConfirm">Esportare nel file %1$s?</string>
 	<string name="cache">Cache</string>
-	<string name="enableCache">Abilita cache</string>
-	<string name="enableCacheSummary">Se abilitato, inserisce le informazioni sui brani all\'interno di una cache per permettere un\'apertura più veloce delle cartelle ed abilitare la ricerca delle canzoni.</string>
 	<string name="clearCache">Svuota cache</string>
 	<string name="clearCacheConfirm">Cancellare la cache?</string>
 	<string name="cacheCleared">Cache svuotata!</string>
@@ -119,7 +117,6 @@
 	<string name="baseFolderInstructions">Per scegliere una cartella base esegui una pressione prolungata su di essa nel browser e scegli "Imposta come cartella base".</string>
 	<string name="notSet">Non impostata</string>
 	<string name="search">Cerca</string>
-	<string name="searchNotPossible">Per poter utilizzare la ricerca devi abilitare la cache nelle preferenze ed indicizzare le cartelle.</string>
 	<string name="noResultsFoundTitle">Nessun risultato</string>
 	<string name="noResultsFoundMessage">Non è stata trovata alcuna canzone con la chiave di ricerca inserita.\nSi noti che la ricerca viene effettuata solo all\'interno delle cartelle indicizzate.</string>
 	<string name="bassBoost">Bass boost</string>
@@ -159,7 +156,6 @@
 	<string name="repeatLastSearch">Ripeti l\'ultima ricerca</string>
     <string name="reloadSongInfo">Ricarica informazioni brano</string>
     <string name="reloadSongInfoDone">Informazioni aggiornate</string>
-    <string name="noPlaylists">Nessuna playlist disponibile. Devi prima crearne una!</string>
     <string name="playlistsEmpty">Per aggiungere una playlist tocca il pulsante +!</string>
     <string name="playlistEmpty">Non ci sono brani in questa playlist. Aggiungili dal browser!</string>
     <string name="folderEmpty">Non ci sono file in questa cartella.</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Andrea De Cesare
+ * Copyright 2013-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,7 @@ import android.support.v4.app.*;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
-
-import org.w3c.dom.Text;
+import com.andreadec.musicplayer.models.*;
 
 public abstract class MusicPlayerFragment extends Fragment implements AdapterView.OnItemClickListener {
     protected ListView list;

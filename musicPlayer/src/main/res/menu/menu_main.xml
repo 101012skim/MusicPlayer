@@ -16,20 +16,21 @@
  */
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">    
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_search"
 	    android:title="@string/search"
 	    android:icon="@drawable/search"
-	    android:showAsAction="ifRoom|withText" />
+	    app:showAsAction="ifRoom|withText" />
     
     <item android:id="@+id/menu_gotoPlayingSongDirectory"
 	    android:title="@string/gotoPlayingSongDirectory"
 	    android:icon="@drawable/pin"
-	    android:showAsAction="ifRoom|withText" />
+	    app:showAsAction="ifRoom|withText" />
     
     <item android:id="@+id/menu_gotoBaseFolder"
         android:title="@string/gotoBaseFolder"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 	
 	<item android:id="@+id/menu_songInfo"
 	    android:title="@string/songInfo" />

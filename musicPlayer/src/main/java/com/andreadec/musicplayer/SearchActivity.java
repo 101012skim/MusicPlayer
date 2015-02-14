@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,31 +18,28 @@ package com.andreadec.musicplayer;
 
 import java.io.File;
 import java.util.*;
-
-import android.annotation.SuppressLint;
-import android.app.*;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
 import android.os.*;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
 import android.widget.AdapterView.*;
-
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.database.*;
+import com.andreadec.musicplayer.models.*;
 
-public class SearchActivity extends Activity implements OnClickListener, OnItemClickListener, OnKeyListener {
+public class SearchActivity extends ActionBarActivity implements OnClickListener, OnItemClickListener, OnKeyListener {
 	private EditText editTextSearch;
 	private ImageButton buttonSearch;
 	private ListView listViewSearch;
 	private SharedPreferences preferences;
 	private MusicPlayerApplication application;
 	private String lastSearch;
-	
-	@SuppressLint("NewApi")
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +49,7 @@ public class SearchActivity extends Activity implements OnClickListener, OnItemC
         if(preferences.getBoolean(Constants.PREFERENCE_SHOWHELPOVERLAYINDEXING, true) && preferences.getString(Constants.PREFERENCE_BASEFOLDER, "/").equals("/")) {
         	final FrameLayout frameLayout = new FrameLayout(this);
         	LayoutInflater layoutInflater = getLayoutInflater();
-        	layoutInflater.inflate(R.layout.layout_search, frameLayout);
+        	layoutInflater.inflate(R.layout.activity_search, frameLayout);
         	layoutInflater.inflate(R.layout.layout_helpoverlay_indexing, frameLayout);
         	final View overlayView = frameLayout.getChildAt(1);
         	overlayView.setOnClickListener(new OnClickListener() {
@@ -65,7 +62,7 @@ public class SearchActivity extends Activity implements OnClickListener, OnItemC
              	});
         	setContentView(frameLayout);
         } else {
-        	setContentView(R.layout.layout_search);
+        	setContentView(R.layout.activity_search);
         }
         
         editTextSearch = (EditText)findViewById(R.id.editTextSearch);
@@ -74,7 +71,6 @@ public class SearchActivity extends Activity implements OnClickListener, OnItemC
         buttonSearch.setOnClickListener(this);
         listViewSearch = (ListView)findViewById(R.id.listViewSearch);
         listViewSearch.setOnItemClickListener(this);
-        registerForContextMenu(listViewSearch);
         
         application = (MusicPlayerApplication)getApplication();
         lastSearch = application.getLastSearch();
@@ -108,36 +104,6 @@ public class SearchActivity extends Activity implements OnClickListener, OnItemC
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        int position = ((AdapterContextMenuInfo)menuInfo).position;
-        SearchResultsArrayAdapter adapter = (SearchResultsArrayAdapter)listViewSearch.getAdapter();
-        Object item = adapter.getItem(position);
-
-        super.onCreateContextMenu(menu, view, menuInfo);
-
-        menu.setHeaderTitle(R.string.addToPlaylist);
-        ArrayList<Playlist> playlists = Playlists.getPlaylists();
-        for(int i=0; i<playlists.size(); i++) {
-            Playlist playlist = playlists.get(i);
-            menu.add(ContextMenu.NONE, i, i, playlist.getName());
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        if(info==null) return true;
-
-        SearchResultsArrayAdapter adapter = (SearchResultsArrayAdapter)listViewSearch.getAdapter();
-        BrowserSong song = adapter.getItem(info.position);
-
-        ArrayList<Playlist> playlists = Playlists.getPlaylists();
-        playlists.get(item.getItemId()).addSong(song);
-
-        return true;
-    }
 
 	@Override
 	public void onClick(View view) {

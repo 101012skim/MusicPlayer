@@ -31,7 +31,7 @@ So I decided to write this application for my personal use and to publish it hop
 
 
 ## License
-Copyright 2012-2014 Andrea De Cesare
+Copyright 2012-2015 Andrea De Cesare
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.  
@@ -49,8 +49,8 @@ limitations under the License.
 ## Used libraries
 This project uses the following open source libraries.
 
-### Android Support Library v4
-Copyright (c) 2005-2008, The Android Open Source Project
+### Android Support Library
+Copyright (c) 2005-2014, The Android Open Source Project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.  

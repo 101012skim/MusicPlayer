@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.andreadec.musicplayer;
 
 import java.io.*;
 import java.text.*;
-
 import android.app.*;
 import android.content.*;
 import android.graphics.*;
