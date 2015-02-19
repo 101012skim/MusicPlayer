@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Andrea De Cesare
+ * Copyright 2013-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,6 @@ public class Constants {
 	public final static String DEFAULT_SHAKEINTERVAL = null;
 	public final static String DEFAULT_SHAKETHRESHOLD = null;
 	public final static String DEFAULT_SHAKEACTION = "playpause";
-	public final static boolean DEFAULT_SHOWSONGIMAGE = true;
 	public final static boolean DEFAULT_ENABLEBACKDOUBLEPRESSTOQUITAPP = true;
 	public final static boolean DEFAULT_SHOWRELATIVEPATHUNDERBASEDIRECTORY = true;
 	public final static boolean DEFAULT_ENABLEGESTURES = false;
@@ -95,6 +94,5 @@ public class Constants {
 	
 	// Other constants
 	public final static int IMAGES_CACHE_SIZE = 4 * 1024 * 1024; // 4MiB
-	//public final static int SECOND_SEEKBAR_DURATION = 1200000; // 20 minutes, in milliseconds
 	public final static int SECOND_SEEKBAR_DURATION = 600000; // 10 minutes, in milliseconds
 }

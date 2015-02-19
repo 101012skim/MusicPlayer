@@ -653,6 +653,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 	
 	/* ALWAYS CALL THIS FUNCTION TO COMPLETELY CLOSE THE APPLICATION */
 	public void quitApplication() {
+        app.currentPage = -1;
 		stopService(serviceIntent); // Stop the service!
 		finish();
 	}
