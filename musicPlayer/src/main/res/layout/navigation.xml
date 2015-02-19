@@ -68,21 +68,21 @@
                 android:id="@+id/buttonBassBoost"
                 style="@style/navigationCheckButton"
                 android:text="@string/bassBoostButton"
-                android:textColor="@color/white" />
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/buttonEqualizer"
                 android:layout_marginLeft="1dp"
                 style="@style/navigationCheckButton"
                 android:text="@string/equalizerButton"
-                android:textColor="@color/white" />
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/buttonShake"
                 android:layout_marginLeft="1dp"
                 style="@style/navigationCheckButton"
                 android:text="@string/shake"
-                android:textColor="@color/white" />
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
 

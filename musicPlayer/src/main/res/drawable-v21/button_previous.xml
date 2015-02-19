@@ -21,7 +21,7 @@
     android:viewportHeight="48" android:viewportWidth="48">
     <group>
         <path android:name="button"
-            android:fillColor="@color/white"
+            android:fillColor="@android:color/white"
             android:pathData="M 48,2 L 48,46 L 9.8949,24 Z M 0,2.5 L 0,45.5 L 6,45.5 L 6,2.5 Z" />
     </group>
 </vector>
