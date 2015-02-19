@@ -24,18 +24,19 @@ import android.database.sqlite.*;
 import android.os.*;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
-import android.widget.AdapterView.*;
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.database.*;
 import com.andreadec.musicplayer.models.*;
 
-public class SearchActivity extends ActionBarActivity implements OnClickListener, OnItemClickListener, OnKeyListener {
+public class SearchActivity extends ActionBarActivity implements OnClickListener, OnKeyListener {
 	private EditText editTextSearch;
 	private ImageButton buttonSearch;
-	private ListView listViewSearch;
+	private RecyclerView recyclerViewSearch;
 	private SharedPreferences preferences;
 	private MusicPlayerApplication application;
 	private String lastSearch;
@@ -69,8 +70,10 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
         editTextSearch.setOnKeyListener(this);
         buttonSearch = (ImageButton)findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(this);
-        listViewSearch = (ListView)findViewById(R.id.listViewSearch);
-        listViewSearch.setOnItemClickListener(this);
+        recyclerViewSearch = (RecyclerView)findViewById(R.id.recyclerViewSearch);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewSearch.setLayoutManager(llm);
         
         application = (MusicPlayerApplication)getApplication();
         lastSearch = application.getLastSearch();
@@ -146,8 +149,7 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 		if(results.size()==0) {
 			Utils.showMessageDialog(this, R.string.noResultsFoundTitle, R.string.noResultsFoundMessage);
 		} else {
-			SearchResultsArrayAdapter adapter = new SearchResultsArrayAdapter(this, results);
-			listViewSearch.setAdapter(adapter);
+			recyclerViewSearch.setAdapter(new SearchResultsAdapter(this, results));
 		}
 	}
 	
@@ -158,21 +160,18 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 		db.close();
 	}
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		SearchResultsArrayAdapter adapter = (SearchResultsArrayAdapter)listViewSearch.getAdapter();
-		BrowserSong song = adapter.getItem(position);
-		Intent intent = getIntent();
-		intent.putExtra("song", song);
-		File songFile = new File(song.getUri());
-		if(!songFile.exists()) {
-			Utils.showMessageDialog(this, R.string.notFound, R.string.songNotFound);
-			deleteSongFromCache(song.getUri());
-			return;
-		}
-		setResult(1, intent);
-		finish();
-	}
+    public void songSelected(BrowserSong song) {
+        Intent intent = getIntent();
+        intent.putExtra("song", song);
+        File songFile = new File(song.getUri());
+        if(!songFile.exists()) {
+            Utils.showMessageDialog(this, R.string.notFound, R.string.songNotFound);
+            deleteSongFromCache(song.getUri());
+            return;
+        }
+        setResult(1, intent);
+        finish();
+    }
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
