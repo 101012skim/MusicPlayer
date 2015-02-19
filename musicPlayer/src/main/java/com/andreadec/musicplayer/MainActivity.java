@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
@@ -135,7 +135,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         pages[PAGE_RADIOS] = getResources().getString(R.string.radio);
         pages[PAGE_PODCASTS] = getResources().getString(R.string.podcasts);
         fragmentManager = getSupportFragmentManager();
-        //setTitle(pages[currentPage]);
         
         
         /* NAVIGATION DRAWER */
