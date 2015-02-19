@@ -27,7 +27,6 @@ import com.andreadec.musicplayer.models.*;
 public class BrowserArrayAdapter extends ArrayAdapter<Object> {
 	private BrowserSong playingSong;
 	private ImagesCache imagesCache;
-    private Drawable songImage;
     private ArrayList<Object> values;
     private LayoutInflater inflater;
     private MainActivity activity;
@@ -42,7 +41,6 @@ public class BrowserArrayAdapter extends ArrayAdapter<Object> {
         activity = (MainActivity)fragment.getActivity();
 		this.imagesCache = ((MusicPlayerApplication)activity.getApplication()).imagesCache;
         inflater = activity.getLayoutInflater();
-        songImage = activity.getResources().getDrawable(R.drawable.audio);
 	}
 	
 	@Override
@@ -113,7 +111,7 @@ public class BrowserArrayAdapter extends ArrayAdapter<Object> {
 				viewHolder.image.setImageResource(R.drawable.play_orange);
 			} else {
 				viewHolder.card.setBackgroundResource(R.drawable.card);
-                viewHolder.image.setImageDrawable(songImage);
+                viewHolder.image.setImageResource(R.drawable.audio);
                 if(song.hasImage()) {
                     imagesCache.getImageAsync(song, viewHolder.image);
                 }

@@ -17,6 +17,7 @@
 package com.andreadec.musicplayer;
 import android.content.*;
 import android.graphics.*;
+import android.graphics.drawable.Drawable;
 import android.os.*;
 import android.util.*;
 import android.view.*;
@@ -29,7 +30,7 @@ public class ImagesCache {
 
     public ImagesCache(Context context) {
         imagesSize = (int)context.getResources().getDimension(R.dimen.songImageSize);
-        cache = new LruCache<String,Bitmap>(Constants.IMAGES_CACHE_SIZE);
+        cache = new LruCache<>(Constants.IMAGES_CACHE_SIZE);
     }
 
     public void clearCache() {
@@ -39,12 +40,11 @@ public class ImagesCache {
     }
 
     public void getImageAsync(PlayableItem item, ImageView imageView) {
-        Bitmap image = null;
+        Bitmap image;
         synchronized(cache) {
             image = cache.get(item.getPlayableUri());
         }
         if(image==null) {
-
             ImageLoaderTask imageLoader = new ImageLoaderTask(item, imageView);
             imageLoader.execute();
         } else {
@@ -92,8 +92,6 @@ public class ImagesCache {
             if(image!=null) {
                 imageView.setImageBitmap(image);
                 imageView.setVisibility(View.VISIBLE);
-            } else {
-                imageView.setImageDrawable(null);
             }
         }
     }

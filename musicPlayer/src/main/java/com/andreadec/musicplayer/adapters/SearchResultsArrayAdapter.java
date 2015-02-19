@@ -53,6 +53,7 @@ public class SearchResultsArrayAdapter extends ArrayAdapter<BrowserSong> {
 		}
 		viewHolder.title.setText(song.getTitle());
 		viewHolder.artist.setText(song.getArtist());
+        viewHolder.image.setImageResource(R.drawable.audio);
         imagesCache.getImageAsync(song, viewHolder.image);
 
         viewHolder.menu.setOnClickListener(new View.OnClickListener() {
