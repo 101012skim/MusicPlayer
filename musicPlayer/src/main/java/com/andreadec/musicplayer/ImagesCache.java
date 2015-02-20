@@ -44,7 +44,7 @@ public class ImagesCache {
         synchronized(cache) {
             image = cache.get(item.getPlayableUri());
         }
-        if(image==null) {
+        if(image==null && item.hasImage()) {
             ImageLoaderTask imageLoader = new ImageLoaderTask(item, imageView);
             imageLoader.execute();
         } else {
