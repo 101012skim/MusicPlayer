@@ -42,6 +42,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CompoundButton.*;
 import android.widget.SeekBar.*;
 import com.andreadec.musicplayer.adapters.*;
+import com.andreadec.musicplayer.fragments.*;
 import com.andreadec.musicplayer.models.*;
 import com.andreadec.musicplayer.ui.*;
 
@@ -387,7 +388,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     	}
     	updatePlayPauseButton();
     	updatePosition();
-    	
+
     	currentFragment.updateListView();
     }
     

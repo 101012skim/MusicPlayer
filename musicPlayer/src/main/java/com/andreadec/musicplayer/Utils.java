@@ -61,9 +61,9 @@ public class Utils {
 	
 	public static String formatTime(int milliseconds) {
 		String ret = "";
-		int seconds = (int) (milliseconds / 1000) % 60 ;
-		int minutes = (int) ((milliseconds / (1000*60)) % 60);
-		int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+		int seconds = (milliseconds / 1000) % 60 ;
+		int minutes = ((milliseconds / (1000*60)) % 60);
+		int hours   = ((milliseconds / (1000*60*60)) % 24);
 		if(hours>0) ret += hours+":";
 		ret += minutes<10 ? "0"+minutes+":" : minutes+":";
 		ret += seconds<10 ? "0"+seconds : seconds+"";
@@ -72,7 +72,11 @@ public class Utils {
 	
 	public static Bitmap getMusicFileImage(String uri) {
 		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-		mmr.setDataSource(uri);
+        try {
+            mmr.setDataSource(uri);
+        } catch(Exception e) {
+            return null;
+        }
 		byte[] imageBytes = mmr.getEmbeddedPicture();
 		Bitmap image = null;
 		if(imageBytes!=null) {

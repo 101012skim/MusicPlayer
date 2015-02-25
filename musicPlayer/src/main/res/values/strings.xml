@@ -158,7 +158,7 @@
     <string name="reloadSongInfo">Reload song info</string>
     <string name="reloadSongInfoDone">Song info reloaded</string>
     <string name="playlistsEmpty">To add a playlist touch the + button!</string>
-    <string name="playlistEmpty">No songs in this playlist. Add them from the file browser!</string>
+    <string name="playlistEmpty">No songs in this playlist.\nAdd them from the file browser!</string>
     <string name="folderEmpty">There are no files in this folder.</string>
     <string name="noRadios">To add a radio touch the + button!</string>
     <string name="noPodcasts">To add a podcast touch the + button!</string>

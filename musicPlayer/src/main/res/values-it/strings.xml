@@ -98,7 +98,7 @@
 	<string name="editPlaylist">Modifica playlist</string>
 	<string name="removeFromPlaylist">Rimuovi dalla playlist</string>
 	<string name="deletePlaylistConfirm">Eliminare questa playlist?</string>
-	<string name="errorPlaylistName">You must insert a name for the playlist!</string>
+	<string name="errorPlaylistName">Devi inserire un nome per la playlist!</string>
 	<string name="titleLines">Righe per il titolo</string>
 	<string name="titleLinesSummary">Quante righe usare per mostrare i titoli delle canzoni.</string>
 	<string name="gotoPlayingSongDirectory">Dov\'è?</string>
@@ -157,7 +157,7 @@
     <string name="reloadSongInfo">Ricarica informazioni brano</string>
     <string name="reloadSongInfoDone">Informazioni aggiornate</string>
     <string name="playlistsEmpty">Per aggiungere una playlist tocca il pulsante +!</string>
-    <string name="playlistEmpty">Non ci sono brani in questa playlist. Aggiungili dal browser!</string>
+    <string name="playlistEmpty">Non ci sono brani in questa playlist.\nAggiungili dal file browser!</string>
     <string name="folderEmpty">Non ci sono file in questa cartella.</string>
     <string name="noRadios">Per aggiungere una radio tocca il pulsante +!</string>
     <string name="noPodcasts">Per aggiungere un podcast tocca il pulsante +!</string>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.fragments;
 
 import java.io.File;
 import java.util.*;
@@ -24,16 +24,83 @@ import android.graphics.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.models.*;
+import com.andreadec.musicplayer.viewholders.*;
 
 public class PodcastsFragment extends MusicPlayerFragment {
 	private Podcast currentPodcast; // if null, show podcasts' list
+    private ListsClickListener clickListener = new ListsClickListener() {
+        @Override
+        public void onHeaderClick() {
+            currentPodcast = null;
+            updateListView();
+        }
+
+        @Override
+        public void onPlayableItemClick(PlayableItem item) {
+            final PodcastEpisode podcastEpisode = (PodcastEpisode)item;
+            int status = podcastEpisode.getStatus();
+            if(podcastEpisode.getStatus()==PodcastEpisode.STATUS_NEW) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                dialog.setTitle(podcastEpisode.getTitle());
+                dialog.setMessage(R.string.chooseDownloadMethod);
+                dialog.setPositiveButton(R.string.download, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(Utils.isWifiConnected()) {
+                            downloadEpisode(podcastEpisode);
+                        } else {
+                            downloadEpisodeConfirm(podcastEpisode);
+                        }
+                    }
+                });
+                dialog.setNegativeButton(R.string.streaming, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        podcastEpisode.setStreaming();
+                        ((MainActivity)getActivity()).playPodcastEpisodeStreaming(podcastEpisode);
+                        updateListView();
+                    }
+                });
+                dialog.show();
+            } else if(status==PodcastEpisode.STATUS_DOWNLOADED) {
+                ((MainActivity)getActivity()).playItem(podcastEpisode);
+                updateListView();
+            }
+        }
+
+        @Override
+        public void onPlayableItemMenuClick(PlayableItem item, int menuId) {
+            switch(menuId) {
+                case R.id.menu_delete:
+                    deletePodcastEpisode((PodcastEpisode) item);
+                    break;
+            }
+        }
+
+        @Override
+        public void onCategoryClick(Object item) {
+            if(item instanceof Podcast) {
+                openPodcast((Podcast)item);
+            }
+        }
+
+        @Override
+        public void onCategoryMenuClick(Object item, int menuId) {
+            switch(menuId) {
+                case R.id.menu_delete:
+                    deletePodcast((Podcast)item);
+                    break;
+            }
+        }
+    };
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if (container == null) return null;
-		View view = inflater.inflate(R.layout.layout_simple_list, container, false);
+		View view = inflater.inflate(R.layout.layout_fragments, container, false);
 		initialize(view);
 		updateListView();
 		return view;
@@ -51,66 +118,26 @@ public class PodcastsFragment extends MusicPlayerFragment {
 	}
 	
 	public void updateListView(boolean reloadFromDatabase) {
-		ArrayList<Object> items = new ArrayList<Object>();
+		ArrayList<Object> items = new ArrayList<>();
 		if(currentPodcast==null) {
 			ArrayList<Podcast> podcasts = Podcast.getPodcasts();
 			items.addAll(podcasts);
-            setHeaderVisible(false);
             setFloatingButtonImage(R.drawable.newcontent);
-            setEmptyViewMessage(R.string.noPodcasts);
+            setEmptyViewText(R.string.noPodcasts);
 		} else {
+            items.add(currentPodcast.getName());
 			if(reloadFromDatabase) currentPodcast.loadItemsFromDatabase();
-            setHeaderVisible(true);
             setFloatingButtonImage(R.drawable.refresh);
-            setEmptyViewMessage(R.string.podcastEmpty);
-            setHeaderText(currentPodcast.getName());
+            setEmptyViewText(R.string.podcastEmpty);
             items.addAll(currentPodcast.getEpisodes());
 		}
 		PodcastEpisode currentPodcastEpisode = null;
 		MainActivity activity = (MainActivity)getActivity();
 		if(activity.getCurrentPlayingItem() instanceof PodcastEpisode) currentPodcastEpisode = (PodcastEpisode)activity.getCurrentPlayingItem();
-        PodcastsArrayAdapter adapter = new PodcastsArrayAdapter(this, items, currentPodcastEpisode);
-		Parcelable state = list.onSaveInstanceState();
-		list.setAdapter(adapter);
-		list.onRestoreInstanceState(state);
-	}
-	
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Object item = list.getAdapter().getItem(position);
-		if(item instanceof Podcast) {
-			openPodcast((Podcast)item);
-		} else if(item instanceof PodcastEpisode) {
-			final PodcastEpisode podcastEpisode = (PodcastEpisode)item;
-			int status = podcastEpisode.getStatus();
-			if(podcastEpisode.getStatus()==PodcastEpisode.STATUS_NEW) {
-				AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-				dialog.setTitle(podcastEpisode.getTitle());
-				dialog.setMessage(R.string.chooseDownloadMethod);
-				dialog.setPositiveButton(R.string.download, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if(Utils.isWifiConnected()) {
-							downloadEpisode(podcastEpisode);
-						} else {
-							downloadEpisodeConfirm(podcastEpisode);
-						}
-					}
-				});
-				dialog.setNegativeButton(R.string.streaming, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						podcastEpisode.setStreaming();
-						((MainActivity)getActivity()).playPodcastEpisodeStreaming(podcastEpisode);
-						updateListView();
-					}
-				});
-				dialog.show();
-			} else if(status==PodcastEpisode.STATUS_DOWNLOADED) {
-				((MainActivity)getActivity()).playItem(podcastEpisode);
-				updateListView();
-			}
-		}
+
+        Parcelable state = layoutManager.onSaveInstanceState();
+		recyclerView.setAdapter(new MusicPlayerAdapter(activity, items, currentPodcastEpisode, emptyView, clickListener));
+        layoutManager.onRestoreInstanceState(state);
 	}
 	
 	public void openPodcast(Podcast podcast) {
@@ -267,12 +294,6 @@ public class PodcastsFragment extends MusicPlayerFragment {
 	}
 
     @Override
-    public void onHeaderClick() {
-        currentPodcast = null;
-        updateListView();
-    }
-
-    @Override
     public void onFloatingButtonClick() {
         if(currentPodcast==null) addPodcast();
         else new UpdatePodcastTask(currentPodcast).execute();
@@ -356,21 +377,8 @@ public class PodcastsFragment extends MusicPlayerFragment {
 	public void gotoPlayingItemPosition(PlayableItem playingItem) {
 		PodcastEpisode playingEpisode = (PodcastEpisode)playingItem;
 		openPodcast(playingEpisode.getPodcast());
-        ListAdapter adapter = list.getAdapter();
-		for(int i=0; i<adapter.getCount(); i++) {
-			Object item = adapter.getItem(i);
-			if(item instanceof PodcastEpisode) {
-				if(item.equals(playingEpisode)) {
-					final int position = i;
-					list.post(new Runnable() {
-						@Override
-						public void run() {
-							list.smoothScrollToPosition(position);
-						}
-					});
-					break;
-				}
-			}
-		}
+
+        int position = ((MusicPlayerAdapter)recyclerView.getAdapter()).getPlayableItemPosition(playingItem);
+        recyclerView.scrollToPosition(position);
 	}
 }

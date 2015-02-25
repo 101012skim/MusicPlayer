@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.fragments;
 
 import java.util.ArrayList;
 
@@ -23,48 +23,70 @@ import android.content.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
-import android.widget.AdapterView.*;
-import com.nhaarman.listviewanimations.itemmanipulation.*;
-import com.nhaarman.listviewanimations.itemmanipulation.dragdrop.*;
-import com.nhaarman.listviewanimations.itemmanipulation.swipedismiss.OnDismissCallback;
+
+import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.models.*;
+import com.andreadec.musicplayer.ui.*;
+import com.andreadec.musicplayer.viewholders.*;
 
-public class PlaylistFragment extends MusicPlayerFragment implements OnItemMovedListener {
-    private PlaylistArrayAdapter playlistArrayAdapter;
+public class PlaylistFragment extends MusicPlayerFragment {
     private Playlist currentPlaylist = null;
+    private ListsClickListener clickListener = new ListsClickListener() {
+        @Override
+        public void onHeaderClick() {
+            showPlaylist(null);
+        }
+
+        @Override
+        public void onPlayableItemClick(PlayableItem item) {
+            activity.playItem(item);
+            updateListView();
+        }
+
+        @Override
+        public void onPlayableItemMenuClick(PlayableItem item, int menuId) {
+
+        }
+
+        @Override
+        public void onCategoryClick(Object item) {
+            showPlaylist((Playlist)item);
+        }
+
+        @Override
+        public void onCategoryMenuClick(Object item, int menuId) {
+            switch(menuId) {
+                case R.id.menu_edit:
+                    editPlaylist((Playlist)item);
+                    break;
+                case R.id.menu_delete:
+                    deletePlaylist((Playlist)item);
+                    break;
+            }
+        }
+    };
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		if(container==null) return null;
-		View view = inflater.inflate(R.layout.layout_sortable_list, container, false);
+		View view = inflater.inflate(R.layout.layout_fragments, container, false);
         initialize(view);
-		((DynamicListView)list).enableDragAndDrop();
-        ((DynamicListView)list).setDraggableManager(new TouchViewDraggableManager(R.id.imageViewItemImage));
-        ((DynamicListView)list).setOnItemMovedListener(this);
-        ((DynamicListView)list).enableSwipeToDismiss(new OnDismissCallback() {
+        enableSort(view, R.id.imageViewItemImage, new DragDropTouchListener.OnItemMovedListener() {
             @Override
-            public void onDismiss(ViewGroup viewGroup, int[] reverseSortedPositions) {
-                for (int position : reverseSortedPositions) {
-                    Object item = playlistArrayAdapter.getItem(position);
-                    if(currentPlaylist==null) {
-                        deletePlaylist((Playlist)item);
-                    } else {
-                        deleteSongFromPlaylist((PlaylistSong)item);
-                    }
-                    playlistArrayAdapter.remove(item);
+            public void onItemMoved(int from, int to) {
+                sortPlaylist(from, to);
+            }
+
+            @Override
+            public void onItemDeleted(Object item) {
+                if(currentPlaylist==null) {
+                    deletePlaylist((Playlist)item);
+                } else {
+                    deleteSongFromPlaylist((PlaylistSong)item);
                 }
             }
         });
-        list.setOnItemLongClickListener(
-                new OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        ((DynamicListView)list).startDragging(position);
-                        return true;
-                    }
-                }
-        );
         updateListView();
 		return view;
 	}
@@ -131,49 +153,22 @@ public class PlaylistFragment extends MusicPlayerFragment implements OnItemMoved
         if(activity.getCurrentPlayingItem() instanceof PlaylistSong) {
         	playingSong = (PlaylistSong)(activity.getCurrentPlayingItem());
         }
-		ArrayList<Object> values = new ArrayList<Object>();
+		ArrayList<Object> values = new ArrayList<>();
 		if(currentPlaylist==null) { // Show all playlists
-            setHeaderVisible(false);
             setFloatingButtonVisible(true);
-            setEmptyViewMessage(R.string.playlistsEmpty);
+            setEmptyViewText(R.string.playlistsEmpty);
 			ArrayList<Playlist> playlists = Playlists.getPlaylists();
 			values.addAll(playlists);
 		} else {
-            setHeaderVisible(true);
+            values.add(currentPlaylist.getName());
             setFloatingButtonVisible(false);
-            setEmptyViewMessage(R.string.playlistEmpty);
-            setHeaderText(currentPlaylist.getName());
+            setEmptyViewText(R.string.playlistEmpty);
 			values.addAll(currentPlaylist.getSongs());
 		}
 
-        playlistArrayAdapter = new PlaylistArrayAdapter(this, values, playingSong);
-		Parcelable state = list.onSaveInstanceState();
-        list.setAdapter(playlistArrayAdapter);
-
-        /*AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(playlistArrayAdapter);
-        animationAdapter.setAbsListView(listViewPlaylist);
-        listViewPlaylist.setAdapter(animationAdapter);*/
-
-        list.onRestoreInstanceState(state);
-	}
-
-    public void scrollToSong(PlaylistSong song) {
-        ListAdapter adapter = list.getAdapter();
-		for(int i=0; i<adapter.getCount(); i++) {
-			Object item = adapter.getItem(i);
-			if(item instanceof PlaylistSong) {
-				if(item.equals(song)) {
-					final int position = i;
-					list.post(new Runnable() {
-						@Override
-						public void run() {
-							list.smoothScrollToPosition(position);
-						}
-					});
-					break;
-				}
-			}
-		}
+        Parcelable state = layoutManager.onSaveInstanceState();
+        recyclerView.setAdapter(new MusicPlayerAdapter(activity, values, playingSong, emptyView, clickListener));
+        layoutManager.onRestoreInstanceState(state);
 	}
 	
 	private void deleteSongFromPlaylist(PlaylistSong song) {
@@ -184,25 +179,14 @@ public class PlaylistFragment extends MusicPlayerFragment implements OnItemMoved
 		if(currentPlaylist==null) { // Sorting playlists
 			Playlists.sortPlaylists(from, to);
 		} else { // Sorting songs in playlist
-			currentPlaylist.sort(from, to);
+            if(from==0 || to==0) return;
+			currentPlaylist.sort(from-1, to-1);
 		}
 	}
 	
 	public void showPlaylist(Playlist playlist) {
 		currentPlaylist = playlist;
 		updateListView();
-	}
-	
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Object item = list.getAdapter().getItem(position);
-		if(item instanceof PlaylistSong) {
-			MainActivity activity = (MainActivity)getActivity();
-			activity.playItem((PlaylistSong)item);
-			updateListView();
-		} else if(item instanceof Playlist) {
-			showPlaylist((Playlist)item);
-		}
 	}
 
 	@Override
@@ -219,18 +203,10 @@ public class PlaylistFragment extends MusicPlayerFragment implements OnItemMoved
 	public void gotoPlayingItemPosition(PlayableItem playingItem) {
 		PlaylistSong song = (PlaylistSong)playingItem;
 		showPlaylist(song.getPlaylist());
-		scrollToSong(song);
+
+        int position = ((MusicPlayerAdapter)recyclerView.getAdapter()).getPlayableItemPosition(playingItem);
+        recyclerView.scrollToPosition(position);
 	}
-
-    @Override
-    public void onItemMoved(int from, int to) {
-        sortPlaylist(from, to);
-    }
-
-    @Override
-    public void onHeaderClick() {
-        showPlaylist(null);
-    }
 
     @Override
     public void onFloatingButtonClick() {

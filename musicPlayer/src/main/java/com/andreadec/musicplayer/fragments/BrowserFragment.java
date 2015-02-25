@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.andreadec.musicplayer;
+package com.andreadec.musicplayer.fragments;
 
 import java.io.*;
 import java.util.*;
@@ -23,12 +23,47 @@ import android.content.*;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
+
+import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.models.*;
+import com.andreadec.musicplayer.viewholders.*;
 
 public class BrowserFragment extends MusicPlayerFragment {
     private int lastFolderPosition; // Used to save the index of the first visible element in the previous folder list. This info will be used to restore list position when browsing back to the last directory. If <=0 no restore is performed.
     private MainActivity activity;
+    private ListsClickListener clickListener = new ListsClickListener() {
+        @Override
+        public void onHeaderClick() {
+            gotoParentDir();
+        }
+
+        @Override
+        public void onPlayableItemClick(PlayableItem item) {
+            activity.playItem(item);
+        }
+
+        @Override
+        public void onPlayableItemMenuClick(PlayableItem item, int menuId) {
+            AddToPlaylistDialog.showDialog(activity, item);
+        }
+
+        @Override
+        public void onCategoryClick(Object item) {
+            gotoDirectory((File)item, null);
+        }
+
+        @Override public void onCategoryMenuClick(Object item, int menuId) {
+            switch(menuId) {
+                case R.id.menu_addFolderToPlaylist:
+                    AddToPlaylistDialog.showDialog(activity, item);
+                    break;
+                case R.id.menu_setAsBaseFolder:
+                    activity.setBaseFolder((File)item);
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,10 +73,9 @@ public class BrowserFragment extends MusicPlayerFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.layout_simple_list, container, false);
+		View view = inflater.inflate(R.layout.layout_fragments, container, false);
         initialize(view);
         setFloatingButtonVisible(false);
-        setEmptyViewMessage(R.string.folderEmpty);
         updateListView(false);
 		return view;
 	}
@@ -50,11 +84,6 @@ public class BrowserFragment extends MusicPlayerFragment {
 	public void updateListView() {
 		updateListView(true);
 	}
-
-    @Override
-    public void onHeaderClick() {
-        gotoParentDir();
-    }
 
     @Override public void onFloatingButtonClick() {}
 
@@ -66,24 +95,24 @@ public class BrowserFragment extends MusicPlayerFragment {
 			initializeCurrentDirectory();
 			return;
 		}
-
-        setHeaderText(getCurrentDirectoryName(currentDirectory));
 		
     	ArrayList<File> browsingSubdirs = currentDirectory.getSubdirs();
         ArrayList<BrowserSong> browsingSongs = currentDirectory.getSongs();
         ArrayList<Object> items = new ArrayList<>();
+        items.add(getCurrentDirectoryName(currentDirectory));
         items.addAll(browsingSubdirs);
         items.addAll(browsingSongs);
         BrowserSong playingSong = null;
         if(activity.getCurrentPlayingItem() instanceof BrowserSong) playingSong = (BrowserSong)activity.getCurrentPlayingItem();
-        BrowserArrayAdapter browserArrayAdapter = new BrowserArrayAdapter(this, items, playingSong);
+
+        MusicPlayerAdapter adapter = new MusicPlayerAdapter(activity, items, playingSong, emptyView, clickListener);
 
 		if(restoreOldPosition) {
-        	Parcelable state = list.onSaveInstanceState();
-        	list.setAdapter(browserArrayAdapter);
-        	list.onRestoreInstanceState(state);
+        	Parcelable state = layoutManager.onSaveInstanceState();
+            recyclerView.setAdapter(adapter);
+            layoutManager.onRestoreInstanceState(state);
         } else {
-        	list.setAdapter(browserArrayAdapter);
+            recyclerView.setAdapter(adapter);
         }
 	}
 	
@@ -100,22 +129,8 @@ public class BrowserFragment extends MusicPlayerFragment {
 	}
 	
 	public void scrollToSong(BrowserSong song) {
-        ListAdapter adapter = list.getAdapter();
-		for(int i=0; i<adapter.getCount(); i++) {
-			Object item = adapter.getItem(i);
-			if(item instanceof BrowserSong) {
-				if(item.equals(song)) {
-					final int position = i;
-					list.post(new Runnable() {
-						@Override
-						public void run() {
-							list.smoothScrollToPosition(position);
-						}
-					});
-					break;
-				}
-			}
-		}
+        MusicPlayerAdapter adapter = (MusicPlayerAdapter)recyclerView.getAdapter();
+        recyclerView.scrollToPosition(adapter.getPlayableItemPosition(song));
 	}
 	
 	private String getCurrentDirectoryName(BrowserDirectory currentDirectory) {
@@ -130,19 +145,6 @@ public class BrowserFragment extends MusicPlayerFragment {
 			return currentDirectoryName.substring(baseDirectory.length()+1); // +1 removes initial "/"
 		} else {
 			return currentDirectoryName;
-		}
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Object item = list.getAdapter().getItem(position);
-		if (item instanceof File) {
-			File newDirectory = (File) item;
-			gotoDirectory(newDirectory, null);
-		} else if (item instanceof BrowserSong) {
-			activity.playItem((BrowserSong)item);
-		} else {
-			gotoParentDir();
 		}
 	}
 	
@@ -183,7 +185,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 	}
 	
 	public void gotoDirectory(File newDirectory, BrowserSong scrollToSong) {
-		lastFolderPosition = list.getFirstVisiblePosition();
+		lastFolderPosition = layoutManager.findFirstVisibleItemPosition();
 		new ChangeDirTask(newDirectory, scrollToSong, -1).execute();
 	}
 
@@ -217,7 +219,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 					scrollToSong(gotoSong);
 				}
 				if(listScrolling>0) {
-					list.setSelectionFromTop(listScrolling, 0);
+                    recyclerView.scrollToPosition(listScrolling);
 				}
 			} else {
 				Toast.makeText(activity, R.string.dirError, Toast.LENGTH_SHORT).show();

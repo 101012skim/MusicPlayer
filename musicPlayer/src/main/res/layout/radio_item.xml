@@ -29,7 +29,7 @@
 	    style="@style/card" >
 	
 	    <ImageView
-	        android:id="@+id/imageViewItemImage"
+	        android:id="@+id/imageViewRadio"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center_vertical"
@@ -39,7 +39,7 @@
             android:paddingRight="5dp" />
 	
 	    <TextView
-	        android:id="@+id/textViewRadioItem"
+	        android:id="@+id/textViewRadio"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:gravity="center_vertical"
