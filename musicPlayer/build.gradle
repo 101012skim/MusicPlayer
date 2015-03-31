@@ -1,12 +1,13 @@
 apply plugin: 'android'
 
 android {
-    buildToolsVersion '21.1.1'
+    buildToolsVersion '22.0.1'
+    compileSdkVersion 22
+
     defaultConfig {
         applicationId 'com.andreadec.musicplayer'
         minSdkVersion 16
-        targetSdkVersion 21
-        compileSdkVersion 21
+        targetSdkVersion 22
     }
     buildTypes {
         debug {
@@ -16,7 +17,6 @@ android {
         }
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue "string", "app_name", "Music Player"
         }
     }
@@ -29,13 +29,10 @@ project.ext.set("archivesBaseName", "MusicPlayer");
 
 repositories {
     mavenCentral()
-    /*flatDir {
-        dirs 'libs'
-    }*/
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.+'
-    compile 'com.android.support:appcompat-v7:21.+'
-    compile 'com.android.support:recyclerview-v7:21.+'
+    compile 'com.android.support:support-v4:22.+'
+    compile 'com.android.support:appcompat-v7:22.+'
+    compile 'com.android.support:recyclerview-v7:22.+'
 }
