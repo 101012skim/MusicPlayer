@@ -120,6 +120,11 @@ public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
         }
     }
 
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+    }
+
     private void dragStart(float x, float y) {
         adapter = (MusicPlayerAdapter)recyclerView.getAdapter();
 

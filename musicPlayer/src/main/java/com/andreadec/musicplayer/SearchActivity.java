@@ -28,6 +28,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.view.View.*;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.database.*;
@@ -40,12 +41,14 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 	private SharedPreferences preferences;
 	private MusicPlayerApplication application;
 	private String lastSearch;
+	private InputMethodManager inputMethodManager;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         
         if(preferences.getBoolean(Constants.PREFERENCE_SHOWHELPOVERLAYINDEXING, true) && preferences.getString(Constants.PREFERENCE_BASEFOLDER, "/").equals("/")) {
         	final FrameLayout frameLayout = new FrameLayout(this);
@@ -68,6 +71,14 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
         
         editTextSearch = (EditText)findViewById(R.id.editTextSearch);
         editTextSearch.setOnKeyListener(this);
+		editTextSearch.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+				if(!hasFocus) {
+					inputMethodManager.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
+				}
+			}
+		});
         buttonSearch = (ImageButton)findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(this);
         recyclerViewSearch = (RecyclerView)findViewById(R.id.recyclerViewSearch);
@@ -79,6 +90,14 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
         lastSearch = application.getLastSearch();
         
         setResult(0, getIntent());
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		editTextSearch.requestFocus();
+		//inputMethodManager.showSoftInput(editTextSearch, InputMethodManager.SHOW_FORCED);
+		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	}
 	
 	@Override
@@ -111,6 +130,7 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 	@Override
 	public void onClick(View view) {
 		if(view.equals(buttonSearch)) {
+			editTextSearch.clearFocus();
 			search();
 		}
 	}
