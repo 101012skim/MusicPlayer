@@ -13,11 +13,12 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix " DEBUG"
-            resValue "string", "app_name", "Music Player DEBUG"
+            //resValue "string", "app_name", "Music Player DEBUG"
         }
         release {
             minifyEnabled true
-            resValue "string", "app_name", "Music Player"
+            shrinkResources true
+            //resValue "string", "app_name", "Music Player"
         }
     }
     lintOptions {

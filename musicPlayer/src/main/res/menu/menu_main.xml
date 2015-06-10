@@ -1,6 +1,6 @@
 <!--
 /*
- * Copyright 2012-2013 Andrea De Cesare
+ * Copyright 2012-2015 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@
     <item android:id="@+id/menu_gotoBaseFolder"
         android:title="@string/gotoBaseFolder"
         app:showAsAction="never" />
+
+    <item android:id="@+id/menu_rescanBaseFolder"
+          android:title="@string/rescanBaseFolder"
+          app:showAsAction="never" />
 	
 	<item android:id="@+id/menu_songInfo"
 	    android:title="@string/songInfo" />

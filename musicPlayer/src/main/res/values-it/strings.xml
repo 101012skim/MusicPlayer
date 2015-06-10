@@ -17,7 +17,7 @@
 -->
 
 <resources>
-    <!--<string name="app_name">Music Player</string>-->
+    <string name="app_name">Music Player</string>
 	<string name="quit">Esci</string>
 	<string name="quitApp">Chiudi app</string>
     <string name="shuffle">Casuale</string>
@@ -67,7 +67,7 @@
 	<string name="songsSorting">Ordinamento brani</string>
 	<string name="songsSortingSummary">Imposta l\'ordine in cui vengono visualizzati i brani nel browser.</string>
 	<string name="importMsg">Importa</string>
-	<string name="importSummary">Importa informazioni su radio e podcat da file.</string>
+	<string name="importSummary">Importa informazioni su radio e podcast da file.</string>
 	<string name="export">Esporta</string>
 	<string name="exportSummary">Esporta informazioni su radio e podcast su file.</string>
 	<string name="importSuccess">Importazione completata.</string>
@@ -77,10 +77,6 @@
 	<string name="otherSettings">Altre impostazioni</string>
 	<string name="importConfirm">Importare dal file %1$s?</string>
 	<string name="exportConfirm">Esportare nel file %1$s?</string>
-	<string name="cache">Cache</string>
-	<string name="clearCache">Svuota cache</string>
-	<string name="clearCacheConfirm">Cancellare la cache?</string>
-	<string name="cacheCleared">Cache svuotata!</string>
 	<string name="about">Informazioni</string>
 	<string name="version">Versione %1$s</string>
 	<string name="restartPlaybackAfterPhoneCall">Riavvia dopo telefonata</string>
@@ -103,9 +99,6 @@
 	<string name="titleLinesSummary">Quante righe usare per mostrare i titoli delle canzoni.</string>
 	<string name="gotoPlayingSongDirectory">Dov\'è?</string>
 	<string name="setAsBaseFolder">Imposta come cartella base</string>
-	<string name="indexBaseFolder">Indicizza cartella base</string>
-	<string name="indexBaseFolderSummary">Indicizzare la cartella base per ottenere migliori prestazioni e per poter utilizzare la funzione di ricerca. Assicurarsi di aver impostato la cartella base prima di procedere.</string>
-	<string name="indexBaseFolderConfirm">Vuoi indicizzare questa cartella e tutte le sue sottocartelle?</string>
 	<string name="setBaseFolderConfirm">Questa cartella verrà impostata come cartella base. Sei sicuro?</string>
 	<string name="indexingCompleted">Indicizzazione completata.</string>
 	<string name="indexingWait">Indicizzazione in corso&#8230;</string>
@@ -118,7 +111,7 @@
 	<string name="notSet">Non impostata</string>
 	<string name="search">Cerca</string>
 	<string name="noResultsFoundTitle">Nessun risultato</string>
-	<string name="noResultsFoundMessage">Non è stata trovata alcuna canzone con la chiave di ricerca inserita.\nSi noti che la ricerca viene effettuata solo all\'interno delle cartelle indicizzate.</string>
+	<string name="noResultsFoundMessage">Non è stata trovata alcuna canzone con la chiave di ricerca inserita.</string>
 	<string name="bassBoost">Bass boost</string>
 	<string name="bassBoostButton">Bass</string>
 	<string name="equalizer">Equalizzatore</string>
@@ -128,7 +121,7 @@
 	<string name="preset">Preset:</string>
 	<string name="enabled">Abilitato</string>
 	<string name="close">Chiudi</string>
-	<string name="songNotFound">Questa canzone non è più disponibile. Dovresti ricreare la cache.</string>
+	<string name="songNotFound">Questa canzone non è più disponibile.</string>
 	<string name="songInfo">Info sul brano</string>
 	<string name="artist">Artista</string>
 	<string name="title">Titolo</string>
@@ -160,13 +153,14 @@
     <string name="playlistEmpty">Non ci sono brani in questa playlist.\nAggiungili dal file browser!</string>
     <string name="folderEmpty">Non ci sono file in questa cartella.</string>
     <string name="noRadios">Per aggiungere una radio tocca il pulsante +!</string>
-    <string name="noPodcasts">Per aggiungere un podcast tocca il pulsante +!</string>
-    <string name="podcastEmpty">Per aggiornare gli episodi tocca il pulsante aggiorna!</string>
+    <string name="rescanBaseFolder">Ricarica cartella base</string>
 	
 	<!-- Podcasts -->
 	<string name="podcast">Podcast</string>
 	<string name="podcasts">Podcast</string>
 	<string name="addPodcast">Aggiungi podcast</string>
+    <string name="noPodcasts">Per aggiungere un podcast tocca il pulsante +!</string>
+    <string name="podcastEmpty">Per aggiornare gli episodi tocca il pulsante aggiorna!</string>
 	<string name="removePodcastConfirm">Eliminare questo podcast?</string>
 	<string name="update">Aggiorna</string>
 	<string name="download">Download</string>
@@ -210,7 +204,6 @@
 	
 	<!-- Overlay helper -->
 	<string name="overlayMain">Benvenuto nel Music Player.\n\nPer rendere più agevole l\'accesso ai brani, vai nella cartella principale dove hai la tua musica e scegli \"Imposta come cartella base\" dal menu.</string>
-	<string name="overlayIndexing">Per migliorare i tempi di caricamento ed abilitare la ricerca delle canzoni, questa app deve indicizzare la cartella della musica.\n\nPer fare ciò vai nella cartella principale dove hai la tua musica e scegli \"Imposta come cartella base\" dal menu.</string>
 	
 	<!-- Strings for about page -->
 	<string name="license">Licenza</string>

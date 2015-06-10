@@ -86,16 +86,6 @@
 	        android:title="@string/podcastsDirectory"
 	        android:summary="@string/podcastsDirectorySummary" />
 	</PreferenceCategory>
-	
-    <PreferenceCategory android:title="@string/cache">
-        <Preference
-            android:key="clearCache"
-            android:title="@string/clearCache" />
-        <Preference
-            android:key="indexBaseFolder"
-            android:title="@string/indexBaseFolder"
-            android:summary="@string/indexBaseFolderSummary" />
-    </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/importExport">
         <Preference 

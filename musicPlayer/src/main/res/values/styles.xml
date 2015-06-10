@@ -79,7 +79,7 @@
         <item name="android:windowBackground">@color/lightGrey</item>
     </style>
 
-    <style name="floatingButton.Base">
+    <style name="floatingButtonBase">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@drawable/floating_button</item>
@@ -88,7 +88,7 @@
         <item name="android:layout_marginBottom">20dp</item>
         <item name="android:layout_marginRight">20dp</item>
     </style>
-    <style name="floatingButton" parent="floatingButton.Base"/>
+    <style name="floatingButton" parent="floatingButtonBase"/>
 
 
     <style name="buttonNext">

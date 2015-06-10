@@ -31,9 +31,8 @@ import com.andreadec.musicplayer.adapters.*;
 public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
     final static int SCROLL_THRESHOLD = 50;
     final static int SCROLL_AMOUNT = 20;
-    final static int DELETE_THRESHOLD = 50;
 
-    static enum Action {ACTION_NONE, ACTION_DECIDING, ACTION_SORT, ACTION_REMOVE};
+    enum Action {ACTION_NONE, ACTION_DECIDING, ACTION_SORT, ACTION_REMOVE};
 
     private Context context;
     private RecyclerView recyclerView;
@@ -184,7 +183,8 @@ public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
     private void deleteEnd(int x) {
         overlay.setImageBitmap(null);
         actionInProgress = Action.ACTION_NONE;
-        if(recyclerView.getWidth()-x < DELETE_THRESHOLD) {
+        int recyclerViewWidth = recyclerView.getWidth();
+        if(recyclerViewWidth-x < recyclerViewWidth/2) {
             listener.onItemDeleted(adapter.deleteItem(currentPosition));
         } else {
             draggingView.setVisibility(View.VISIBLE);
@@ -192,7 +192,7 @@ public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
     }
 
     public interface OnItemMovedListener {
-        public void onItemMoved(int from, int to);
-        public void onItemDeleted(Object item);
+        void onItemMoved(int from, int to);
+        void onItemDeleted(Object item);
     }
 }

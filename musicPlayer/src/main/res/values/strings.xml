@@ -17,7 +17,7 @@
 -->
 
 <resources>
-    <!--<string name="app_name">Music Player</string>-->
+    <string name="app_name">Music Player</string>
 	<string name="quit">Quit</string>
 	<string name="quitApp">Quit app</string>
     <string name="shuffle">Shuffle</string>
@@ -77,10 +77,6 @@
 	<string name="otherSettings">Other settings</string>
 	<string name="importConfirm">Import from file %1$s?</string>
 	<string name="exportConfirm">Export to file %1$s?</string>
-	<string name="cache">Cache</string>
-	<string name="clearCache">Clear cache</string>
-	<string name="clearCacheConfirm">Clear the cache?</string>
-	<string name="cacheCleared">Cache cleared!</string>
 	<string name="about">About</string>
 	<string name="version">Version %1$s</string>
 	<string name="restartPlaybackAfterPhoneCall">Restart after call</string>
@@ -103,9 +99,6 @@
 	<string name="titleLinesSummary">How many lines to use to show songs\' titles.</string>
 	<string name="gotoPlayingSongDirectory">Where is?</string>
 	<string name="setAsBaseFolder">Set as base folder</string>
-	<string name="indexBaseFolder">Index base folder</string>
-	<string name="indexBaseFolderSummary">Index base folder to improve performance and use the search function. Make sure you set the base folder before going on.</string>
-	<string name="indexBaseFolderConfirm">Would you like to index this folder and all its subfolders?</string>
 	<string name="setBaseFolderConfirm">This folder will be set as base folder. Are you sure?</string>
 	<string name="indexingCompleted">Indexing completed.</string>
 	<string name="indexingWait">Indexing in progress&#8230;</string>
@@ -118,7 +111,7 @@
 	<string name="notSet">Not set</string>
 	<string name="search">Search</string>
 	<string name="noResultsFoundTitle">Nothing found!</string>
-	<string name="noResultsFoundMessage">No song matching the input was found.\nSearch is performed in indexed folders only!</string>
+	<string name="noResultsFoundMessage">No song matching the input was found.</string>
 	<string name="bassBoost">Bass boost</string>
 	<string name="bassBoostButton">Bass</string>
 	<string name="equalizer">Equalizer</string>
@@ -128,7 +121,7 @@
 	<string name="preset">Preset:</string>
 	<string name="enabled">Enabled</string>
 	<string name="close">Close</string>
-	<string name="songNotFound">This song is no longer available. You should rebuild songs cache.</string>
+	<string name="songNotFound">This song is no longer available.</string>
 	<string name="songInfo">Song info</string>
 	<string name="artist">Artist</string>
 	<string name="title">Title</string>
@@ -161,13 +154,14 @@
     <string name="playlistEmpty">No songs in this playlist.\nAdd them from the file browser!</string>
     <string name="folderEmpty">There are no files in this folder.</string>
     <string name="noRadios">To add a radio touch the + button!</string>
-    <string name="noPodcasts">To add a podcast touch the + button!</string>
-    <string name="podcastEmpty">To update episodes touch the refresh button!</string>
+    <string name="rescanBaseFolder">Rescan base folder</string>
 	
 	<!-- Podcasts -->
 	<string name="podcast">Podcast</string>
 	<string name="podcasts">Podcasts</string>
 	<string name="addPodcast">Add podcast</string>
+    <string name="noPodcasts">To add a podcast touch the + button!</string>
+    <string name="podcastEmpty">To update episodes touch the refresh button!</string>
 	<string name="removePodcastConfirm">Remove this podcast?</string>
 	<string name="update">Update</string>
 	<string name="download">Download</string>
@@ -210,7 +204,6 @@
 	
 	<!-- Overlay helper -->
 	<string name="overlayMain">Welcome to Music Player.\n\nPlease navigate to your music folder and choose \"Set as base folder\" from menu to index it and all its subfolders.</string>
-	<string name="overlayIndexing">To improve loading times and enable songs search, this app needs to index your music folder.\n\nTo do so, go to the main folder and choose \"Set as base folder\" from menu to index it and all its subfolders.</string>
 	
 	<!-- Strings for about page -->
 	<string name="license">License</string>

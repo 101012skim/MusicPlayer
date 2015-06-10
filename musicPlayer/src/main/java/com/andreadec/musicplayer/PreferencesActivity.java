@@ -52,7 +52,7 @@ public class PreferencesActivity extends ActionBarActivity {
 
     public static class PreferencesFragment extends PreferenceFragment implements OnPreferenceClickListener, OnPreferenceChangeListener {
         private SharedPreferences preferences;
-        private Preference preferenceClearCache, preferenceIndexBaseFolder, preferenceAbout, preferenceImport, preferenceExport, preferencePodcastsDirectory;
+        private Preference preferenceAbout, preferenceImport, preferenceExport, preferencePodcastsDirectory;
         private Preference preferenceDisableLockScreen, preferenceEnableGestures, preferenceShowPlaybackControls;
         private PreferencesActivity activity;
 
@@ -64,17 +64,11 @@ public class PreferencesActivity extends ActionBarActivity {
 
             preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            preferenceClearCache = findPreference("clearCache");
-            preferenceIndexBaseFolder = findPreference("indexBaseFolder");
             preferenceAbout = findPreference("about");
             preferenceImport = findPreference("import");
             preferenceExport = findPreference("export");
             preferencePodcastsDirectory = findPreference("podcastsDirectory");
 
-            updateBaseFolder();
-
-            preferenceClearCache.setOnPreferenceClickListener(this);
-            preferenceIndexBaseFolder.setOnPreferenceClickListener(this);
             preferenceAbout.setOnPreferenceClickListener(this);
             preferenceImport.setOnPreferenceClickListener(this);
             preferenceExport.setOnPreferenceClickListener(this);
@@ -90,30 +84,7 @@ public class PreferencesActivity extends ActionBarActivity {
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            if(preference.equals(preferenceClearCache)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle(R.string.clearCache);
-                builder.setMessage(R.string.clearCacheConfirm);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        activity.clearCache();
-                    }
-                });
-                builder.setNegativeButton(R.string.no, null);
-                builder.show();
-                return true;
-            } else if(preference.equals(preferenceIndexBaseFolder)) {
-                String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, "/");
-                if(baseFolder.equals("/")) {
-                    Utils.showMessageDialog(activity, R.string.baseFolderNotSetTitle, R.string.baseFolderNotSetMessage);
-                    return true;
-                }
-                updateBaseFolder();
-                preferenceIndexBaseFolder.setEnabled(false);
-                Intent indexIntent = new Intent(activity, IndexFolderService.class);
-                indexIntent.putExtra("folder", baseFolder);
-                activity.startService(indexIntent);
-            } else if(preference.equals(preferenceAbout)) {
+            if(preference.equals(preferenceAbout)) {
                 startActivity(new Intent(activity, AboutActivity.class));
             } else if(preference.equals(preferenceImport)) {
                 activity.doImport();
@@ -136,20 +107,6 @@ public class PreferencesActivity extends ActionBarActivity {
                 chooser.show();
             }
             return false;
-        }
-
-        private void updateBaseFolder() {
-            String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, null);
-            String summary = getResources().getString(R.string.indexBaseFolderSummary) + "\n\n";
-            summary += getResources().getString(R.string.currentBaseFolder) + " ";
-            if(baseFolder==null) {
-                summary += getResources().getString(R.string.notSet);
-                summary += "\n\n";
-                summary += getResources().getString(R.string.baseFolderInstructions);
-            } else {
-                summary += baseFolder;
-            }
-            preferenceIndexBaseFolder.setSummary(summary);
         }
 
         @Override
@@ -184,13 +141,6 @@ public class PreferencesActivity extends ActionBarActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-	
-	private void clearCache() {
-		SQLiteDatabase db = new SongsDatabase().getWritableDatabase();
-		db.delete("Songs", "", null);
-		db.close();
-		Toast.makeText(this, R.string.cacheCleared, Toast.LENGTH_LONG).show();
 	}
 	
 	private void doImport() {

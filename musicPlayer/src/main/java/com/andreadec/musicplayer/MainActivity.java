@@ -21,6 +21,8 @@ import java.net.*;
 import java.util.*;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.*;
 import android.preference.*;
 import android.support.v4.app.FragmentManager;
@@ -527,9 +529,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     	if(app.currentPage==PAGE_BROWSER && !navigationDrawerOpen) {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(true);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(true);
+            menu.findItem(R.id.menu_rescanBaseFolder).setVisible(true);
     	} else {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(false);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(false);
+            menu.findItem(R.id.menu_rescanBaseFolder).setVisible(false);
     	}
     	if(app.currentPage==PAGE_PODCASTS && !navigationDrawerOpen) {
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(true);
@@ -568,6 +572,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		case R.id.menu_setAsBaseFolder:
 			setBaseFolder(((MusicPlayerApplication) getApplication()).getCurrentDirectory().getDirectory());
 			return true;
+        case R.id.menu_rescanBaseFolder:
+            rescanBaseFolder();
+            return true;
 		case R.id.menu_removeAllEpisodes:
 			((PodcastsFragment)currentFragment).removeAllEpisodes();
 			return true;
@@ -698,26 +705,11 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		builder.setMessage(R.string.setBaseFolderConfirm);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 		      public void onClick(DialogInterface dialog, int which) {
-		    	  saveBaseFolder(folder);
-		      }
-		});
-		builder.setNegativeButton(R.string.no, null);
-		builder.show();
-	}
-	
-	private void saveBaseFolder(final File folder) {
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putString(Constants.PREFERENCE_BASEFOLDER, folder.getAbsolutePath());
-		editor.apply();
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.setAsBaseFolder);
-		builder.setMessage(R.string.indexBaseFolderConfirm);
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-		      public void onClick(DialogInterface dialog, int which) {
-		    	  Intent indexIntent = new Intent(MainActivity.this, IndexFolderService.class);
-		    	  indexIntent.putExtra("folder", folder.getAbsolutePath());
-		    	  startService(indexIntent);
+                  SharedPreferences.Editor editor = preferences.edit();
+                  editor.putString(Constants.PREFERENCE_BASEFOLDER, folder.getAbsolutePath());
+                  editor.apply();
+                  /*String[] paths = {folder.getAbsolutePath()};
+                  MediaScannerConnection.scanFile(MainActivity.this, paths, null, null);*/
 		      }
 		});
 		builder.setNegativeButton(R.string.no, null);
@@ -961,6 +953,17 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		});
 		builder.show();
 	}
+
+    private void rescanBaseFolder() {
+        String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
+        if(baseFolder==null) return;
+        System.out.println(baseFolder);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+        } else {
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+        }
+    }
 	
 	private void showItemInfo(PlayableItem item) {
 		if(item==null || item.getInformation()==null) return;

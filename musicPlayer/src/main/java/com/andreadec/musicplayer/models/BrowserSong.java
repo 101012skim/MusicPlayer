@@ -25,17 +25,17 @@ import com.andreadec.musicplayer.*;
 public class BrowserSong implements PlayableItem, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String title, artist;
-	private Integer trackNumber;
+	private int trackNumber = 0;
 	private String uri;
 	private BrowserDirectory browserDirectory;
-	private boolean hasImage;
-	
-	public BrowserSong(String uri, String artist, String title, Integer trackNumber, boolean hasImage, BrowserDirectory browserDirectory) {
+
+	public BrowserSong(String uri, String artist, String title, String trackNumberString, BrowserDirectory browserDirectory) {
 		this.uri = uri;
 		this.artist = artist;
 		this.title = title;
-		this.trackNumber = trackNumber;
-		this.hasImage = hasImage;
+        try {
+            this.trackNumber = Integer.parseInt(trackNumberString);
+        } catch(Exception e) {}
 		this.browserDirectory = browserDirectory;
 	}
 
@@ -52,7 +52,6 @@ public class BrowserSong implements PlayableItem, Serializable {
 			try {
 				trackNumber = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER));
 			} catch(Exception ex) {}
-			hasImage = mmr.getEmbeddedPicture()!=null;
 		} catch(Exception e) {
 			title = new File(uri).getName();
 			artist = "";
@@ -79,7 +78,7 @@ public class BrowserSong implements PlayableItem, Serializable {
 		return title;
 	}
 
-	public Integer getTrackNumber() {
+	public int getTrackNumber() {
 		return trackNumber;
 	}
 
@@ -89,7 +88,7 @@ public class BrowserSong implements PlayableItem, Serializable {
 	
 	@Override
 	public boolean hasImage() {
-		return hasImage;
+		return true;
 	}
 
 	public void setTitle(String title) {
@@ -176,7 +175,7 @@ public class BrowserSong implements PlayableItem, Serializable {
 		info.add(new Information(R.string.title, title));
 		if(year!=null) info.add(new Information(R.string.year, year));
 		if(album!=null) info.add(new Information(R.string.album, album));
-		if(trackNumber!=null) {
+		if(trackNumber>0) {
 			info.add(new Information(R.string.trackNumber, trackNumber+""));
 		} else {
 			info.add(new Information(R.string.trackNumber, "-"));

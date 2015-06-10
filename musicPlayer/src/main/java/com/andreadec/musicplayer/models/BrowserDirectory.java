@@ -20,11 +20,10 @@ import java.io.*;
 import java.util.*;
 import android.content.*;
 import android.database.*;
-import android.database.sqlite.*;
 import android.preference.*;
+import android.provider.*;
+
 import com.andreadec.musicplayer.*;
-import com.andreadec.musicplayer.comparators.*;
-import com.andreadec.musicplayer.database.*;
 import com.andreadec.musicplayer.filters.*;
 
 public class BrowserDirectory {
@@ -32,10 +31,20 @@ public class BrowserDirectory {
 	private ArrayList<File> subdirs;
 	private ArrayList<BrowserSong> songs;
 	private SharedPreferences preferences;
+	private static ContentResolver mediaResolver;
+
+	private final static String[] projection = {
+			MediaStore.Audio.Media.ARTIST,
+			MediaStore.Audio.Media.TITLE,
+			MediaStore.Audio.Media.TRACK,
+			MediaStore.Audio.Media.DATA
+	};
 	
 	public BrowserDirectory(File directory) {
-		preferences = PreferenceManager.getDefaultSharedPreferences(MusicPlayerApplication.getContext());
+		Context context = MusicPlayerApplication.getContext();
+		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		this.directory = directory;
+		mediaResolver = context.getContentResolver();
 		subdirs = getSubfoldersInDirectory(directory);
 		songs = getSongsInDirectory(directory, preferences.getString(Constants.PREFERENCE_SONGSSORTINGMETHOD, Constants.DEFAULT_SONGSSORTINGMETHOD), this);
 	}
@@ -51,106 +60,50 @@ public class BrowserDirectory {
 	public ArrayList<BrowserSong> getSongs() {
 		return songs;
 	}
-	
-	public static ArrayList<BrowserSong> getSongsInDirectory(File directory, String sortingMethod, BrowserDirectory browserDirectory) {
-		ArrayList<BrowserSong> songs = new ArrayList<BrowserSong>();
-		File files[] = directory.listFiles(new AudioFileFilter());
-		
-		SongsDatabase songsDatabase = new SongsDatabase();
-		final LinkedList<BrowserSong> songsToInsertInDB = new LinkedList<BrowserSong>();
-		SQLiteDatabase db = songsDatabase.getWritableDatabase();
-		
-		for (File file : files) {
-			String uri = file.getAbsolutePath();
-			BrowserSong song;
-			
-			Cursor cursor = db.rawQuery("SELECT artist, title, trackNumber, hasImage FROM Songs WHERE uri=\""+uri+"\"", null);
-			if(cursor.moveToNext()) {
-	        	Integer trackNumber = cursor.getInt(2);
-	        	if(trackNumber==-1) trackNumber=null;
-	        	boolean hasImage = cursor.getInt(3)==1;
-	        	song = new BrowserSong(uri, cursor.getString(0), cursor.getString(1), trackNumber, hasImage, browserDirectory);
-	        } else {
-	        	song = new BrowserSong(file.getAbsolutePath(), browserDirectory);
-				songsToInsertInDB.add(song);
-	        }
-			songs.add(song);
-		}
-		db.close();
-		
-		Collections.sort(songs, new BrowserSongsComparator(sortingMethod));
-		
-		/*if(songsToInsertInDB.size()>0) {
-			new Thread() {
-				public void run() {
-					SongsDatabase songsDatabase2 = new SongsDatabase();
-					SQLiteDatabase db2 = songsDatabase2.getWritableDatabase();
-					for(BrowserSong song : songsToInsertInDB) {
-						ContentValues values = new ContentValues();
-						values.put("uri", song.getUri());
-						values.put("artist", song.getArtist());
-						values.put("title", song.getTitle());
-						Integer trackNumber = song.getTrackNumber();
-						if(trackNumber==null) trackNumber=-1;
-						values.put("trackNumber", trackNumber);
-						values.put("hasImage", song.hasImage());
-						db2.insertWithOnConflict("Songs", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-					}
-					db2.close();
-				}
-			}.start();
-		}*/
 
-        if(songsToInsertInDB.size()>0) {
-            insertSongsInDB(songsToInsertInDB);
-        }
-		
+	public static ArrayList<BrowserSong> getSongsInDirectory(File directory, String sortingMethod, BrowserDirectory browserDirectory) {
+		ArrayList<BrowserSong> songs = new ArrayList<>();
+
+		String path = directory.getAbsolutePath();
+		if(!path.endsWith("/")) path+="/";
+
+		//String where = MediaStore.MediaColumns.DATA + " REGEXP \"" + path + "[^/]+\"";
+        String where = MediaStore.MediaColumns.DATA + " LIKE \"" + path + "%\" AND " + MediaStore.MediaColumns.DATA + " NOT LIKE \"" + path + "%/%\"";
+        Cursor musicCursor = mediaResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, null, getSortOrder(sortingMethod));
+        int titleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+        int artistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+        int uriColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+        int trackColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
+        if(musicCursor!=null && musicCursor.moveToFirst()) {
+			do {
+				String title = musicCursor.getString(titleColumn);
+				String artist = musicCursor.getString(artistColumn);
+				String uri = musicCursor.getString(uriColumn);
+				String trackNumber = musicCursor.getString(trackColumn);
+				songs.add(new BrowserSong(uri, artist, title, trackNumber, browserDirectory));
+			} while (musicCursor.moveToNext());
+		}
+		musicCursor.close();
+
 		return songs;
 	}
 
-    public static void reloadSongFromDisk(BrowserSong oldSong) {
-        BrowserSong song = new BrowserSong(oldSong.getUri(), oldSong.getBrowserDirectory());
-        insertSongInDB(song);
-    }
-
-    // Insert a single song in database (synchronous function)
-    private static void insertSongInDB(BrowserSong song) {
-        SongsDatabase songsDatabase = new SongsDatabase();
-        SQLiteDatabase db = songsDatabase.getWritableDatabase();
-        insertSongInDBInternal(db, song);
-        db.close();
-    }
-
-    // Insert multiple songs in database (asynchronous function)
-    private static void insertSongsInDB(final LinkedList<BrowserSong> songsToInsertInDB) {
-        new Thread() {
-            public void run() {
-                SongsDatabase songsDatabase = new SongsDatabase();
-                SQLiteDatabase db = songsDatabase.getWritableDatabase();
-                for(BrowserSong song : songsToInsertInDB) {
-                    insertSongInDBInternal(db, song);
-                }
-                db.close();
-            }
-        }.start();
-    }
-
-    // Needs an open database to work with
-    private static void insertSongInDBInternal(SQLiteDatabase db, BrowserSong song) {
-        ContentValues values = new ContentValues();
-        values.put("uri", song.getUri());
-        values.put("artist", song.getArtist());
-        values.put("title", song.getTitle());
-        Integer trackNumber = song.getTrackNumber();
-        if(trackNumber==null) trackNumber=-1;
-        values.put("trackNumber", trackNumber);
-        values.put("hasImage", song.hasImage());
-        db.insertWithOnConflict("Songs", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-    }
+	private static String getSortOrder(String sortingMethod) {
+		if(sortingMethod.equals("nat")) {
+			return MediaStore.Audio.Media.TRACK+","+MediaStore.Audio.Media.ARTIST+","+MediaStore.Audio.Media.TITLE;
+		} else if(sortingMethod.equals("at")) {
+			return MediaStore.Audio.Media.ARTIST+","+MediaStore.Audio.Media.TITLE;
+		} else if(sortingMethod.equals("ta")) {
+			return MediaStore.Audio.Media.TITLE+","+MediaStore.Audio.Media.ARTIST;
+		} else if(sortingMethod.equals("f")) {
+			return MediaStore.Audio.Media.DATA;
+		}
+		return null;
+	}
 	
 	// Lists all the subfolders of a given directory
 	public ArrayList<File> getSubfoldersInDirectory(File directory) {
-		ArrayList<File> subfolders = new ArrayList<File>();
+		ArrayList<File> subfolders = new ArrayList<>();
 		File files[] = directory.listFiles(new DirectoryFilter());
 		for (File file : files) {
 			subfolders.add(file);

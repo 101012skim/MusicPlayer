@@ -50,7 +50,6 @@ public class Constants {
 	public final static String PREFERENCE_SHAKEACTION = "shakeAction";
 	
 	public final static String PREFERENCE_SHOWHELPOVERLAYMAINACTIVITY = "showHelpOverlayMainActivity";
-	public final static String PREFERENCE_SHOWHELPOVERLAYINDEXING = "showHelpOverlayIndexing";
 	
 	
 	// Default preferences values

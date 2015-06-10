@@ -55,7 +55,7 @@ public class SongViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         String trackNumber = "";
         if(song instanceof BrowserSong) {
             BrowserSong browserSong = (BrowserSong)song;
-            if (browserSong.getTrackNumber() != null) trackNumber = browserSong.getTrackNumber() + ". ";
+            if(browserSong.getTrackNumber()>0) trackNumber = browserSong.getTrackNumber() + ". ";
         } else {
             menu.setVisibility(View.GONE);
         }

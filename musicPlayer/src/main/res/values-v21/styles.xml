@@ -40,7 +40,7 @@
         <item name="android:navigationBarColor">?android:colorPrimary</item>
     </style>
 
-    <style name="floatingButton" parent="floatingButton.Base">
+    <style name="floatingButton" parent="floatingButtonBase">
         <item name="android:elevation">5dp</item>
     </style>
 

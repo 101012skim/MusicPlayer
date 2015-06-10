@@ -16,22 +16,20 @@
 
 package com.andreadec.musicplayer;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
 import android.content.*;
 import android.database.*;
-import android.database.sqlite.*;
 import android.os.*;
-import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.preference.*;
+import android.provider.*;
+import android.support.v7.app.*;
+import android.support.v7.widget.*;
 import android.view.*;
 import android.view.View.*;
-import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.*;
 import android.widget.*;
 import com.andreadec.musicplayer.adapters.*;
-import com.andreadec.musicplayer.database.*;
 import com.andreadec.musicplayer.models.*;
 
 public class SearchActivity extends ActionBarActivity implements OnClickListener, OnKeyListener {
@@ -42,6 +40,13 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 	private MusicPlayerApplication application;
 	private String lastSearch;
 	private InputMethodManager inputMethodManager;
+    private ContentResolver mediaResolver;
+	private final static String[] projection = {
+			MediaStore.Audio.Media.ARTIST,
+			MediaStore.Audio.Media.TITLE,
+			MediaStore.Audio.Media.TRACK,
+			MediaStore.Audio.Media.DATA
+	};
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,25 +54,9 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
         
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        mediaResolver = getContentResolver();
         
-        if(preferences.getBoolean(Constants.PREFERENCE_SHOWHELPOVERLAYINDEXING, true) && preferences.getString(Constants.PREFERENCE_BASEFOLDER, "/").equals("/")) {
-        	final FrameLayout frameLayout = new FrameLayout(this);
-        	LayoutInflater layoutInflater = getLayoutInflater();
-        	layoutInflater.inflate(R.layout.activity_search, frameLayout);
-        	layoutInflater.inflate(R.layout.layout_helpoverlay_indexing, frameLayout);
-        	final View overlayView = frameLayout.getChildAt(1);
-        	overlayView.setOnClickListener(new OnClickListener() {
-				@Override public void onClick(View v) {
-					frameLayout.removeView(overlayView);
-					SharedPreferences.Editor editor = preferences.edit();
-					editor.putBoolean("showHelpOverlayIndexing", false);
-					editor.commit();
-				}
-             	});
-        	setContentView(frameLayout);
-        } else {
-        	setContentView(R.layout.activity_search);
-        }
+        setContentView(R.layout.activity_search);
         
         editTextSearch = (EditText)findViewById(R.id.editTextSearch);
         editTextSearch.setOnKeyListener(this);
@@ -96,7 +85,6 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 	public void onResume() {
 		super.onResume();
 		editTextSearch.requestFocus();
-		//inputMethodManager.showSoftInput(editTextSearch, InputMethodManager.SHOW_FORCED);
 		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	}
 	
@@ -143,41 +131,32 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 	
 	private void search(String str) {
 		str = str.replace("\"", "");
+        str = str.replace("%", "");
 		str = str.trim();
-		ArrayList<BrowserSong> results = new ArrayList<BrowserSong>();
-		
-		SongsDatabase songsDatabase = new SongsDatabase();
-		SQLiteDatabase db = songsDatabase.getWritableDatabase();
-		
-		Cursor cursor = db.rawQuery("SELECT uri, artist, title, trackNumber, hasImage FROM Songs WHERE artist LIKE \"%"+str+"%\" OR title LIKE \"%"+str+"%\"", null);
-		while(cursor.moveToNext()) {
-			String uri = cursor.getString(0);
-			String artist = cursor.getString(1);
-			String title = cursor.getString(2);
-        	Integer trackNumber = cursor.getInt(3);
-        	if(trackNumber==-1) trackNumber=null;
-        	boolean hasImage = cursor.getInt(4)==1;
-            if(new File(uri).exists()) {
-                BrowserSong song = new BrowserSong(uri, artist, title, trackNumber, hasImage, null);
-                results.add(song);
-            } else {
-                deleteSongFromCache(uri);
-            }
-        }
-		db.close();
-		
-		if(results.size()==0) {
+		ArrayList<BrowserSong> results = new ArrayList<>();
+
+		String where = MediaStore.Audio.Media.ARTIST + " LIKE \"%" + str + "%\" OR " + MediaStore.Audio.Media.TITLE + " LIKE \"%" + str + "%\"";
+		Cursor musicCursor = mediaResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, where, null, null);
+        int titleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+        int artistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+        int uriColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+        int trackColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TRACK);
+        if(musicCursor!=null && musicCursor.moveToFirst()) {
+			do {
+				String title = musicCursor.getString(titleColumn);
+				String artist = musicCursor.getString(artistColumn);
+				String uri = musicCursor.getString(uriColumn);
+				String trackNumber = musicCursor.getString(trackColumn);
+				results.add(new BrowserSong(uri, artist, title, trackNumber, null));
+			} while (musicCursor.moveToNext());
+		}
+		musicCursor.close();
+
+		if (results.size() == 0) {
 			Utils.showMessageDialog(this, R.string.noResultsFoundTitle, R.string.noResultsFoundMessage);
 		} else {
 			recyclerViewSearch.setAdapter(new SearchResultsAdapter(this, results));
 		}
-	}
-	
-	private void deleteSongFromCache(String uri) {
-		SongsDatabase songsDatabase = new SongsDatabase();
-		SQLiteDatabase db = songsDatabase.getWritableDatabase();
-		db.delete("Songs", "uri=\""+uri+"\"", null);
-		db.close();
 	}
 
     public void songSelected(BrowserSong song) {
@@ -186,7 +165,6 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
         File songFile = new File(song.getUri());
         if(!songFile.exists()) {
             Utils.showMessageDialog(this, R.string.notFound, R.string.songNotFound);
-            deleteSongFromCache(song.getUri());
             return;
         }
         setResult(1, intent);
