@@ -16,12 +16,10 @@
 
 package com.andreadec.musicplayer.ui;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,12 +32,9 @@ public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
 
     enum Action {ACTION_NONE, ACTION_DECIDING, ACTION_SORT, ACTION_REMOVE};
 
-    private Context context;
     private RecyclerView recyclerView;
     private ImageView overlay;
-    private GestureDetector gestureDetector;
     private OnItemMovedListener listener;
-    private LinearLayoutManager layoutManager;
     private int layoutHeaderId;
     private int handlerId;
 
@@ -51,27 +46,17 @@ public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
     private View draggingView = null;
     private int adjustY, initialPosition, currentPosition;
 
-    public DragDropTouchListener(Context context, final RecyclerView recyclerView, LinearLayoutManager layoutManager, ImageView overlay, int layoutHeaderId, final int handlerId, OnItemMovedListener listener) {
-        this.context = context;
+    public DragDropTouchListener(final RecyclerView recyclerView, LinearLayoutManager layoutManager, ImageView overlay, int layoutHeaderId, final int handlerId, OnItemMovedListener listener) {
         this.recyclerView = recyclerView;
-        this.layoutManager = layoutManager;
         this.overlay = overlay;
         this.layoutHeaderId = layoutHeaderId;
         this.listener = listener;
         this.handlerId = handlerId;
-
-        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            /*@Override
-            public void onLongPress(MotionEvent e) {
-                dragStart(e.getX(), e.getY());
-            }*/
-        });
     }
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
         if(actionInProgress==Action.ACTION_NONE) {
-            //gestureDetector.onTouchEvent(e);
             if(e.getAction()==MotionEvent.ACTION_DOWN) {
                 View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
                 if(view!=null && isInside(view.findViewById(handlerId), (int)e.getRawX(), (int)e.getRawY())) {

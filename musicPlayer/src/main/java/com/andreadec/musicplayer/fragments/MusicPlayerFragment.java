@@ -71,7 +71,7 @@ public abstract class MusicPlayerFragment extends Fragment {
 
     public void enableSort(View view, int handler, DragDropTouchListener.OnItemMovedListener listener) {
         ImageView overlay = (ImageView) view.findViewById(R.id.imageViewOverlay);
-        recyclerView.addOnItemTouchListener(new DragDropTouchListener(activity, recyclerView, layoutManager, overlay, R.id.layoutHeader, handler, listener));
+        recyclerView.addOnItemTouchListener(new DragDropTouchListener(recyclerView, layoutManager, overlay, R.id.layoutHeader, handler, listener));
     }
 
     public void setFloatingButtonImage(int res) {
