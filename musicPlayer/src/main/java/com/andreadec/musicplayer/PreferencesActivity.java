@@ -21,28 +21,31 @@ import java.util.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xmlpull.v1.*;
-import android.app.*;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.*;
-import android.database.sqlite.*;
+import android.media.*;
+import android.net.*;
 import android.os.*;
 import android.preference.*;
 import android.preference.Preference.*;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
-import com.andreadec.musicplayer.database.*;
 import com.andreadec.musicplayer.models.*;
 
-public class PreferencesActivity extends ActionBarActivity {
+public class PreferencesActivity extends AppCompatActivity {
 	private final static String DEFAULT_IMPORTEXPORT_FILENAME = Environment.getExternalStorageDirectory() + "/musicplayer_info.xml";
 	
 	private boolean needsRestart;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         PreferencesFragment preferencesFragment = new PreferencesFragment();
@@ -54,6 +57,7 @@ public class PreferencesActivity extends ActionBarActivity {
         private SharedPreferences preferences;
         private Preference preferenceAbout, preferenceImport, preferenceExport, preferencePodcastsDirectory;
         private Preference preferenceDisableLockScreen, preferenceEnableGestures, preferenceShowPlaybackControls;
+        private Preference preferenceRescanBaseFolder;
         private PreferencesActivity activity;
 
         @Override
@@ -80,6 +84,9 @@ public class PreferencesActivity extends ActionBarActivity {
             preferenceDisableLockScreen.setOnPreferenceChangeListener(this);
             preferenceEnableGestures.setOnPreferenceChangeListener(this);
             preferenceShowPlaybackControls.setOnPreferenceChangeListener(this);
+
+            preferenceRescanBaseFolder = findPreference("rescanBaseFolder");
+            preferenceRescanBaseFolder.setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -101,10 +108,12 @@ public class PreferencesActivity extends ActionBarActivity {
                         if(directory==null) return;
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString(Constants.PREFERENCE_PODCASTSDIRECTORY, directory);
-                        editor.commit();
+                        editor.apply();
                     }
                 });
                 chooser.show();
+            } else if(preference.equals(preferenceRescanBaseFolder)) {
+                rescanBaseFolder();
             }
             return false;
         }
@@ -115,6 +124,34 @@ public class PreferencesActivity extends ActionBarActivity {
                 activity.needsRestart = true;
             }
             return true;
+        }
+
+        private void rescanBaseFolder() {
+            String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
+            if(baseFolder==null) {
+                Toast.makeText(activity, R.string.baseFolderNotSetTitle, Toast.LENGTH_LONG).show();
+                return;
+            }
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+            } else {
+                //activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                ArrayList<String> files = new ArrayList<>();
+                Stack<File> tmp = new Stack<>();
+                tmp.push(new File(baseFolder));
+                while(!tmp.isEmpty()) {
+                    File file = tmp.pop();
+                    if(file.isDirectory()) {
+                        for(File f : file.listFiles()) {
+                            tmp.push(f);
+                        }
+                    } else {
+                        files.add(file.toString());
+                    }
+                }
+                MediaScannerConnection.scanFile(activity, files.toArray(new String[0]), null, null);
+            }
+            Toast.makeText(activity, R.string.rescanStarted, Toast.LENGTH_SHORT).show();
         }
     }
 	
@@ -217,7 +254,7 @@ public class PreferencesActivity extends ActionBarActivity {
 			FileOutputStream fos = new FileOutputStream(file);
 			XmlSerializer serializer = Xml.newSerializer();
 			serializer.setOutput(fos, "UTF-8");
-	        serializer.startDocument(null, Boolean.valueOf(true));
+	        serializer.startDocument(null, true);
 	        serializer.startTag(null, "info");
 	        
 	        serializer.startTag(null, "radios");

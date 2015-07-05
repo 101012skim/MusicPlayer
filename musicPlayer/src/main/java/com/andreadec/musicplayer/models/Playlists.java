@@ -33,7 +33,7 @@ public class Playlists {
 	}
 	
 	private static void loadPlaylists() {
-		playlists = new ArrayList<Playlist>();
+		playlists = new ArrayList<>();
 		PlaylistsDatabase playlistsDatabase = new PlaylistsDatabase();
 		SQLiteDatabase db = playlistsDatabase.getReadableDatabase();
 		Cursor cursor = db.rawQuery("SELECT id, name FROM Playlists ORDER BY position", null);

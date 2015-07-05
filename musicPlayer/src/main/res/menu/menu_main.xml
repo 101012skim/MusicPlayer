@@ -25,16 +25,12 @@
     
     <item android:id="@+id/menu_gotoPlayingSongDirectory"
 	    android:title="@string/gotoPlayingSongDirectory"
-	    android:icon="@drawable/pin"
+	    android:icon="@drawable/place"
 	    app:showAsAction="ifRoom|withText" />
     
     <item android:id="@+id/menu_gotoBaseFolder"
         android:title="@string/gotoBaseFolder"
         app:showAsAction="never" />
-
-    <item android:id="@+id/menu_rescanBaseFolder"
-          android:title="@string/rescanBaseFolder"
-          app:showAsAction="never" />
 	
 	<item android:id="@+id/menu_songInfo"
 	    android:title="@string/songInfo" />
@@ -47,9 +43,6 @@
 	
 	<item android:id="@+id/menu_removeDownloadedEpisodes"
 	    android:title="@string/removeDownloadedEpisodes" />
-
-    <item android:id="@+id/menu_preferences"
-        android:title="@string/preferences" />
 
     <item android:id="@+id/menu_quit"
         android:title="@string/quit" />

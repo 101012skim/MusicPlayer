@@ -32,7 +32,7 @@ public class PodcastParser {
 	private ArrayList<PodcastEpisode> episodes;
 	
 	public boolean parse(String podcastUrl) {
-		episodes = new ArrayList<PodcastEpisode>();
+		episodes = new ArrayList<>();
 		try {
 			Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new URL(podcastUrl).openStream());
 		    Element root = document.getDocumentElement();

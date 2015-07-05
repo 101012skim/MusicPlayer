@@ -57,6 +57,7 @@ public class RadioFragment extends MusicPlayerFragment {
 		if (container == null) return null;
 		View view = inflater.inflate(R.layout.layout_fragments, container, false);
 		initialize(view);
+        setFloatingButtonVisible(true);
 		updateListView();
 		return view;
 	}
@@ -71,7 +72,7 @@ public class RadioFragment extends MusicPlayerFragment {
         recyclerView.setAdapter(new MusicPlayerAdapter(activity, items, playingRadio, emptyView, clickListener));
 	}
 	
-	public void deleteRadio(final Radio radio) {
+	private void deleteRadio(final Radio radio) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage(getResources().getString(R.string.deleteRadioConfirm));
 		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -84,7 +85,7 @@ public class RadioFragment extends MusicPlayerFragment {
 		builder.show();
 	}
 	
-	public void editRadio(final Radio oldRadio) {
+	private void editRadio(final Radio oldRadio) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		int title = oldRadio==null ? R.string.addRadio : R.string.edit;
 		builder.setTitle(getResources().getString(title));

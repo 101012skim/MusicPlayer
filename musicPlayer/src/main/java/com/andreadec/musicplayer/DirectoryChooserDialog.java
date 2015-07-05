@@ -24,7 +24,7 @@ import android.view.*;
 import android.widget.*;
 import android.widget.AdapterView.*;
 
-public class DirectoryChooserDialog implements OnItemClickListener {
+class DirectoryChooserDialog implements OnItemClickListener {
 	private Activity activity;
 	private AlertDialog.Builder dialog;
 	private View dialogView;
@@ -80,12 +80,12 @@ public class DirectoryChooserDialog implements OnItemClickListener {
 	private void updateList() {
 		textViewDirectory.setText(currentDirectory.getAbsolutePath());
 		File[] files = currentDirectory.listFiles();
-		ArrayList<String> list = new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<>();
 		list.add("..");
 		for(File f : files) {
 			if(f.isDirectory()) list.add(f.getName());
 		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, list);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, list);
 		listView.setAdapter(adapter);
 	}
 	

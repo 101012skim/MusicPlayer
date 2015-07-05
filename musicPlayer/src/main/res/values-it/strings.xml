@@ -17,7 +17,6 @@
 -->
 
 <resources>
-    <string name="app_name">Music Player</string>
 	<string name="quit">Esci</string>
 	<string name="quitApp">Chiudi app</string>
     <string name="shuffle">Casuale</string>
@@ -113,7 +112,6 @@
 	<string name="noResultsFoundTitle">Nessun risultato</string>
 	<string name="noResultsFoundMessage">Non è stata trovata alcuna canzone con la chiave di ricerca inserita.</string>
 	<string name="bassBoost">Bass boost</string>
-	<string name="bassBoostButton">Bass</string>
 	<string name="equalizer">Equalizzatore</string>
 	<string name="equalizerButton">EQ</string>
 	<string name="errorBassBoost">La funzione bass boost non è disponibile su questo dispositivo.</string>
@@ -153,7 +151,8 @@
     <string name="playlistEmpty">Non ci sono brani in questa playlist.\nAggiungili dal file browser!</string>
     <string name="folderEmpty">Non ci sono file in questa cartella.</string>
     <string name="noRadios">Per aggiungere una radio tocca il pulsante +!</string>
-    <string name="rescanBaseFolder">Ricarica cartella base</string>
+    <string name="rescanBaseFolder">Scansione cartella base</string>
+    <string name="rescanStarted">Scansione avviata</string>
 	
 	<!-- Podcasts -->
 	<string name="podcast">Podcast</string>
@@ -201,9 +200,6 @@
 	<string name="shakeThreshold">Sensibilità del sensore</string>
 	<string name="shakeThresholdMessage">Usare valori bassi per aumentare la sensibilità. Per applicare questa impostazione è necessario riavviare l\'applicazione!</string>
 	<string name="restartToApply">Per applicare questa impostazione è necessario riavviare l\'applicazione!</string>
-	
-	<!-- Overlay helper -->
-	<string name="overlayMain">Benvenuto nel Music Player.\n\nPer rendere più agevole l\'accesso ai brani, vai nella cartella principale dove hai la tua musica e scegli \"Imposta come cartella base\" dal menu.</string>
 	
 	<!-- Strings for about page -->
 	<string name="license">Licenza</string>

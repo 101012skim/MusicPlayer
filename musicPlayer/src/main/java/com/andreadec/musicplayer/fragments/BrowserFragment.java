@@ -128,7 +128,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 		gotoDirectory(startDir, null);
 	}
 	
-	public void scrollToSong(BrowserSong song) {
+	private void scrollToSong(BrowserSong song) {
         MusicPlayerAdapter adapter = (MusicPlayerAdapter)recyclerView.getAdapter();
         recyclerView.scrollToPosition(adapter.getPlayableItemPosition(song));
 	}
@@ -148,7 +148,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 		}
 	}
 	
-	public void gotoParentDir() {
+	private void gotoParentDir() {
 		File currentDir = ((MusicPlayerApplication)activity.getApplication()).getCurrentDirectory().getDirectory();
 		final File parentDir = currentDir.getParentFile();
 		String baseDirectory = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
@@ -184,7 +184,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 		}
 	}
 	
-	public void gotoDirectory(File newDirectory, BrowserSong scrollToSong) {
+	private void gotoDirectory(File newDirectory, BrowserSong scrollToSong) {
 		lastFolderPosition = layoutManager.findFirstVisibleItemPosition();
 		new ChangeDirTask(newDirectory, scrollToSong, -1).execute();
 	}

@@ -30,7 +30,7 @@ public class Playlist {
 	public Playlist(long id, String name) {
 		this.id = id;
 		this.name = name;
-		songs = new ArrayList<PlaylistSong>();
+		songs = new ArrayList<>();
 		
 		PlaylistsDatabase playlistsDatabase = new PlaylistsDatabase();
 		SQLiteDatabase db = playlistsDatabase.getReadableDatabase();

@@ -52,7 +52,7 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 		notificationBuilder.setOngoing(true);
 		notificationBuilder.setProgress(100, 0, true);
 		stopDownloadPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(STOP_DOWNLOAD_INTENT), 0);
-		notificationBuilder.addAction(R.drawable.cancel, getResources().getString(R.string.stopDownload), stopDownloadPendingIntent);
+		notificationBuilder.addAction(R.drawable.quit, getResources().getString(R.string.stopDownload), stopDownloadPendingIntent);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 	        output = new FileOutputStream(filename);
 	        
 	        byte[] buffer = new byte[1024];
-	        int read = 0;
+	        int read;
 	        totalRead = 0;
 	        downloadInProgress = true;
 	        new NotificationThread().start();

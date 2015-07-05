@@ -197,7 +197,7 @@ public class PodcastEpisode implements PlayableItem {
 	
 	@Override
 	public ArrayList<Information> getInformation() {
-		ArrayList<Information> info = new ArrayList<Information>();
+		ArrayList<Information> info = new ArrayList<>();
 		info.add(new Information(R.string.title, title));
 		info.add(new Information(R.string.podcast, podcast.getName()));
 		info.add(new Information(R.string.url, url));

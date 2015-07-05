@@ -19,6 +19,7 @@ package com.andreadec.musicplayer.fragments;
 import android.content.*;
 import android.os.*;
 import android.preference.*;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.*;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +34,7 @@ public abstract class MusicPlayerFragment extends Fragment {
     protected RecyclerView recyclerView;
     protected LinearLayoutManager layoutManager;
     protected MainActivity activity;
-    private ImageButton floatingButton;
+    private FloatingActionButton floatingButton;
     protected SharedPreferences preferences;
     protected TextView emptyView;
 
@@ -51,7 +52,7 @@ public abstract class MusicPlayerFragment extends Fragment {
 
     public void initialize(View view) {
         recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-        floatingButton = (ImageButton)view.findViewById(R.id.floatingButton);
+        floatingButton = (FloatingActionButton)activity.findViewById(R.id.floatingButton);
         floatingButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +72,7 @@ public abstract class MusicPlayerFragment extends Fragment {
 
     public void enableSort(View view, int handler, DragDropTouchListener.OnItemMovedListener listener) {
         ImageView overlay = (ImageView) view.findViewById(R.id.imageViewOverlay);
-        recyclerView.addOnItemTouchListener(new DragDropTouchListener(recyclerView, layoutManager, overlay, R.id.layoutHeader, handler, listener));
+        recyclerView.addOnItemTouchListener(new DragDropTouchListener(recyclerView, overlay, R.id.layoutHeader, handler, listener));
     }
 
     public void setFloatingButtonImage(int res) {

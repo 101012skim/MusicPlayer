@@ -62,6 +62,7 @@ limitations under the License.
 
 ### Artworks
 Some icons are from the [Tango Desktop Project](http://tango.freedesktop.org), released into the Public Domain.
+Some icons are from [Material icons](https://www.google.com/design/icons/), licensed under Creative Commons Attribution 4.0 International license.
 Some UI elements were generated using [Android Holo Colors](http://android-holo-colors.com) by Jérôme Van Der Linden, licensed under Creative Commons Attribution 3.0 Unported License.
 
 

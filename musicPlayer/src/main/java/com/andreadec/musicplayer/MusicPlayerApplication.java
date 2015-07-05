@@ -38,6 +38,7 @@ public class MusicPlayerApplication extends Application {
 
     @Override
     public void onLowMemory() {
+        super.onLowMemory();
         Log.d("MusicPlayer", "Low memory condition!");
         imagesCache.clearCache();
     }

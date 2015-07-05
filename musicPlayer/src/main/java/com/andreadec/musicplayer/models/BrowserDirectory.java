@@ -89,20 +89,21 @@ public class BrowserDirectory {
 	}
 
 	private static String getSortOrder(String sortingMethod) {
-		if(sortingMethod.equals("nat")) {
-			return MediaStore.Audio.Media.TRACK+","+MediaStore.Audio.Media.ARTIST+","+MediaStore.Audio.Media.TITLE;
-		} else if(sortingMethod.equals("at")) {
-			return MediaStore.Audio.Media.ARTIST+","+MediaStore.Audio.Media.TITLE;
-		} else if(sortingMethod.equals("ta")) {
-			return MediaStore.Audio.Media.TITLE+","+MediaStore.Audio.Media.ARTIST;
-		} else if(sortingMethod.equals("f")) {
-			return MediaStore.Audio.Media.DATA;
-		}
+        switch (sortingMethod) {
+            case "nat":
+                return MediaStore.Audio.Media.TRACK+","+MediaStore.Audio.Media.ARTIST+","+MediaStore.Audio.Media.TITLE;
+            case "at":
+                return MediaStore.Audio.Media.ARTIST+","+MediaStore.Audio.Media.TITLE;
+            case "ta":
+                return MediaStore.Audio.Media.TITLE+","+MediaStore.Audio.Media.ARTIST;
+            case "f":
+                return MediaStore.Audio.Media.DATA;
+        }
 		return null;
 	}
 	
 	// Lists all the subfolders of a given directory
-	public ArrayList<File> getSubfoldersInDirectory(File directory) {
+	private ArrayList<File> getSubfoldersInDirectory(File directory) {
 		ArrayList<File> subfolders = new ArrayList<>();
 		File files[] = directory.listFiles(new DirectoryFilter());
 		for (File file : files) {

@@ -6,7 +6,7 @@ import android.widget.Checkable;
 import android.widget.ImageButton;
 
 public class CheckableImageButton extends ImageButton implements Checkable {
-    final static int[] checkedState = { android.R.attr.state_checked };
+    final private static int[] checkedState = { android.R.attr.state_checked };
     private boolean checked;
 
     public CheckableImageButton(Context context) {

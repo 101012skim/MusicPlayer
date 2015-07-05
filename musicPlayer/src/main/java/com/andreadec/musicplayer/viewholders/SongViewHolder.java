@@ -16,12 +16,9 @@
 
 package com.andreadec.musicplayer.viewholders;
 
-import android.provider.Browser;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.models.*;

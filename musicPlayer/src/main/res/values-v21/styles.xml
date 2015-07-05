@@ -17,14 +17,30 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="AppTheme" parent="AppTheme.Base">
+    <style name="MainActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textViewStyle">@style/TextViewsStyle</item>
+        <item name="android:windowBackground">@color/lightGrey</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
-        <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="android:alertDialogTheme">@style/Dialogs</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ActionBarActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textViewStyle">@style/TextViewsStyle</item>
+        <item name="android:colorButtonNormal">@color/primary</item>
     </style>
 
     <style name="Dialogs" parent="Theme.AppCompat.Light.Dialog">
@@ -33,15 +49,6 @@
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowMinWidthMajor">65%</item>
         <item name="android:windowMinWidthMinor">95%</item>
-    </style>
-
-    <style name="MainActivityTheme" parent="AppTheme">
-        <item name="android:windowBackground">@color/lightGrey</item>
-        <item name="android:navigationBarColor">?android:colorPrimary</item>
-    </style>
-
-    <style name="floatingButton" parent="floatingButtonBase">
-        <item name="android:elevation">5dp</item>
     </style>
 
     <style name="buttonNext">

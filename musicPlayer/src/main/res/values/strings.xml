@@ -17,7 +17,7 @@
 -->
 
 <resources>
-    <string name="app_name">Music Player</string>
+    <string name="app_name" translatable="false">Music Player</string>
 	<string name="quit">Quit</string>
 	<string name="quitApp">Quit app</string>
     <string name="shuffle">Shuffle</string>
@@ -113,7 +113,6 @@
 	<string name="noResultsFoundTitle">Nothing found!</string>
 	<string name="noResultsFoundMessage">No song matching the input was found.</string>
 	<string name="bassBoost">Bass boost</string>
-	<string name="bassBoostButton">Bass</string>
 	<string name="equalizer">Equalizer</string>
 	<string name="errorBassBoost">Bass boost is not available on this device.</string>
 	<string name="errorEqualizer">Equalizer is not available on this device.</string>
@@ -155,6 +154,7 @@
     <string name="folderEmpty">There are no files in this folder.</string>
     <string name="noRadios">To add a radio touch the + button!</string>
     <string name="rescanBaseFolder">Rescan base folder</string>
+    <string name="rescanStarted">Rescan started</string>
 	
 	<!-- Podcasts -->
 	<string name="podcast">Podcast</string>
@@ -202,9 +202,6 @@
 	<string name="shakeThresholdMessage">Use low values for higher sensibility. To apply this setting you need to restart the application!</string>
 	<string name="restartToApply">To apply this preference you need to restart the application!</string>
 	
-	<!-- Overlay helper -->
-	<string name="overlayMain">Welcome to Music Player.\n\nPlease navigate to your music folder and choose \"Set as base folder\" from menu to index it and all its subfolders.</string>
-	
 	<!-- Strings for about page -->
 	<string name="license">License</string>
 	<string name="specialThanks">Special thanks to</string>
@@ -219,6 +216,9 @@
 	
 	<string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="http" translatable="false">http://</string>
 
 
     <!-- Vector graphics paths -->

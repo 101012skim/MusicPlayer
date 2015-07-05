@@ -21,7 +21,7 @@ import android.hardware.*;
 import android.preference.*;
 
 /* Shake sensor listener */
-public class ShakeListener implements SensorEventListener {
+class ShakeListener implements SensorEventListener {
 	private MusicService musicService;
 	private SharedPreferences preferences;
 	private boolean enabled = false;
@@ -94,13 +94,17 @@ public class ShakeListener implements SensorEventListener {
 			float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
 			if (speed > shakeThreshold) {
 				String shakeAction = preferences.getString(Constants.PREFERENCE_SHAKEACTION, Constants.DEFAULT_SHAKEACTION);
-				if(shakeAction.equals("playpause")) {
-					musicService.playPause();
-				} else if(shakeAction.equals("next")) {
-					musicService.nextItem();
-				} else if(shakeAction.equals("previous")) {
-					musicService.previousItem(true);
-				}
+				switch(shakeAction) {
+                    case "playpause":
+                        musicService.playPause();
+                        break;
+                    case "next":
+                        musicService.nextItem();
+                        break;
+                    case "previous":
+                        musicService.previousItem(true);
+                        break;
+                }
 			    lastShake = currTime;
 			}
 			last_x = x;

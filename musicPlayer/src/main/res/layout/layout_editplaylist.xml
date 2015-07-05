@@ -22,10 +22,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp" >
-    <EditText
-        android:id="@+id/editTextPlaylistName"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:singleLine="true"
-        android:hint="@string/name" />
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/editTextPlaylistName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:hint="@string/name" />
+    </android.support.design.widget.TextInputLayout>
 </LinearLayout>

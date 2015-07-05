@@ -16,13 +16,10 @@
 
 package com.andreadec.musicplayer.ui;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.support.v7.widget.LinearLayoutManager;
+import android.graphics.*;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
+import android.view.*;
+import android.widget.*;
 
 import com.andreadec.musicplayer.adapters.*;
 
@@ -46,7 +43,7 @@ public class DragDropTouchListener implements RecyclerView.OnItemTouchListener {
     private View draggingView = null;
     private int adjustY, initialPosition, currentPosition;
 
-    public DragDropTouchListener(final RecyclerView recyclerView, LinearLayoutManager layoutManager, ImageView overlay, int layoutHeaderId, final int handlerId, OnItemMovedListener listener) {
+    public DragDropTouchListener(final RecyclerView recyclerView, ImageView overlay, int layoutHeaderId, final int handlerId, OnItemMovedListener listener) {
         this.recyclerView = recyclerView;
         this.overlay = overlay;
         this.layoutHeaderId = layoutHeaderId;

@@ -45,7 +45,7 @@ public class Radio implements PlayableItem {
 		RadiosDatabase radiosDatabase = new RadiosDatabase();
 		SQLiteDatabase db = radiosDatabase.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT url, name FROM WebRadio ORDER BY NAME", null);
-        ArrayList<Radio> radios = new ArrayList<Radio>();
+        ArrayList<Radio> radios = new ArrayList<>();
         while (cursor.moveToNext()) {
         	Radio radio = new Radio(cursor.getString(0), cursor.getString(1));
         	radios.add(radio);
@@ -122,7 +122,7 @@ public class Radio implements PlayableItem {
 	
 	@Override
 	public ArrayList<Information> getInformation() {
-		ArrayList<Information> info = new ArrayList<Information>();
+		ArrayList<Information> info = new ArrayList<>();
 		info.add(new Information(R.string.name, name));
 		info.add(new Information(R.string.url, url));
 		return info;

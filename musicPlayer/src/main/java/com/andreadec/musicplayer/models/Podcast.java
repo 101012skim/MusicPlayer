@@ -33,7 +33,7 @@ public class Podcast {
 	private ArrayList<PodcastEpisode> episodes;
 	private byte[] image;
 	
-	public Podcast(long id, String url, String name, byte[] image) {
+	private Podcast(long id, String url, String name, byte[] image) {
 		this.id = id;
 		this.url = url;
 		this.name = name;
@@ -42,7 +42,7 @@ public class Podcast {
 	}
 	
 	public void loadItemsFromDatabase() {
-		episodes = new ArrayList<PodcastEpisode>();
+		episodes = new ArrayList<>();
 		PodcastsDatabase podcastsDatabase = new PodcastsDatabase();
 		SQLiteDatabase db = podcastsDatabase.getReadableDatabase();
 		Cursor cursor = db.rawQuery("SELECT idItem, url, title, status, filename, pubDate, duration, type FROM ItemsInPodcast WHERE idPodcast="+id+" ORDER BY pubDate DESC", null);
@@ -62,7 +62,7 @@ public class Podcast {
 		db.close();
 	}
 	
-	public void addItem(SQLiteDatabase db, PodcastEpisode episode) {
+	private void addItem(SQLiteDatabase db, PodcastEpisode episode) {
 		ContentValues values = new ContentValues();
 		values.put("idPodcast", id);
 		values.put("idItem", episode.getId());
@@ -108,7 +108,7 @@ public class Podcast {
 	}
 	
 	public static ArrayList<Podcast> getPodcasts() {
-		ArrayList<Podcast> podcasts = new ArrayList<Podcast>();
+		ArrayList<Podcast> podcasts = new ArrayList<>();
 		PodcastsDatabase podcastsDatabase = new PodcastsDatabase();
 		SQLiteDatabase db = podcastsDatabase.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT id, url, name, image FROM Podcasts ORDER BY name", null);
@@ -142,7 +142,7 @@ public class Podcast {
 		if(podcast==null) { // Remove downloaded items from all podcasts
 			podcasts = Podcast.getPodcasts();
 		} else {
-			podcasts = new ArrayList<Podcast>();
+			podcasts = new ArrayList<>();
 			podcasts.add(podcast);
 		}
 		if(downloadedOnly) deleteDownloadedEpisodes(podcasts);

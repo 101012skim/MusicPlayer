@@ -154,24 +154,31 @@ public class MusicService extends Service implements OnCompletionListener {
             @Override
             public void onReceive(Context context, Intent intent) {
             	String action = intent.getAction();
-            	if(action.equals("com.andreadec.musicplayer.quit")) {
-            		sendBroadcast(new Intent("com.andreadec.musicplayer.quitactivity"));
-                    sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-            		stopSelf();
-            		return;
-            	} else if(action.equals("com.andreadec.musicplayer.previous")) {
-            		previousItem(false);
-            	} else if(action.equals("com.andreadec.musicplayer.previousNoRestart")) {
-            		previousItem(true);
-            	} else if(action.equals("com.andreadec.musicplayer.playpause")) {
-            		playPause();
-            	} else if(action.equals("com.andreadec.musicplayer.next")) {
-            		nextItem();
-            	} else if(action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-            		if(preferences.getBoolean(Constants.PREFERENCE_STOPPLAYINGWHENHEADSETDISCONNECTED, Constants.DEFAULT_STOPPLAYINGWHENHEADSETDISCONNECTED)) {
-	            		pause();
-            		}
-            	}
+
+                switch(action) {
+                    case "com.andreadec.musicplayer.quit":
+                        sendBroadcast(new Intent("com.andreadec.musicplayer.quitactivity"));
+                        sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+                        stopSelf();
+                        return;
+                    case "com.andreadec.musicplayer.previous":
+                        previousItem(false);
+                        break;
+                    case "com.andreadec.musicplayer.previousNoRestart":
+                        previousItem(true);
+                        break;
+                    case "com.andreadec.musicplayer.playpause":
+                        playPause();
+                        break;
+                    case "com.andreadec.musicplayer.next":
+                        nextItem();
+                        break;
+                    case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
+                        if(preferences.getBoolean(Constants.PREFERENCE_STOPPLAYINGWHENHEADSETDISCONNECTED, Constants.DEFAULT_STOPPLAYINGWHENHEADSETDISCONNECTED)) {
+                            pause();
+                        }
+                        break;
+                }
             }
         };
         registerReceiver(broadcastReceiver, intentFilter);
@@ -258,7 +265,7 @@ public class MusicService extends Service implements OnCompletionListener {
 			editor.putLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
 		}
 		editor.putString(Constants.PREFERENCE_LASTDIRECTORY, ((MusicPlayerApplication)getApplication()).getCurrentDirectory().getDirectory().getAbsolutePath());
-		editor.commit();
+		editor.apply();
 		
 		audioManager.unregisterRemoteControlClient(remoteControlClient);
 		audioManager.unregisterMediaButtonEventReceiver(mediaButtonReceiverComponent);
@@ -642,7 +649,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	public static class MediaButtonReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			KeyEvent event = (KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+			KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 			if(event.getAction()!=KeyEvent.ACTION_DOWN) return;
 			switch(event.getKeyCode()) {
 			case KeyEvent.KEYCODE_MEDIA_PLAY:

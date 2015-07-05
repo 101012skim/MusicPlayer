@@ -19,25 +19,11 @@
 -->
 
 <resources>
-    <color name="grey">#2C2C2C</color>
     <color name="lightGrey">#e6e6e6</color>
-    <color name="lightGreen">#99CC00</color>
-    <color name="darkGreen">#669900</color>
-    <color name="blackSemiTransparent">#D0000000</color>
-    <color name="whiteSemiTransparent">#66FFFFFF</color>
 
     <color name="primary">#FF9800</color>
     <color name="primaryDark">#F57C00</color>
     <color name="accent">#FF5722</color>
-
-    <color name="buttonOrange">@color/primary</color>
-    <color name="buttonOrangePressed">@color/primaryDark</color>
-    
-    <color name="navigationBackground">@android:color/white</color>
-    <color name="navigationSelection">@color/lightGrey</color>
-    <color name="navigationTextColor">#333333</color>
-
-    <color name="dialogsTitles">#777</color>
     
     <color name="cardColor">@android:color/white</color>
     <color name="cardPlayingColor">#ffe3a0</color>

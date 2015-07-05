@@ -17,12 +17,11 @@
 package com.andreadec.musicplayer.viewholders;
 
 import com.andreadec.musicplayer.models.*;
-import java.io.File;
 
 public interface ListsClickListener {
-    public void onHeaderClick();
-    public void onPlayableItemClick(PlayableItem item);
-    public void onPlayableItemMenuClick(PlayableItem item, int menuId);
-    public void onCategoryClick(Object item);
-    public void onCategoryMenuClick(Object item, int menuId);
+    void onHeaderClick();
+    void onPlayableItemClick(PlayableItem item);
+    void onPlayableItemMenuClick(PlayableItem item, int menuId);
+    void onCategoryClick(Object item);
+    void onCategoryMenuClick(Object item, int menuId);
 }

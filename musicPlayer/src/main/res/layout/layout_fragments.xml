@@ -24,9 +24,10 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
+    <!-- This FrameLayout is used by the DragDropTouchListener -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,14 +39,10 @@
 
     <TextView
         android:id="@+id/emptyView"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="96dp"
         android:visibility="gone" />
-
-    <ImageButton
-        android:id="@+id/floatingButton"
-        style="@style/floatingButton"
-        android:src="@drawable/newcontent" />
 
 </RelativeLayout>

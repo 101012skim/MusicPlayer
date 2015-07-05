@@ -102,6 +102,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
 		if (container == null) return null;
 		View view = inflater.inflate(R.layout.layout_fragments, container, false);
 		initialize(view);
+        setFloatingButtonVisible(true);
 		updateListView();
 		return view;
 	}
@@ -140,7 +141,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
         layoutManager.onRestoreInstanceState(state);
 	}
 	
-	public void openPodcast(Podcast podcast) {
+	private void openPodcast(Podcast podcast) {
 		currentPodcast = podcast;
 		updateListView();
 	}
@@ -177,7 +178,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
 		updateListView();
 	}
 	
-	public void addPodcast() {
+	private void addPodcast() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.addPodcast);
 		final View view = getActivity().getLayoutInflater().inflate(R.layout.layout_addpodcast1, null);
@@ -237,7 +238,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
 		dialog.show();
 	}
 	
-	public void deletePodcast(final Podcast podcast) {
+	private void deletePodcast(final Podcast podcast) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage(R.string.removePodcastConfirm);
 		builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -250,7 +251,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
 		builder.show();
 	}
 
-    public void deletePodcastEpisode(PodcastEpisode podcastEpisode) {
+    private void deletePodcastEpisode(PodcastEpisode podcastEpisode) {
         podcastEpisode.getPodcast().deleteEpisode(podcastEpisode);
         updateListView();
     }

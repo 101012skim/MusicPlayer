@@ -19,17 +19,15 @@ package com.andreadec.musicplayer;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import android.graphics.Point;
-import android.media.AudioManager;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
+import android.graphics.*;
+import android.media.*;
 import android.os.*;
 import android.preference.*;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.*;
@@ -37,18 +35,18 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.CompoundButton.*;
 import android.widget.SeekBar.*;
-import com.andreadec.musicplayer.adapters.*;
+
 import com.andreadec.musicplayer.fragments.*;
 import com.andreadec.musicplayer.models.*;
 import com.andreadec.musicplayer.ui.*;
 
-public class MainActivity extends ActionBarActivity implements OnClickListener, OnSeekBarChangeListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener, OnSeekBarChangeListener {
 	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1, PAGE_RADIOS=2, PAGE_PODCASTS=3;
 
     private MusicPlayerApplication app;
@@ -58,18 +56,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 	private ImageButton imageButtonPrevious, imageButtonNext, imageButtonShowSeekbar2;
 	private SeekBar seekBar1, seekBar2;
 	private ImageView imageViewSongImage;
-	private ImageButton imageButtonShuffle, imageButtonRepeat, imageButtonRepeatAll;
-	private Button buttonBassBoost, buttonEqualizer, buttonShake;
-	private MusicService musicService; // The application service
+	public MusicService musicService; // The application service
 	private Intent serviceIntent;
 	private BroadcastReceiver broadcastReceiver;
 	private SharedPreferences preferences;
-	private View buttonQuit;
+    private SecondaryNavigationManager secondaryNavigationManager;
 	
 	private DrawerLayout drawerLayout;
-	private RelativeLayout drawerContainer;
-	private ListView drawerList;
-	private NavigationDrawerArrayAdapter navigationAdapter;
 	private ActionBarDrawerToggle drawerToggle;
 	
 	private static final int POLLING_INTERVAL = 450; // Refresh time of the seekbar
@@ -96,7 +89,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         
@@ -104,27 +96,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         if(preferences.getBoolean(Constants.PREFERENCE_DISABLELOCKSCREEN, Constants.DEFAULT_DISABLELOCKSCREEN)) {
         	getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); // Disable lock screen for this activity
         }
-        
-        if(preferences.getBoolean(Constants.PREFERENCE_SHOWHELPOVERLAYMAINACTIVITY, true)) {
-        	final FrameLayout frameLayout = new FrameLayout(this);
-        	LayoutInflater layoutInflater = getLayoutInflater();
-        	layoutInflater.inflate(R.layout.activity_main, frameLayout);
-        	layoutInflater.inflate(R.layout.layout_helpoverlay_main, frameLayout);
-        	final View overlayView = frameLayout.getChildAt(1);
-        	overlayView.setOnClickListener(new OnClickListener() {
-				@Override public void onClick(View v) {
-					frameLayout.removeView(overlayView);
-					SharedPreferences.Editor editor = preferences.edit();
-					editor.putBoolean(Constants.PREFERENCE_SHOWHELPOVERLAYMAINACTIVITY, false);
-					editor.apply();
-				}
-            });
-        	setContentView(frameLayout);
-        } else {
-        	setContentView(R.layout.activity_main);
-        }
+
+        setContentView(R.layout.activity_main);
 
         app = (MusicPlayerApplication)getApplication();
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point size = new Point();
@@ -140,7 +118,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         fragmentManager = getSupportFragmentManager();
         
         
-        /* NAVIGATION DRAWER */
+        // MAIN NAVIGATION DRAWER
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
@@ -154,19 +132,40 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         };
         drawerLayout.setDrawerListener(drawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerContainer = (RelativeLayout)findViewById(R.id.navigation_container);
-        drawerList = (ListView)findViewById(R.id.navigation_list);
-        navigationAdapter = new NavigationDrawerArrayAdapter(this, pages);
-        drawerList.setAdapter(navigationAdapter);
-        drawerList.setOnItemClickListener(new ListView.OnItemClickListener() {
-        	@Override
-    	    public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View view, int position, long id) {
-        		openPage(position);
-        		drawerLayout.closeDrawer(drawerContainer);
-         }
+
+        NavigationView navigationView = (NavigationView)findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigationBrowser:
+                        openPage(PAGE_BROWSER);
+                        break;
+                    case R.id.navigationPlaylist:
+                        openPage(PAGE_PLAYLISTS);
+                        break;
+                    case R.id.navigationPodcast:
+                        openPage(PAGE_PODCASTS);
+                        break;
+                    case R.id.navigationRadio:
+                        openPage(PAGE_RADIOS);
+                        break;
+                    case R.id.navigationPreferences:
+                        startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
+                        break;
+                    case R.id.navigationQuit:
+                        quitApplication();
+                        return true;
+                }
+                menuItem.setChecked(true);
+                drawerLayout.closeDrawers();
+                return true;
+            }
         });
-        buttonQuit = findViewById(R.id.navigation_buttonQuit);
-        buttonQuit.setOnClickListener(this);
+
+
+        // RIGHT NAVIGATION DRAWER
+        secondaryNavigationManager = new SecondaryNavigationManager(this, drawerLayout);
         
     	textViewArtist = (TextView)findViewById(R.id.textViewArtist);
         textViewTitle = (TextView)findViewById(R.id.textViewTitle);
@@ -178,19 +177,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
         seekBar1 = (SeekBar)findViewById(R.id.seekBar1);
         seekBar2 = (SeekBar)findViewById(R.id.seekBar2);
         imageButtonShowSeekbar2 = (ImageButton)findViewById(R.id.imageButtonShowSeekbar2);
-        imageButtonShuffle = (ImageButton)findViewById(R.id.imageButtonShuffle);
-        imageButtonRepeat = (ImageButton)findViewById(R.id.imageButtonRepeat);
-        imageButtonRepeatAll = (ImageButton)findViewById(R.id.imageButtonRepeatAll);
-        buttonBassBoost = (Button)findViewById(R.id.buttonBassBoost);
-        buttonEqualizer = (Button)findViewById(R.id.buttonEqualizer);
-        buttonShake = (Button)findViewById(R.id.buttonShake);
-        
-        imageButtonShuffle.setOnClickListener(this);
-        imageButtonRepeat.setOnClickListener(this);
-        imageButtonRepeatAll.setOnClickListener(this);
-        buttonBassBoost.setOnClickListener(this);
-        buttonEqualizer.setOnClickListener(this);
-        buttonShake.setOnClickListener(this);
         
         imageButtonShowSeekbar2.setOnClickListener(this);
         imageButtonPrevious.setOnClickListener(this);
@@ -320,10 +306,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     	transaction.remove(currentFragment);
     	transaction.replace(R.id.page, fragment);
     	transaction.addToBackStack(null);
-    	transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+    	transaction.setTransition(FragmentTransaction.TRANSIT_NONE);
     	transaction.commit();
     	fragmentManager.executePendingTransactions();
-    	drawerList.setItemChecked(app.currentPage, true);
     	setTitle(pages[app.currentPage]);
     }
     
@@ -425,27 +410,9 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		textViewTime.setText(time);
 	}
     
-    /* Updates the shuffle/repeat/repeat_all icons according to the playing song */
-    private void updateExtendedMenu() {
-    	final int on = R.drawable.navigation_button_on;
-    	final int off = R.drawable.navigation_button_off;
-    	if(musicService.getShuffle()) imageButtonShuffle.setBackgroundResource(on);
-    	else imageButtonShuffle.setBackgroundResource(off);
-    	if(musicService.getRepeat()) imageButtonRepeat.setBackgroundResource(on);
-    	else imageButtonRepeat.setBackgroundResource(off);
-    	if(musicService.getRepeatAll()) imageButtonRepeatAll.setBackgroundResource(on);
-    	else imageButtonRepeatAll.setBackgroundResource(off);
-    	if(musicService.getBassBoostEnabled()) buttonBassBoost.setBackgroundResource(on);
-    	else buttonBassBoost.setBackgroundResource(off);
-    	if(musicService.getEqualizerEnabled()) buttonEqualizer.setBackgroundResource(on);
-    	else buttonEqualizer.setBackgroundResource(off);
-    	if(musicService.isShakeEnabled()) buttonShake.setBackgroundResource(on);
-    	else buttonShake.setBackgroundResource(off);
-    }
-    
     /* Called after the service has been bounded. */
     private void startRoutine() {
-    	updateExtendedMenu();
+    	secondaryNavigationManager.update();
     	
     	// Opens the song from the search, if any
     	if(searchSong!=null) {
@@ -513,7 +480,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     	if(preferences.getBoolean(Constants.PREFERENCE_OPENLASTPAGEONSTART, Constants.DEFAULT_OPENLASTPAGEONSTART)) {
     		SharedPreferences.Editor editor = preferences.edit();
     		editor.putInt(Constants.PREFERENCE_LASTPAGE, app.currentPage);
-    		editor.commit();
+    		editor.apply();
     	}
     }
     
@@ -525,24 +492,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
     
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-    	boolean navigationDrawerOpen = drawerLayout.isDrawerOpen(drawerContainer);
-    	if(app.currentPage==PAGE_BROWSER && !navigationDrawerOpen) {
+    	if(app.currentPage==PAGE_BROWSER) {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(true);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(true);
-            menu.findItem(R.id.menu_rescanBaseFolder).setVisible(true);
     	} else {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(false);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(false);
-            menu.findItem(R.id.menu_rescanBaseFolder).setVisible(false);
     	}
-    	if(app.currentPage==PAGE_PODCASTS && !navigationDrawerOpen) {
+    	if(app.currentPage==PAGE_PODCASTS) {
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(true);
     		menu.findItem(R.id.menu_removeDownloadedEpisodes).setVisible(true);
     	} else {
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(false);
     		menu.findItem(R.id.menu_removeDownloadedEpisodes).setVisible(false);
     	}
-    	if(navigationDrawerOpen || musicService==null || musicService.getCurrentPlayingItem()==null) {
+    	if(musicService==null || musicService.getCurrentPlayingItem()==null) {
     		menu.findItem(R.id.menu_songInfo).setVisible(false);
     	} else {
     		menu.findItem(R.id.menu_songInfo).setVisible(true);
@@ -572,18 +536,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 		case R.id.menu_setAsBaseFolder:
 			setBaseFolder(((MusicPlayerApplication) getApplication()).getCurrentDirectory().getDirectory());
 			return true;
-        case R.id.menu_rescanBaseFolder:
-            rescanBaseFolder();
-            return true;
 		case R.id.menu_removeAllEpisodes:
 			((PodcastsFragment)currentFragment).removeAllEpisodes();
 			return true;
 		case R.id.menu_removeDownloadedEpisodes:
 			((PodcastsFragment)currentFragment).removeDownloadedEpisodes();
 			return true;
-        case R.id.menu_preferences:
-            startActivity(new Intent(this, PreferencesActivity.class));
-            return true;
         case R.id.menu_quit:
             quitApplication();
             return true;
@@ -609,30 +567,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 			musicService.previousItem(false);
 		} else if(view.equals(textViewTime)) {
 			showRemainingTime = !showRemainingTime;
-		} else if(view.equals(imageButtonShuffle)) {
-			musicService.setShuffle(!musicService.getShuffle());
-			updateExtendedMenu();
-		} else if(view.equals(imageButtonRepeat)) {
-			musicService.setRepeat(!musicService.getRepeat());
-			updateExtendedMenu();
-		} else if(view.equals(imageButtonRepeatAll)) {
-			musicService.setRepeatAll(!musicService.getRepeatAll());
-			updateExtendedMenu();
-		} else if(view.equals(buttonBassBoost)) {
-			if(musicService.getBassBoostAvailable()) {
-				bassBoostSettings();
-			} else {
-				Utils.showMessageDialog(this, R.string.error, R.string.errorBassBoost);
-			}
-		} else if(view.equals(buttonEqualizer)) {
-			if(musicService.getEqualizerAvailable()) {
-				equalizerSettings();
-			} else {
-				Utils.showMessageDialog(this, R.string.error, R.string.errorEqualizer);
-			}
-		} else if(view.equals(buttonShake)) {
-			musicService.toggleShake();
-			updateExtendedMenu();
 		} else if(view.equals(imageButtonShowSeekbar2)) {
             if (seekBar2.getVisibility() == View.VISIBLE) {
                 imageButtonShowSeekbar2.setImageResource(R.drawable.expand);
@@ -641,9 +575,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
                 imageButtonShowSeekbar2.setImageResource(R.drawable.collapse);
                 seekBar2.setVisibility(View.VISIBLE);
             }
-        } else if(view.equals(buttonQuit)) {
-			quitApplication();
-		}
+        }
 	}
 	
 	@Override
@@ -862,108 +794,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener, 
 			}
 		}
 	}
-	
-	
-	private void bassBoostSettings() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.bassBoost);
-		View view = getLayoutInflater().inflate(R.layout.layout_bassboost, null);
-		builder.setView(view);
-		
-		builder.setOnCancelListener(new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				updateExtendedMenu();
-			}
-		});
-		builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				updateExtendedMenu();
-			}
-		});
-		
-		CheckBox checkBoxBassBoostEnable = (CheckBox)view.findViewById(R.id.checkBoxBassBoostEnabled);
-		checkBoxBassBoostEnable.setChecked(musicService.getBassBoostEnabled());
-		checkBoxBassBoostEnable.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				musicService.toggleBassBoost();
-				updateExtendedMenu();
-			}
-		});
-		
-		SeekBar seekbar = (SeekBar)view.findViewById(R.id.seekBarBassBoostStrength);
-		seekbar.setMax(1000);
-		seekbar.setProgress(musicService.getBassBoostStrength());
-		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				if(fromUser) {
-					musicService.setBassBoostStrength(seekBar.getProgress());
-				}
-			}
-			@Override public void onStartTrackingTouch(SeekBar arg0) {}
-			@Override public void onStopTrackingTouch(SeekBar arg0) {}
-		});
-		
-		builder.show();
-	}
-	
-	private void equalizerSettings() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.equalizer);
-		View view = getLayoutInflater().inflate(R.layout.layout_equalizer, null);
-		builder.setView(view);
-		
-		builder.setOnCancelListener(new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				updateExtendedMenu();
-			}
-		});
-		builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				updateExtendedMenu();
-			}
-		});
-		
-		CheckBox checkBoxEqualizerEnabled = (CheckBox)view.findViewById(R.id.checkBoxEqualizerEnabled);
-		checkBoxEqualizerEnabled.setChecked(musicService.getEqualizerEnabled());
-		checkBoxEqualizerEnabled.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				musicService.toggleEqualizer();
-				updateExtendedMenu();
-			}
-		});
-		
-		String[] availablePresets = musicService.getEqualizerAvailablePresets();
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, availablePresets);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		Spinner spinnerEqualizerPreset = (Spinner)view.findViewById(R.id.spinnerEqualizerPreset);
-		spinnerEqualizerPreset.setAdapter(adapter);
-		spinnerEqualizerPreset.setSelection(musicService.getEqualizerPreset());
-		
-		spinnerEqualizerPreset.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				musicService.setEqualizerPreset(position);
-			}
-			@Override public void onNothingSelected(AdapterView<?> parent) {}
-		});
-		builder.show();
-	}
-
-    private void rescanBaseFolder() {
-        String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
-        if(baseFolder==null) return;
-        System.out.println(baseFolder);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-        } else {
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-        }
-    }
 	
 	private void showItemInfo(PlayableItem item) {
 		if(item==null || item.getInformation()==null) return;

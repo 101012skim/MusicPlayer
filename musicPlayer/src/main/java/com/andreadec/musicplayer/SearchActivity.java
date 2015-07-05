@@ -21,7 +21,6 @@ import java.util.*;
 import android.content.*;
 import android.database.*;
 import android.os.*;
-import android.preference.*;
 import android.provider.*;
 import android.support.v7.app.*;
 import android.support.v7.widget.*;
@@ -36,7 +35,6 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 	private EditText editTextSearch;
 	private ImageButton buttonSearch;
 	private RecyclerView recyclerViewSearch;
-	private SharedPreferences preferences;
 	private MusicPlayerApplication application;
 	private String lastSearch;
 	private InputMethodManager inputMethodManager;
@@ -52,8 +50,7 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         mediaResolver = getContentResolver();
         
         setContentView(R.layout.activity_search);

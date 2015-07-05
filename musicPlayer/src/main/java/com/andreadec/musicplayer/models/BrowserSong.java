@@ -170,7 +170,7 @@ public class BrowserSong implements PlayableItem, Serializable {
 			mmr.release();
 		}
 		
-		ArrayList<Information> info = new ArrayList<Information>();
+		ArrayList<Information> info = new ArrayList<>();
 		info.add(new Information(R.string.artist, artist));
 		info.add(new Information(R.string.title, title));
 		if(year!=null) info.add(new Information(R.string.year, year));

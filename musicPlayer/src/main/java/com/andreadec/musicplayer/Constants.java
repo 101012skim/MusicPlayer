@@ -49,8 +49,6 @@ public class Constants {
 	public final static String PREFERENCE_SHAKETHRESHOLD = "shakeThreshold";
 	public final static String PREFERENCE_SHAKEACTION = "shakeAction";
 	
-	public final static String PREFERENCE_SHOWHELPOVERLAYMAINACTIVITY = "showHelpOverlayMainActivity";
-	
 	
 	// Default preferences values
 	public final static String DEFAULT_SONGSSORTINGMETHOD = "nat";

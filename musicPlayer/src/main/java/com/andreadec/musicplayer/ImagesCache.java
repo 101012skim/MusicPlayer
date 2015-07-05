@@ -17,7 +17,6 @@
 package com.andreadec.musicplayer;
 import android.content.*;
 import android.graphics.*;
-import android.graphics.drawable.Drawable;
 import android.os.*;
 import android.util.*;
 import android.view.*;
@@ -26,7 +25,7 @@ import com.andreadec.musicplayer.models.*;
 
 public class ImagesCache {
     private int imagesSize;
-    private LruCache<String,Bitmap> cache;
+    final private LruCache<String,Bitmap> cache;
 
     public ImagesCache(Context context) {
         imagesSize = (int)context.getResources().getDimension(R.dimen.songImageSize);
