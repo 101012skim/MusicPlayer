@@ -85,6 +85,10 @@
 	        android:key="podcastsDirectory"
 	        android:title="@string/podcastsDirectory"
 	        android:summary="@string/podcastsDirectorySummary" />
+        <CheckBoxPreference
+            android:key="sharePlaybackState"
+            android:title="@string/sharePlaybackState"
+            android:summary="@string/sharePlaybackStateSummary" />
 	</PreferenceCategory>
     
     <PreferenceCategory android:title="@string/importExport">

@@ -155,6 +155,8 @@
     <string name="noRadios">To add a radio touch the + button!</string>
     <string name="rescanBaseFolder">Rescan base folder</string>
     <string name="rescanStarted">Rescan started</string>
+    <string name="sharePlaybackState">Share playing state information</string>
+    <string name="sharePlaybackStateSummary">If enabled, shares info about current playing song with other apps</string>
 	
 	<!-- Podcasts -->
 	<string name="podcast">Podcast</string>

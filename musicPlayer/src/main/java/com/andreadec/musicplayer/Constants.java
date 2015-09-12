@@ -44,6 +44,7 @@ public class Constants {
 	public final static String PREFERENCE_SHOWRELATIVEPATHUNDERBASEDIRECTORY = "showRelativePathUnderBaseDirectory";
 	public final static String PREFERENCE_ENABLEGESTURES = "enableGestures";
 	public final static String PREFERENCE_SHOWPLAYBACKCONTROLS = "showPlaybackControls";
+    public final static String PREFERENCE_SHARE_PLAYBACK_STATE = "sharePlaybackState";
 	
 	public final static String PREFERENCE_SHAKEINTERVAL = "shakeInterval";
 	public final static String PREFERENCE_SHAKETHRESHOLD = "shakeThreshold";
@@ -79,6 +80,7 @@ public class Constants {
 	public final static boolean DEFAULT_SHOWRELATIVEPATHUNDERBASEDIRECTORY = true;
 	public final static boolean DEFAULT_ENABLEGESTURES = false;
 	public final static boolean DEFAULT_SHOWPLAYBACKCONTROLS = true;
+    public final static boolean DEFAULT_SHARE_PLAYBACK_STATE = false;
 	
 	
 	// Notifications

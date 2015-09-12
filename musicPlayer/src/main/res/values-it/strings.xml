@@ -153,6 +153,8 @@
     <string name="noRadios">Per aggiungere una radio tocca il pulsante +!</string>
     <string name="rescanBaseFolder">Scansione cartella base</string>
     <string name="rescanStarted">Scansione avviata</string>
+    <string name="sharePlaybackState">Condividi informazioni brano</string>
+    <string name="sharePlaybackStateSummary">Se abilitato, condivide le informazioni sul brano in riproduzione con le altre app</string>
 	
 	<!-- Podcasts -->
 	<string name="podcast">Podcast</string>

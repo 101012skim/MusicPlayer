@@ -408,6 +408,8 @@ public class MusicService extends Service implements OnCompletionListener {
             }
             metadataEditor.apply();
         }
+
+        sendPlayingStateBroadcast();
 		
 		/* Update notification */
 		Notification.Builder notificationBuilder = new Notification.Builder(this);
@@ -471,6 +473,25 @@ public class MusicService extends Service implements OnCompletionListener {
 		
 		notificationManager.notify(Constants.NOTIFICATION_MAIN, notification);
 	}
+
+    private void sendPlayingStateBroadcast() {
+        if(!preferences.getBoolean(Constants.PREFERENCE_SHARE_PLAYBACK_STATE, Constants.DEFAULT_SHARE_PLAYBACK_STATE)) return;
+        Intent intent = new Intent();
+        //intent.setAction("com.android.music.metachanged");
+        intent.setAction("com.android.music.playstatechanged");
+        Bundle bundle = new Bundle();
+        if(currentPlayingItem!=null && (currentPlayingItem instanceof BrowserSong || currentPlayingItem instanceof PlaylistSong)) {
+            bundle.putString("track", currentPlayingItem.getTitle());
+            bundle.putString("artist", currentPlayingItem.getArtist());
+            bundle.putLong("duration", mediaPlayer.getDuration());
+            bundle.putLong("position", mediaPlayer.getCurrentPosition());
+            bundle.putBoolean("playing", mediaPlayer.isPlaying());
+        } else {
+            bundle.putBoolean("playing", false);
+        }
+        intent.putExtras(bundle);
+        sendBroadcast(intent);
+    }
 	
 	/* Toggles play/pause status. */
 	public void playPause() {
@@ -505,6 +526,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	/* Seeks to a position. */
 	public void seekTo(int progress) {
 		mediaPlayer.seekTo(progress);
+        sendPlayingStateBroadcast();
 	}
 	
 	/* Plays the previous song */
