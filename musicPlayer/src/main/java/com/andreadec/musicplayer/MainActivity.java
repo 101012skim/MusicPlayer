@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package com.andreadec.musicplayer;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import android.Manifest;
 import android.graphics.*;
 import android.media.*;
 import android.os.*;
@@ -26,6 +28,7 @@ import android.preference.*;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.app.AlertDialog;
@@ -48,6 +51,7 @@ import com.andreadec.musicplayer.ui.*;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnSeekBarChangeListener {
 	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1, PAGE_RADIOS=2, PAGE_PODCASTS=3;
+	private final static int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST=1;
 
     private MusicPlayerApplication app;
 	
@@ -84,13 +88,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     public int screenSizeX, screenSizeY;
 	
 	
-	
 	/* Initializes the activity. */
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+		if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+			requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION_REQUEST);
+		}
         
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.getBoolean(Constants.PREFERENCE_DISABLELOCKSCREEN, Constants.DEFAULT_DISABLELOCKSCREEN)) {
@@ -275,6 +282,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         registerReceiver(broadcastReceiver, intentFilter);
         updatePlayPauseButton();
     }
+
+	@Override
+	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
+		if(requestCode==READ_EXTERNAL_STORAGE_PERMISSION_REQUEST && grantResults[0]!=PermissionChecker.PERMISSION_GRANTED) {
+			Utils.showMessageDialog(this, R.string.errorReadPermissionDenied);
+		}
+	}
     
     @Override
     public void setTitle(CharSequence title) {

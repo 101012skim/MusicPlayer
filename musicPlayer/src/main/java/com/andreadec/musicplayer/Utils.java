@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,18 @@ import android.media.*;
 import android.net.*;
 
 public class Utils {
-	/* Builds a simple message dialog */
+	/* Builds a simple message dialog with title */
 	public static void showMessageDialog(Context context, int title, int message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(title);
+		builder.setMessage(message);
+		builder.setPositiveButton(R.string.ok, null);
+		builder.show();
+	}
+
+	/* Builds a simple message dialog without title */
+	public static void showMessageDialog(Context context, int message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(message);
 		builder.setPositiveButton(R.string.ok, null);
 		builder.show();

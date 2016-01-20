@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -264,7 +264,9 @@ public class MusicService extends Service implements OnCompletionListener {
 			editor.putString(Constants.PREFERENCE_LASTPLAYINGSONG, null);
 			editor.putLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
 		}
-		editor.putString(Constants.PREFERENCE_LASTDIRECTORY, ((MusicPlayerApplication)getApplication()).getCurrentDirectory().getDirectory().getAbsolutePath());
+
+		BrowserDirectory currentDir = ((MusicPlayerApplication)getApplication()).getCurrentDirectory();
+		if(currentDir!=null) editor.putString(Constants.PREFERENCE_LASTDIRECTORY, currentDir.getDirectory().getAbsolutePath());
 		editor.apply();
 		
 		audioManager.unregisterRemoteControlClient(remoteControlClient);
