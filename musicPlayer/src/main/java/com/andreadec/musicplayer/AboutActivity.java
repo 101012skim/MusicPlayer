@@ -42,7 +42,7 @@ public class AboutActivity extends ActionBarActivity {
         
         String about = "<h1>"+resources.getString(R.string.app_name)+"</h1>";
         about += "<p>"+resources.getString(R.string.version, version)+"</p>";
-        about += "<p>&copy; 2012-2015 Andrea De Cesare</p>";
+        about += "<p>&copy; 2012-2016 Andrea De Cesare</p>";
         about += "<p><a href=\"https://github.com/andreadec/MusicPlayer\">https://github.com/andreadec/MusicPlayer</a></p>";
         
         about += "<h2>&nbsp;</h2>";
