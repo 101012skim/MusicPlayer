@@ -24,9 +24,10 @@
     <item
         android:drawable="@drawable/button_play"
         android:id="@+id/play_state" />
-    <transition android:fromId="@id/play_state" android:toId="@id/pause_state" android:reversible="true">
+
+    <!--<transition android:fromId="@id/play_state" android:toId="@id/pause_state" android:reversible="true">
         <animated-vector android:drawable="@drawable/button_play">
             <target android:name="button" android:animation="@anim/play_pause" />
         </animated-vector>
-    </transition>
+    </transition>-->
 </animated-selector>

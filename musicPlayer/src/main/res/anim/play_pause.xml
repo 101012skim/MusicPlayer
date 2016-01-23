@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-* Copyright 2015 Andrea De Cesare
+* Copyright 2015-2016 Andrea De Cesare
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 * limitations under the License.
 */
 -->
-<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+<objectAnimator
     android:duration="250"
     android:propertyName="pathData"
     android:valueFrom="@string/play_pathData"
     android:valueTo="@string/pause_pathData"
     android:valueType="pathType" />
+</set>
