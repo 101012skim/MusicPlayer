@@ -244,4 +244,8 @@ public class BrowserFragment extends MusicPlayerFragment {
 			scrollToSong(song);
 		}
 	}
+
+	public void gotoRootFolder() {
+		gotoDirectory(new File("/"), null);
+	}
 }

@@ -509,9 +509,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     	if(app.currentPage==PAGE_BROWSER) {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(true);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(true);
+			menu.findItem(R.id.menu_gotoRootFolder).setVisible(true);
     	} else {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(false);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(false);
+			menu.findItem(R.id.menu_gotoRootFolder).setVisible(false);
     	}
     	if(app.currentPage==PAGE_PODCASTS) {
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(true);
@@ -540,6 +542,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 			return true;
 		case R.id.menu_gotoBaseFolder:
 			((BrowserFragment)currentFragment).gotoBaseFolder();
+			return true;
+		case R.id.menu_gotoRootFolder:
+			((BrowserFragment)currentFragment).gotoRootFolder();
 			return true;
 		case R.id.menu_search:
 			startActivityForResult(new Intent(this, SearchActivity.class), 1);

@@ -133,6 +133,7 @@
 	<string name="status">Status</string>
 	<string name="errorInvalidName">Name can\'t be empty!</string>
 	<string name="gotoBaseFolder">Go to base folder</string>
+	<string name="gotoRootFolder">Go to root folder</string>
 	<string name="importExport">Import/export</string>
 	<string name="stopDownload">Stop download</string>
 	<string name="pressAgainToQuitApp">Press again to quit app</string>

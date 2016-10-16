@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.andreadec.musicplayer"
-    android:versionCode="30"
-    android:versionName="2.5.2"
+    android:versionCode="31"
+    android:versionName="2.5.3"
     android:installLocation="auto" >
 
     <uses-permission android:name="android.permission.WAKE_LOCK"/>

@@ -132,6 +132,7 @@
 	<string name="status">Stato</string>
 	<string name="errorInvalidName">Deve essere inserito un nome!</string>
 	<string name="gotoBaseFolder">Vai alla cartella base</string>
+	<string name="gotoRootFolder">Vai alla cartella root</string>
 	<string name="stopDownload">Interrompi download</string>
 	<string name="pressAgainToQuitApp">Premi nuovamente per uscire</string>
 	<string name="enableBackDoublePressToQuitApp">Tasto indietro per uscire</string>
