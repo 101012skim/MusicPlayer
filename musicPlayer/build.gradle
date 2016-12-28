@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    buildToolsVersion '23.0.2'
-    compileSdkVersion 23
+    buildToolsVersion '25.0.2'
+    compileSdkVersion 25
 
     defaultConfig {
         applicationId 'com.andreadec.musicplayer'
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 25
     }
     buildTypes {
         debug {

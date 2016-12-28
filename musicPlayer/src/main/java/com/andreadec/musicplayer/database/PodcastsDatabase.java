@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Andrea De Cesare
+ * Copyright 2013-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import android.database.sqlite.*;
 
 public class PodcastsDatabase extends SQLiteOpenHelper {
 	private static final String DB_NAME = "Podcasts";
-	private static final int DB_VERSION = 1;
+	private static final int DB_VERSION = 2;
 	
 	public PodcastsDatabase() {
 		super(MusicPlayerApplication.getContext(), DB_NAME, null, DB_VERSION);
@@ -30,9 +30,13 @@ public class PodcastsDatabase extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE Podcasts (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, name TEXT, image BLOB)");
-		db.execSQL("CREATE TABLE ItemsInPodcast (idItem TEXT PRIMARY KEY, idPodcast INTEGER, title TEXT, status INTEGER, url TEXT, filename TEXT, pubDate INTEGER, duration TEXT, type TEXT)");
+		db.execSQL("CREATE TABLE ItemsInPodcast (idItem TEXT PRIMARY KEY, idPodcast INTEGER, title TEXT, status INTEGER, url TEXT, filename TEXT, pubDate INTEGER, duration TEXT, type TEXT, description TEXT)");
 	}
 
 	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		if(oldVersion==1 && newVersion==2) {
+			db.execSQL("ALTER TABLE ItemsInPodcast ADD COLUMN description TEXT");
+		}
+	}
 }

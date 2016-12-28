@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,9 @@ public class PodcastEpisode implements PlayableItem {
 	private long pubDate;
 	private String duration;
 	private String type;
+	private String description;
 	
-	public PodcastEpisode(String url, String filename, String title, String id, Podcast podcast, int status, long pubDate, String duration, String type) {
+	public PodcastEpisode(String url, String filename, String title, String id, Podcast podcast, int status, long pubDate, String duration, String type, String description) {
 		this.id = id;
 		this.url = url;
 		this.title = title;
@@ -48,6 +49,7 @@ public class PodcastEpisode implements PlayableItem {
 		this.pubDate = pubDate;
 		this.duration = duration;
 		this.type = type;
+		this.description = description;
 	}
 	
 	public void setPodcast(Podcast podcast) {
@@ -72,6 +74,10 @@ public class PodcastEpisode implements PlayableItem {
 	
 	public String getDuration() {
 		return duration;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	public Podcast getPodcast() {
@@ -202,6 +208,7 @@ public class PodcastEpisode implements PlayableItem {
 		info.add(new Information(R.string.podcast, podcast.getName()));
 		info.add(new Information(R.string.url, url));
 		info.add(new Information(R.string.status, getStatusString()));
+		if(getDescription()!=null) info.add(new Information(R.string.description, getDescription()));
 		if(status==STATUS_DOWNLOADED) {
 			info.add(new Information(R.string.fileName, filename));
 			info.add(new Information(R.string.fileSize, Utils.getFileSize(filename)));

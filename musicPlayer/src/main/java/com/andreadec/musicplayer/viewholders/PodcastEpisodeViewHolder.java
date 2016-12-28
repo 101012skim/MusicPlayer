@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class PodcastEpisodeViewHolder extends RecyclerView.ViewHolder implements
     private MainActivity activity;
     private ListsClickListener clickListener;
     private PodcastEpisode episode;
-    private TextView title, info, status;
+    private TextView title, info, status, description;
     private ImageView image, imageStatus, menu;
     private View card;
 
@@ -42,6 +42,7 @@ public class PodcastEpisodeViewHolder extends RecyclerView.ViewHolder implements
         title = (TextView)view.findViewById(R.id.textViewPodcastTitle);
         info = (TextView)view.findViewById(R.id.textViewPodcastInfo);
         status = (TextView)view.findViewById(R.id.textViewPodcastStatus);
+        description = (TextView)view.findViewById(R.id.textViewPodcastDescription);
         image = (ImageView)view.findViewById(R.id.imageViewItemImage);
         imageStatus = (ImageView)view.findViewById(R.id.imageViewPodcastStatus);
         card = view.findViewById(R.id.card);
@@ -69,6 +70,9 @@ public class PodcastEpisodeViewHolder extends RecyclerView.ViewHolder implements
             default:
                 imageStatus.setImageDrawable(null);
         }
+		if(episode.getDescription()!=null) {
+			description.setText(episode.getDescription());
+		}
         if(episode.equals(currentEpisode)) {
             card.setBackgroundResource(R.drawable.card_playing);
             image.setImageResource(R.drawable.play_orange);

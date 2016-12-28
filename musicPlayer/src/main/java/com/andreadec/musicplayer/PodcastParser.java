@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class PodcastParser {
 		    					imageUrl = item.getAttribute("href");
 		    				} else if(item.getTagName().equals("item")) {
 		    					NodeList itemsValues = itemNode.getChildNodes();
-			    				String itemTitle=null, itemUrl=null, itemGuid=null, itemPubDate=null, duration=null, type=null;
+			    				String itemTitle=null, itemUrl=null, itemGuid=null, itemPubDate=null, duration=null, type=null, description=null;
 			    				for(int k=0; k<itemsValues.getLength(); k++) {
 			    					Node itemsValuesNode = itemsValues.item(k);
 			    					if(itemsValuesNode.getNodeType()==Node.ELEMENT_NODE) {
@@ -64,6 +64,7 @@ public class PodcastParser {
 			    						if(tag.equals("guid")) itemGuid = e.getTextContent();
 			    						if(tag.equals("pubDate")) itemPubDate = e.getTextContent();
 			    						if(tag.equals("itunes:duration")) duration = e.getTextContent();
+										if(tag.equals("description")) description = e.getTextContent().trim();
 			    						if(tag.equals("enclosure")) {
 			    							itemUrl = e.getAttribute("url");
 			    							type = e.getAttribute("type");
@@ -81,7 +82,7 @@ public class PodcastParser {
 				    				dateLong = d.getTime();
 			    				} catch(Exception e) {}
 			    				
-			    				PodcastEpisode episode = new PodcastEpisode(itemUrl, null, itemTitle, itemGuid, null, PodcastEpisode.STATUS_NEW, dateLong, duration, type);
+			    				PodcastEpisode episode = new PodcastEpisode(itemUrl, null, itemTitle, itemGuid, null, PodcastEpisode.STATUS_NEW, dateLong, duration, type, description);
 			    				episodes.add(episode);
 		    				}
 		    			}

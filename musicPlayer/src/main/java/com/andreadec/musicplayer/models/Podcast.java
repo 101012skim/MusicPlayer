@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2016 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class Podcast {
 		episodes = new ArrayList<>();
 		PodcastsDatabase podcastsDatabase = new PodcastsDatabase();
 		SQLiteDatabase db = podcastsDatabase.getReadableDatabase();
-		Cursor cursor = db.rawQuery("SELECT idItem, url, title, status, filename, pubDate, duration, type FROM ItemsInPodcast WHERE idPodcast="+id+" ORDER BY pubDate DESC", null);
+		Cursor cursor = db.rawQuery("SELECT idItem, url, title, status, filename, pubDate, duration, type, description FROM ItemsInPodcast WHERE idPodcast="+id+" ORDER BY pubDate DESC", null);
 		while(cursor.moveToNext()) {
 			String itemId = cursor.getString(0);
 			String itemUrl = cursor.getString(1);
@@ -55,7 +55,8 @@ public class Podcast {
 			long pubDate = cursor.getLong(5);
 			String duration = cursor.getString(6);
 			String type = cursor.getString(7);
-			PodcastEpisode item = new PodcastEpisode(itemUrl, filename, title, itemId, this, status, pubDate, duration, type);
+			String description = cursor.getString(8);
+			PodcastEpisode item = new PodcastEpisode(itemUrl, filename, title, itemId, this, status, pubDate, duration, type, description);
 			episodes.add(item);
 		}
 		cursor.close();
@@ -72,6 +73,7 @@ public class Podcast {
 		values.put("pubDate", episode.getPubDate());
 		values.put("duration", episode.getDuration());
 		values.put("type", episode.getType());
+		values.put("description", episode.getDescription());
 		try {
 			db.insertOrThrow("ItemsInPodcast", null, values);
 		} catch(Exception e) {}
