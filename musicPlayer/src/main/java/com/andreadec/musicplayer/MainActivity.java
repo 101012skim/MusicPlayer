@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         app = (MusicPlayerApplication)getApplication();
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         
         
         // MAIN NAVIGATION DRAWER
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         drawerLayout.setDrawerListener(drawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        NavigationView navigationView = (NavigationView)findViewById(R.id.navigationView);
+        NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -174,16 +174,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // RIGHT NAVIGATION DRAWER
         secondaryNavigationManager = new SecondaryNavigationManager(this, drawerLayout);
         
-    	textViewArtist = (TextView)findViewById(R.id.textViewArtist);
-        textViewTitle = (TextView)findViewById(R.id.textViewTitle);
-        textViewTime = (TextView)findViewById(R.id.textViewTime);
-        imageViewSongImage = (ImageView)findViewById(R.id.imageViewSongImage);
-        imageButtonPrevious = (ImageButton)findViewById(R.id.imageButtonPrevious);
-        imageButtonPlayPause = (CheckableImageButton)findViewById(R.id.imageButtonPlayPause);
-        imageButtonNext = (ImageButton)findViewById(R.id.imageButtonNext);
-        seekBar1 = (SeekBar)findViewById(R.id.seekBar1);
-        seekBar2 = (SeekBar)findViewById(R.id.seekBar2);
-        imageButtonShowSeekbar2 = (ImageButton)findViewById(R.id.imageButtonShowSeekbar2);
+    	textViewArtist = findViewById(R.id.textViewArtist);
+        textViewTitle = findViewById(R.id.textViewTitle);
+        textViewTime = findViewById(R.id.textViewTime);
+        imageViewSongImage = findViewById(R.id.imageViewSongImage);
+        imageButtonPrevious = findViewById(R.id.imageButtonPrevious);
+        imageButtonPlayPause = findViewById(R.id.imageButtonPlayPause);
+        imageButtonNext = findViewById(R.id.imageButtonNext);
+        seekBar1 = findViewById(R.id.seekBar1);
+        seekBar2 = findViewById(R.id.seekBar2);
+        imageButtonShowSeekbar2 = findViewById(R.id.imageButtonShowSeekbar2);
         
         imageButtonShowSeekbar2.setOnClickListener(this);
         imageButtonPrevious.setOnClickListener(this);

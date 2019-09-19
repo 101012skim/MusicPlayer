@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2016 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,11 @@ import com.andreadec.musicplayer.models.*;
 
 public class MusicService extends Service implements OnCompletionListener {
 	private final static int METADATA_KEY_ARTWORK = 100;
+	private final static String NOTIFICATION_CHANNEL = "MUSICPLAYERNOTIFICATION";
 	
 	private final IBinder musicBinder = new MusicBinder();	
 	private NotificationManager notificationManager;
+	private NotificationChannel notificationChannel;
 	private Notification notification;
 	private SharedPreferences preferences;
 	
@@ -81,6 +83,10 @@ public class MusicService extends Service implements OnCompletionListener {
 		telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		phoneStateListener = new MusicPhoneStateListener();
 		notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL, "Music Player", NotificationManager.IMPORTANCE_LOW);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
 		
 		// Initialize pending intents
 		quitPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent("com.andreadec.musicplayer.quit"), 0);
@@ -418,6 +424,9 @@ public class MusicService extends Service implements OnCompletionListener {
 		notificationBuilder.setSmallIcon(R.drawable.audio_white);
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setOngoing(true);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			notificationBuilder.setChannelId(NOTIFICATION_CHANNEL);
+		}
 
         if(Build.VERSION.SDK_INT >= 21) {
             int playPauseIcon = isPlaying() ? R.drawable.button_pause : R.drawable.button_play;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ public class DirectoryViewHolder extends RecyclerView.ViewHolder implements View
         super(view);
         this.activity = activity;
         this.clickListener = clickListener;
-        name = (TextView)view.findViewById(R.id.textViewFolderItemFolder);
-        menu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        name = view.findViewById(R.id.textViewFolderItemFolder);
+        menu = view.findViewById(R.id.buttonMenu);
         view.setOnClickListener(this);
         menu.setOnClickListener(this);
         menu.setFocusable(false);

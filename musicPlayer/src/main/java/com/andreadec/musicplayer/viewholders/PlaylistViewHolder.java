@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,14 @@ public class PlaylistViewHolder extends RecyclerView.ViewHolder implements View.
     private ListsClickListener clickListener;
     private Playlist playlist;
     private TextView name;
-    private ImageView menu;
+    private ImageButton menu;
 
     public PlaylistViewHolder(View view, MainActivity activity, final ListsClickListener clickListener) {
         super(view);
         this.activity = activity;
         this.clickListener = clickListener;
-        name = (TextView)view.findViewById(R.id.textViewName);
-        menu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        name = view.findViewById(R.id.textViewName);
+        menu = view.findViewById(R.id.buttonMenu);
         view.setOnClickListener(this);
         menu.setOnClickListener(this);
         menu.setFocusable(false);

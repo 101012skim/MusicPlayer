@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,7 +184,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
 		final View view = getActivity().getLayoutInflater().inflate(R.layout.layout_addpodcast1, null);
 		builder.setView(view);
 		
-		final EditText editTextUrl = (EditText)view.findViewById(R.id.editTextPodcastUrl);
+		final EditText editTextUrl = view.findViewById(R.id.editTextPodcastUrl);
 		
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
@@ -208,12 +208,12 @@ public class PodcastsFragment extends MusicPlayerFragment {
 		builder.setTitle(R.string.addPodcast);
 		final View view = getActivity().getLayoutInflater().inflate(R.layout.layout_addpodcast2, null);
 		builder.setView(view);
-		TextView textViewUrl = (TextView)view.findViewById(R.id.textViewUrl);
+		TextView textViewUrl = view.findViewById(R.id.textViewUrl);
 		textViewUrl.setText(url);
-		final EditText editTextName = (EditText)view.findViewById(R.id.editTextPodcastName);
+		final EditText editTextName = view.findViewById(R.id.editTextPodcastName);
 		if(name!=null) editTextName.setText(name);
 		
-		ImageView imageViewPodcastImage = (ImageView)view.findViewById(R.id.imageViewPodcastImage);
+		ImageView imageViewPodcastImage = view.findViewById(R.id.imageViewPodcastImage);
 		if(image==null) {
 			imageViewPodcastImage.setVisibility(View.GONE);
 		} else {

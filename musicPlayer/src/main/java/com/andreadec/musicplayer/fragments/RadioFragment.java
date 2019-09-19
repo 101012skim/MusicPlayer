@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,8 +92,8 @@ public class RadioFragment extends MusicPlayerFragment {
 		final View view = getActivity().getLayoutInflater().inflate(R.layout.layout_editwebradio, null);
 		builder.setView(view);
 		
-		final EditText editTextUrl = (EditText)view.findViewById(R.id.editTextUrl);
-		final EditText editTextName = (EditText)view.findViewById(R.id.editTextName);
+		final EditText editTextUrl = view.findViewById(R.id.editTextUrl);
+		final EditText editTextName = view.findViewById(R.id.editTextName);
 		if(oldRadio!=null) {
 			editTextUrl.setText(oldRadio.getUrl());
 			editTextName.setText(oldRadio.getName());

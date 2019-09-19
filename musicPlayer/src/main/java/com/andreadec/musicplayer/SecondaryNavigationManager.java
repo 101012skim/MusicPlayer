@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
         this.activity = activity;
         this.drawerLayout = drawerLayout;
 
-        NavigationView navigationRight = (NavigationView)activity.findViewById(R.id.navigationRight);
+        NavigationView navigationRight = activity.findViewById(R.id.navigationRight);
         navigationRight.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationRight.getMenu();
@@ -116,7 +116,7 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
             }
         });
 
-        SeekBar seekbar = (SeekBar)view.findViewById(R.id.seekBarBassBoostStrength);
+        SeekBar seekbar = view.findViewById(R.id.seekBarBassBoostStrength);
         seekbar.setMax(1000);
         seekbar.setProgress(activity.musicService.getBassBoostStrength());
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -156,7 +156,7 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
             }
         });
 
-        CheckBox checkBoxEqualizerEnabled = (CheckBox)view.findViewById(R.id.checkBoxEqualizerEnabled);
+        CheckBox checkBoxEqualizerEnabled = view.findViewById(R.id.checkBoxEqualizerEnabled);
         checkBoxEqualizerEnabled.setChecked(activity.musicService.getEqualizerEnabled());
         checkBoxEqualizerEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -169,7 +169,7 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
         String[] availablePresets = activity.musicService.getEqualizerAvailablePresets();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, availablePresets);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinnerEqualizerPreset = (Spinner)view.findViewById(R.id.spinnerEqualizerPreset);
+        Spinner spinnerEqualizerPreset = view.findViewById(R.id.spinnerEqualizerPreset);
         spinnerEqualizerPreset.setAdapter(adapter);
         spinnerEqualizerPreset.setSelection(activity.musicService.getEqualizerPreset());
 

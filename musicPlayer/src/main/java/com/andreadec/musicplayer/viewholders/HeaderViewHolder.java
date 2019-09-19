@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class HeaderViewHolder extends RecyclerView.ViewHolder implements View.On
     public HeaderViewHolder(View view, ListsClickListener clickListener) {
         super(view);
         this.clickListener = clickListener;
-        text = (TextView)view.findViewById(R.id.textViewHeader);
+        text = view.findViewById(R.id.textViewHeader);
         view.setOnClickListener(this);
     }
 

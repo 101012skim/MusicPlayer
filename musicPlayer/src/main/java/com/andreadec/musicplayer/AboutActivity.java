@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,19 @@ package com.andreadec.musicplayer;
 import android.content.pm.PackageManager.*;
 import android.content.res.*;
 import android.os.*;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.*;
 import android.text.Html;
 import android.text.method.*;
 import android.widget.*;
 
-public class AboutActivity extends ActionBarActivity {
+public class AboutActivity extends AppCompatActivity {
 	private TextView textViewAbout;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);       
         setContentView(R.layout.activity_about);
-        textViewAbout = (TextView)findViewById(R.id.textViewAbout);
+        textViewAbout = findViewById(R.id.textViewAbout);
         textViewAbout.setMovementMethod(LinkMovementMethod.getInstance());
         Resources resources = getResources();
         

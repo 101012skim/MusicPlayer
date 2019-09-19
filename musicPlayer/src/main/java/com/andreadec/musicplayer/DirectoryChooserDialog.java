@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,8 @@ class DirectoryChooserDialog implements OnItemClickListener {
 		
 		dialogView = activity.getLayoutInflater().inflate(R.layout.layout_directorychooser, null, false);
 		
-		textViewDirectory = (TextView)dialogView.findViewById(R.id.textViewDirectory);
-		listView = (ListView)dialogView.findViewById(R.id.listView);
+		textViewDirectory = dialogView.findViewById(R.id.textViewDirectory);
+		listView = dialogView.findViewById(R.id.listView);
 		listView.setOnItemClickListener(this);
 		dialog.setView(dialogView);
 		

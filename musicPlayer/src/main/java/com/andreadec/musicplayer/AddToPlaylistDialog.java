@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class AddToPlaylistDialog {
         list.setAdapter(adapter);
 
         View header = inflater.inflate(android.R.layout.simple_list_item_1, null, false);
-        TextView headerText = (TextView)header.findViewById(android.R.id.text1);
+        TextView headerText = header.findViewById(android.R.id.text1);
         headerText.setText(R.string.newPlaylist);
         list.addHeaderView(header);
 

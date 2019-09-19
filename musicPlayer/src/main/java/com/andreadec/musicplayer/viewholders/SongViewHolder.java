@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ public class SongViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     public SongViewHolder(View view, ImagesCache imagesCache, ListsClickListener clickListener) {
         super(view);
-        title = (TextView)view.findViewById(R.id.textViewSongItemTitle);
-        artist = (TextView)view.findViewById(R.id.textViewSongItemArtist);
-        image = (ImageView)view.findViewById(R.id.imageViewItemImage);
-        menu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        title = view.findViewById(R.id.textViewSongItemTitle);
+        artist = view.findViewById(R.id.textViewSongItemArtist);
+        image = view.findViewById(R.id.imageViewItemImage);
+        menu = view.findViewById(R.id.buttonMenu);
         card = view.findViewById(R.id.card);
         this.imagesCache = imagesCache;
         this.clickListener = clickListener;

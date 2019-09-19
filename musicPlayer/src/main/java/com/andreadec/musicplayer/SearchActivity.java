@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import android.widget.*;
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.models.*;
 
-public class SearchActivity extends ActionBarActivity implements OnClickListener, OnKeyListener {
+public class SearchActivity extends AppCompatActivity implements OnClickListener, OnKeyListener {
 	private EditText editTextSearch;
 	private ImageButton buttonSearch;
 	private RecyclerView recyclerViewSearch;
@@ -55,7 +55,7 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
         
         setContentView(R.layout.activity_search);
         
-        editTextSearch = (EditText)findViewById(R.id.editTextSearch);
+        editTextSearch = findViewById(R.id.editTextSearch);
         editTextSearch.setOnKeyListener(this);
 		editTextSearch.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
@@ -65,9 +65,9 @@ public class SearchActivity extends ActionBarActivity implements OnClickListener
 				}
 			}
 		});
-        buttonSearch = (ImageButton)findViewById(R.id.buttonSearch);
+        buttonSearch = findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(this);
-        recyclerViewSearch = (RecyclerView)findViewById(R.id.recyclerViewSearch);
+        recyclerViewSearch = findViewById(R.id.recyclerViewSearch);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewSearch.setLayoutManager(llm);

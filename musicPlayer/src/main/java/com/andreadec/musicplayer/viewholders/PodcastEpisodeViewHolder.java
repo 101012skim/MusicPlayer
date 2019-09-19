@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,21 +32,22 @@ public class PodcastEpisodeViewHolder extends RecyclerView.ViewHolder implements
     private ListsClickListener clickListener;
     private PodcastEpisode episode;
     private TextView title, info, status, description;
-    private ImageView image, imageStatus, menu;
+    private ImageView image, imageStatus;
+    private ImageButton menu;
     private View card;
 
     public PodcastEpisodeViewHolder(View view, MainActivity activity, ListsClickListener clickListener) {
         super(view);
         this.activity = activity;
         this.clickListener = clickListener;
-        title = (TextView)view.findViewById(R.id.textViewPodcastTitle);
-        info = (TextView)view.findViewById(R.id.textViewPodcastInfo);
-        status = (TextView)view.findViewById(R.id.textViewPodcastStatus);
-        description = (TextView)view.findViewById(R.id.textViewPodcastDescription);
-        image = (ImageView)view.findViewById(R.id.imageViewItemImage);
-        imageStatus = (ImageView)view.findViewById(R.id.imageViewPodcastStatus);
+        title = view.findViewById(R.id.textViewPodcastTitle);
+        info = view.findViewById(R.id.textViewPodcastInfo);
+        status = view.findViewById(R.id.textViewPodcastStatus);
+        description = view.findViewById(R.id.textViewPodcastDescription);
+        image = view.findViewById(R.id.imageViewItemImage);
+        imageStatus = view.findViewById(R.id.imageViewPodcastStatus);
         card = view.findViewById(R.id.card);
-        menu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        menu = view.findViewById(R.id.buttonMenu);
         view.setOnClickListener(this);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,16 +33,16 @@ public class PodcastViewHolder extends RecyclerView.ViewHolder implements View.O
     private ListsClickListener clickListener;
     private TextView title;
     private ImageView image;
-    private ImageView menu;
+    private ImageButton menu;
     private Podcast podcast;
 
     public PodcastViewHolder(View view, MainActivity activity, ListsClickListener clickListener) {
         super(view);
         this.activity = activity;
         this.clickListener = clickListener;
-        title = (TextView)view.findViewById(R.id.textViewFolderItemFolder);
-        image = (ImageView)view.findViewById(R.id.imageViewItemImage);
-        menu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        title = view.findViewById(R.id.textViewFolderItemFolder);
+        image = view.findViewById(R.id.imageViewItemImage);
+        menu = view.findViewById(R.id.buttonMenu);
         view.setOnClickListener(this);
     }
 

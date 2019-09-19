@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Andrea De Cesare
+ * Copyright 2015-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ public class RadioViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     public RadioViewHolder(View view, MainActivity activity, ListsClickListener clickListener) {
         super(view);
-        text = (TextView)view.findViewById(R.id.textViewRadio);
-        image = (ImageView)view.findViewById(R.id.imageViewRadio);
-        menu = (ImageButton)view.findViewById(R.id.buttonMenu);
+        text = view.findViewById(R.id.textViewRadio);
+        image = view.findViewById(R.id.imageViewRadio);
+        menu = view.findViewById(R.id.buttonMenu);
         card = view.findViewById(R.id.card);
         this.activity = activity;
         this.clickListener = clickListener;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,15 +51,15 @@ public abstract class MusicPlayerFragment extends Fragment {
     }
 
     public void initialize(View view) {
-        recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-        floatingButton = (FloatingActionButton)activity.findViewById(R.id.floatingButton);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        floatingButton = activity.findViewById(R.id.floatingButton);
         floatingButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 onFloatingButtonClick();
             }
         });
-        emptyView = (TextView)view.findViewById(R.id.emptyView);
+        emptyView = view.findViewById(R.id.emptyView);
 
         layoutManager = new LinearLayoutManager(activity);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
