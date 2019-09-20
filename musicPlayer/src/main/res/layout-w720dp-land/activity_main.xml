@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
- * Copyright 2012-2015 Andrea De Cesare
+ * Copyright 2012-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,24 +152,7 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/menu_navigation"
-        app:itemIconTint="?android:attr/textColorPrimary"
-        app:itemTextColor="?android:attr/textColorPrimary"
-        android:fitsSystemWindows="true" />
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationRight"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:layout_gravity="end"
-        app:menu="@menu/menu_navigation_right"
-        app:itemTextColor="?android:attr/textColorPrimary"
-        android:fitsSystemWindows="true" />
+    <include layout="@layout/navigation_main" />
+    <include layout="@layout/navigation_right" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
