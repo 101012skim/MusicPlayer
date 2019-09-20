@@ -21,7 +21,7 @@ import java.net.*;
 import java.util.*;
 import android.app.*;
 import android.content.*;
-import android.support.v4.app.*;
+import androidx.core.app.*;
 import com.andreadec.musicplayer.models.*;
 
 public class PodcastEpisodeDownloaderService extends IntentService {

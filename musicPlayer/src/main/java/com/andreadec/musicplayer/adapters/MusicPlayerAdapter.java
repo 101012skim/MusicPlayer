@@ -16,8 +16,11 @@
 
 package com.andreadec.musicplayer.adapters;
 
-import android.support.v7.widget.*;
+import androidx.appcompat.widget.*;
 import android.view.*;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.andreadec.musicplayer.*;
 import com.andreadec.musicplayer.models.*;
 import com.andreadec.musicplayer.viewholders.*;

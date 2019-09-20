@@ -17,7 +17,7 @@
 package com.andreadec.musicplayer.ui;
 
 import android.graphics.*;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.*;
 import android.widget.*;
 

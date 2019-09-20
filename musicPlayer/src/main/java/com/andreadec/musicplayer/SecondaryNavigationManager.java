@@ -18,10 +18,14 @@ package com.andreadec.musicplayer;
 
 import android.app.*;
 import android.content.*;
-import android.support.design.widget.*;
-import android.support.v4.widget.*;
+
+import androidx.core.widget.*;
 import android.view.*;
 import android.widget.*;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelectedListener {
     private MainActivity activity;

@@ -30,7 +30,7 @@ import android.net.*;
 import android.os.*;
 import android.preference.*;
 import android.preference.Preference.*;
-import android.support.v7.app.*;
+import androidx.appcompat.app.*;
 import android.util.*;
 import android.util.Base64;
 import android.view.*;

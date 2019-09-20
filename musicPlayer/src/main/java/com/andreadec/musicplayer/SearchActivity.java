@@ -22,12 +22,16 @@ import android.content.*;
 import android.database.*;
 import android.os.*;
 import android.provider.*;
-import android.support.v7.app.*;
-import android.support.v7.widget.*;
+import androidx.appcompat.app.*;
+import androidx.appcompat.widget.*;
 import android.view.*;
 import android.view.View.*;
 import android.view.inputmethod.*;
 import android.widget.*;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.andreadec.musicplayer.adapters.*;
 import com.andreadec.musicplayer.models.*;
 

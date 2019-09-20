@@ -27,11 +27,12 @@ So I decided to write this application for my personal use and to publish it hop
 - ACCESS\_NETWORK\_STATE (view network connections): necessary to check if a network connection is available;
 - INTERNET (full network access): necessary to listen to web radios and to download podcasts;
 - READ\_EXTERNAL\_STORAGE (test access to protected storage): necessary to import web radios list;
-- WRITE\_EXTERNAL\_STORAGE (modify or delete contents of your SD card): necessary to export web radios list.
+- WRITE\_EXTERNAL\_STORAGE (modify or delete contents of your SD card): necessary to export web radios list;
+- FOREGROUND\_SERVICE: necessary to run the playback service in foreground.
 
 
 ## License
-Copyright 2012-2016 Andrea De Cesare
+Copyright 2012-2019 Andrea De Cesare
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.  
@@ -49,8 +50,19 @@ limitations under the License.
 ## Used libraries
 This project uses the following open source libraries.
 
-### Android Support Library
-Copyright (c) 2005-2014, The Android Open Source Project
+### AndroidX Libraries
+Copyright (c) 2005-2019, The Android Open Source Project
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.  
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+### Material Components for Android
+Copyright (c) 2005-2019, The Android Open Source Project
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.  
