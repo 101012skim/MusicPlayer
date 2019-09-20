@@ -38,7 +38,10 @@ import android.widget.*;
 import com.andreadec.musicplayer.models.*;
 
 public class PreferencesActivity extends AppCompatActivity {
-	private final static String DEFAULT_IMPORTEXPORT_FILENAME = Environment.getExternalStorageDirectory() + "/musicplayer_info.xml";
+	private final static String DEFAULT_IMPORTEXPORT_FILENAME = "musicplayer_info.xml";
+	private final static String DEFAULT_IMPORTEXPORT_FILENAME_PATH = "file://" + Environment.getExternalStorageDirectory() + "/" + DEFAULT_IMPORTEXPORT_FILENAME;
+	private final static int EXPORT_REQUEST_CODE = 1;
+	private final static int IMPORT_REQUEST_CODE = 2;
 	
 	private boolean needsRestart;
 
@@ -180,29 +183,51 @@ public class PreferencesActivity extends AppCompatActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	private void doImport() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.importMsg);
-		builder.setMessage(getResources().getString(R.string.importConfirm, DEFAULT_IMPORTEXPORT_FILENAME));
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				doImport(DEFAULT_IMPORTEXPORT_FILENAME);
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    	if(resultCode==RESULT_OK && resultData!=null) {
+    		switch (requestCode) {
+				case IMPORT_REQUEST_CODE:
+					doImport(resultData.getData());
+					break;
+				case EXPORT_REQUEST_CODE:
+					doExport(resultData.getData());
+					break;
 			}
-		});
-		builder.setNegativeButton(R.string.no, null);
-		builder.show();
+		}
+	}
+
+	private void doImport() {
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.importMsg);
+			builder.setMessage(getResources().getString(R.string.importConfirm, DEFAULT_IMPORTEXPORT_FILENAME_PATH));
+			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					doImport(Uri.parse(DEFAULT_IMPORTEXPORT_FILENAME_PATH));
+				}
+			});
+			builder.setNegativeButton(R.string.no, null);
+			builder.show();
+		} else {
+			Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("application/xml");
+			startActivityForResult(intent, IMPORT_REQUEST_CODE);
+		}
 	}
 	
-	private void doImport(String filename) {
-		if(filename==null) return;
-		Log.i("Import file", filename);
-		File file = new File(filename.replace("file://", ""));
-		
+	private void doImport(Uri uri) {
+		ParcelFileDescriptor pfd = null;
+		FileInputStream inputStream = null;
 		try {
+			pfd = getContentResolver().openFileDescriptor(uri, "r");
+			inputStream = new FileInputStream(pfd.getFileDescriptor());
+
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(file);
+			Document doc = docBuilder.parse(inputStream);
 			doc.getDocumentElement().normalize();
 	
 			NodeList radios = doc.getElementsByTagName("radio");
@@ -227,34 +252,51 @@ public class PreferencesActivity extends AppCompatActivity {
 			}
 			
 			Toast.makeText(this, R.string.importSuccess, Toast.LENGTH_LONG).show();
+			inputStream.close();
 		} catch(Exception e) {
 			Toast.makeText(this, R.string.importError, Toast.LENGTH_LONG).show();
 			Log.e("WebRadioAcitivity", "doImport", e);
+		} finally {
+			try {
+				if(pfd != null) pfd.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	private void doExport() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.export);
-		builder.setMessage(getResources().getString(R.string.exportConfirm, DEFAULT_IMPORTEXPORT_FILENAME));
-		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				doExport(DEFAULT_IMPORTEXPORT_FILENAME);
-			}
-		});
-		builder.setNegativeButton(R.string.no, null);
-		builder.show();
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.export);
+			builder.setMessage(getResources().getString(R.string.exportConfirm, DEFAULT_IMPORTEXPORT_FILENAME_PATH));
+			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					doExport(Uri.parse(DEFAULT_IMPORTEXPORT_FILENAME_PATH));
+				}
+			});
+			builder.setNegativeButton(R.string.no, null);
+			builder.show();
+		} else {
+			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("application/xml");
+			intent.putExtra(Intent.EXTRA_TITLE, DEFAULT_IMPORTEXPORT_FILENAME);
+			startActivityForResult(intent, EXPORT_REQUEST_CODE);
+		}
 	}
 	
-	private void doExport(String filename) {
+	private void doExport(Uri uri) {
 		ArrayList<Radio> radios = Radio.getRadios();
 		ArrayList<Podcast> podcasts = Podcast.getPodcasts();
-		
-		File file = new File(filename);
+		ParcelFileDescriptor pfd = null;
+
 		try {
-			FileOutputStream fos = new FileOutputStream(file);
+			pfd = getContentResolver().openFileDescriptor(uri, "w");
+			FileOutputStream outputStream = new FileOutputStream(pfd.getFileDescriptor());
+
 			XmlSerializer serializer = Xml.newSerializer();
-			serializer.setOutput(fos, "UTF-8");
+			serializer.setOutput(outputStream, "UTF-8");
 	        serializer.startDocument(null, true);
 	        serializer.startTag(null, "info");
 	        
@@ -281,12 +323,18 @@ public class PreferencesActivity extends AppCompatActivity {
 	        serializer.endTag(null, "info");
 	        serializer.endDocument();
 	        serializer.flush();
-			fos.close();
+			outputStream.close();
 			
 			Toast.makeText(this, R.string.exportSuccess, Toast.LENGTH_LONG).show();
 		} catch(Exception e) {
 			Toast.makeText(this, R.string.exportError, Toast.LENGTH_LONG).show();
 			Log.e("WebRadioAcitivity", "doExport", e);
+		} finally {
+			try {
+				if(pfd != null) pfd.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
