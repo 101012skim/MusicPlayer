@@ -30,7 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelectedListener {
     private MainActivity activity;
     private DrawerLayout drawerLayout;
-    private MenuItem shuffle, repeat, repeatAll, bass, equalizer, shake;
+    private MenuItem shuffle, repeat, repeatAll, bass, shake;
 
     public SecondaryNavigationManager(MainActivity activity, DrawerLayout drawerLayout) {
         this.activity = activity;
@@ -44,7 +44,6 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
         repeat = menu.findItem(R.id.repeat);
         repeatAll = menu.findItem(R.id.repeatAll);
         bass = menu.findItem(R.id.bass);
-        equalizer = menu.findItem(R.id.equalizer);
         shake = menu.findItem(R.id.shake);
     }
 
@@ -66,9 +65,6 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
             case R.id.bass:
                 bassBoostSettings();
                 break;
-            case R.id.equalizer:
-                equalizerSettings();
-                break;
             case R.id.shake:
                 activity.musicService.toggleShake();
                 update();
@@ -83,7 +79,6 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
         repeat.setChecked(activity.musicService.getRepeat());
         repeatAll.setChecked(activity.musicService.getRepeatAll());
         bass.setChecked(activity.musicService.getBassBoostEnabled());
-        equalizer.setChecked(activity.musicService.getEqualizerEnabled());
         shake.setChecked(activity.musicService.isShakeEnabled());
     }
 
@@ -134,56 +129,6 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
             @Override public void onStopTrackingTouch(SeekBar arg0) {}
         });
 
-        builder.show();
-    }
-
-    private void equalizerSettings() {
-        if(!activity.musicService.getEqualizerAvailable()) {
-            Utils.showMessageDialog(activity, R.string.error, R.string.errorEqualizer);
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.equalizer);
-        View view = activity.getLayoutInflater().inflate(R.layout.layout_equalizer, null);
-        builder.setView(view);
-
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                update();
-            }
-        });
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                update();
-            }
-        });
-
-        CheckBox checkBoxEqualizerEnabled = view.findViewById(R.id.checkBoxEqualizerEnabled);
-        checkBoxEqualizerEnabled.setChecked(activity.musicService.getEqualizerEnabled());
-        checkBoxEqualizerEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                activity.musicService.toggleEqualizer();
-                update();
-            }
-        });
-
-        String[] availablePresets = activity.musicService.getEqualizerAvailablePresets();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, availablePresets);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinnerEqualizerPreset = view.findViewById(R.id.spinnerEqualizerPreset);
-        spinnerEqualizerPreset.setAdapter(adapter);
-        spinnerEqualizerPreset.setSelection(activity.musicService.getEqualizerPreset());
-
-        spinnerEqualizerPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                activity.musicService.setEqualizerPreset(position);
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
         builder.show();
     }
 }

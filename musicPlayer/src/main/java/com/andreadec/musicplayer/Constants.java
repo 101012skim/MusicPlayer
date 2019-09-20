@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ public class Constants {
 	public final static String PREFERENCE_REPEATALL = "repeatAll";
 	public final static String PREFERENCE_BASSBOOST = "bassBoost";
 	public final static String PREFERENCE_BASSBOOSTSTRENGTH = "bassBoostStrength";
-	public final static String PREFERENCE_EQUALIZER = "equalizer";
 	public final static String PREFERENCE_EQUALIZERPRESET = "equalizerPreset";
 	public final static String PREFERENCE_SHAKEENABLED = "shakeEnabled";
 	public final static String PREFERENCE_SONGSSORTINGMETHOD = "songsSortingMethod";
@@ -60,8 +59,6 @@ public class Constants {
 	public final static boolean DEFAULT_REPEATALL = false;
 	public final static boolean DEFAULT_BASSBOOST = false;
 	public final static int DEFAULT_BASSBOOSTSTRENGTH = 0;
-	public final static boolean DEFAULT_EQUALIZER = false;
-	public final static int DEFAULT_EQUALIZERPRESET = 0;
 	public final static boolean DEFAULT_SHAKEENABLED = false;
 	public final static String DEFAULT_LASTDIRECTORY = null;
 	public final static boolean DEFAULT_STOPPLAYINGWHENHEADSETDISCONNECTED = false;

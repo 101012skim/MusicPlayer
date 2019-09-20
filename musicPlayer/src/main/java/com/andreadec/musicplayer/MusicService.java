@@ -34,6 +34,7 @@ import com.andreadec.musicplayer.models.*;
 public class MusicService extends Service implements OnCompletionListener {
 	private final static int METADATA_KEY_ARTWORK = 100;
 	private final static String NOTIFICATION_CHANNEL = "MUSICPLAYERNOTIFICATION";
+	private final static String WAKE_LOCK_TAG = "MusicPlayer:WakeLock";
 	
 	private final IBinder musicBinder = new MusicBinder();	
 	private NotificationManager notificationManager;
@@ -51,9 +52,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	
 	private MediaPlayer mediaPlayer;
 	private BassBoost bassBoost;
-	private Equalizer equalizer;
 	private boolean bassBoostAvailable;
-	private boolean equalizerAvailable;
 	
 	private boolean shuffle, repeat, repeatAll;
 	private Random random;
@@ -77,7 +76,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	@Override
 	public void onCreate() {
 		PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MusicServiceWakelock");
+		wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG);
 		
 		// Initialize the telephony manager
 		telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
@@ -113,14 +112,6 @@ public class MusicService extends Service implements OnCompletionListener {
 			bassBoostAvailable = true;
 		} catch(Exception e) {
 			bassBoostAvailable = false;
-		}
-		try { // This may fail if the device doesn't support equalizer
-			equalizer = new Equalizer(1, mediaPlayer.getAudioSessionId());
-			equalizer.setEnabled(preferences.getBoolean(Constants.PREFERENCE_EQUALIZER, Constants.DEFAULT_EQUALIZER));
-			setEqualizerPreset(preferences.getInt(Constants.PREFERENCE_EQUALIZERPRESET, Constants.DEFAULT_EQUALIZERPRESET));
-			equalizerAvailable = true;
-		} catch(Exception e) {
-			equalizerAvailable = false;
 		}
 		random = new Random(System.nanoTime()); // Necessary for song shuffle
 		
@@ -245,13 +236,6 @@ public class MusicService extends Service implements OnCompletionListener {
 			editor.remove(Constants.PREFERENCE_BASSBOOST);
 			editor.remove(Constants.PREFERENCE_BASSBOOSTSTRENGTH);
 		}
-		if(equalizerAvailable) {
-			editor.putBoolean(Constants.PREFERENCE_EQUALIZER, getEqualizerEnabled());
-			editor.putInt(Constants.PREFERENCE_EQUALIZERPRESET, getEqualizerPreset());
-		} else {
-			editor.remove(Constants.PREFERENCE_EQUALIZER);
-			editor.remove(Constants.PREFERENCE_EQUALIZERPRESET);
-		}
 		editor.putBoolean(Constants.PREFERENCE_SHAKEENABLED, isShakeEnabled());
 		if(currentPlayingItem!=null) {
 			if(currentPlayingItem instanceof BrowserSong) {
@@ -345,35 +329,6 @@ public class MusicService extends Service implements OnCompletionListener {
 	}
 	public int getBassBoostStrength() {
 		return bassBoost.getRoundedStrength();
-	}
-	
-	
-	/* EQUALIZER */
-	public boolean getEqualizerAvailable() {
-		return equalizerAvailable;
-	}
-	public boolean toggleEqualizer() {
-		boolean newState = !equalizer.getEnabled();
-		equalizer.setEnabled(newState);
-		return newState;
-	}
-	public boolean getEqualizerEnabled() {
-		if(!equalizerAvailable || equalizer==null) return false;
-		return equalizer.getEnabled();
-	}
-	public void setEqualizerPreset(int preset) {
-		equalizer.usePreset((short)preset);
-	}
-	public short getEqualizerPreset() {
-		return equalizer.getCurrentPreset();
-	}
-	public String[] getEqualizerAvailablePresets() {
-		int n = equalizer.getNumberOfPresets();
-		String[] presets = new String[n];
-		for(short i=0; i<n; i++) {
-			presets[i] = equalizer.getPresetName(i);
-		}
-		return presets;
 	}
 	
 	
