@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	private ImageButton imageButtonPrevious, imageButtonNext, imageButtonShowSeekbar2;
 	private SeekBar seekBar1, seekBar2;
 	private ImageView imageViewSongImage;
-	public MusicService musicService; // The application service
+	public MusicService musicService;
+	private ServiceConnection serviceConnection;
 	private Intent serviceIntent;
 	private BroadcastReceiver broadcastReceiver;
 	private SharedPreferences preferences;
@@ -244,8 +245,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     	// The service is bound to this activity
     	if(musicService==null) {
             startService(serviceIntent); // Starts the service if it is not running
-    		createMusicConnection();
-    		bindService(serviceIntent, musicConnection, Context.BIND_AUTO_CREATE);
+			serviceConnection = new ServiceConnection() {
+				@Override
+				public void onServiceConnected(ComponentName className, IBinder service) {
+					musicService = ((MusicService.MusicBinder)service).getService();
+					startRoutine();
+				}
+				@Override
+				public void onServiceDisconnected(ComponentName className) {
+					musicService = null;
+				}
+			};
+    		bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     	}
     }
     
@@ -338,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     public void onStop() {
     	super.onStop();
     	musicService = null;
-    	unbindService(musicConnection); // Unbinds from the service
+    	unbindService(serviceConnection); // Unbinds from the service
     }
     
     /* Updates information about the current song. */
@@ -703,21 +714,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	}
 	@Override public void onStartTrackingTouch(SeekBar seekBar) {}
 	@Override public void onStopTrackingTouch(SeekBar seekBar) {}
-	
-	private ServiceConnection musicConnection;
-	private void createMusicConnection() {
-		musicConnection = new ServiceConnection() {
-			@Override
-			public void onServiceConnected(ComponentName className, IBinder service) {
-				musicService = ((MusicService.MusicBinder)service).getService();
-				startRoutine();
-			}
-			@Override
-			public void onServiceDisconnected(ComponentName className) {
-				musicService = null;
-			}
-		};
-	}
 	
 	
 	
