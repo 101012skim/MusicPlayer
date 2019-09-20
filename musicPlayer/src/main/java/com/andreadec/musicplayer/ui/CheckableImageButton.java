@@ -3,9 +3,9 @@ package com.andreadec.musicplayer.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Checkable;
-import android.widget.ImageButton;
+import androidx.appcompat.widget.*;
 
-public class CheckableImageButton extends ImageButton implements Checkable {
+public class CheckableImageButton extends AppCompatImageButton implements Checkable {
     final private static int[] checkedState = { android.R.attr.state_checked };
     private boolean checked;
 
@@ -23,7 +23,6 @@ public class CheckableImageButton extends ImageButton implements Checkable {
 
     @Override
     public boolean performClick() {
-        //toggle();
         return super.performClick();
     }
 
