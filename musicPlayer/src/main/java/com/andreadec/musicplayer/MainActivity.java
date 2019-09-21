@@ -502,11 +502,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	if(preferences.getBoolean(Constants.PREFERENCE_OPENLASTPAGEONSTART, Constants.DEFAULT_OPENLASTPAGEONSTART)) {
-    		SharedPreferences.Editor editor = preferences.edit();
-    		editor.putInt(Constants.PREFERENCE_LASTPAGE, app.currentPage);
-    		editor.apply();
-    	}
     }
     
     @Override
@@ -623,6 +618,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	
 	/* ALWAYS CALL THIS FUNCTION TO COMPLETELY CLOSE THE APPLICATION */
 	public void quitApplication() {
+		if(preferences.getBoolean(Constants.PREFERENCE_OPENLASTPAGEONSTART, Constants.DEFAULT_OPENLASTPAGEONSTART)) {
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putInt(Constants.PREFERENCE_LASTPAGE, app.currentPage);
+			editor.apply();
+		}
         app.currentPage = -1;
 		stopService(serviceIntent); // Stop the service!
 		finish();
