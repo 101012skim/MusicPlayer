@@ -213,7 +213,7 @@ public class PreferencesActivity extends AppCompatActivity {
 		} else {
 			Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			intent.setType("application/xml");
+			intent.setType("*/*");
 			startActivityForResult(intent, IMPORT_REQUEST_CODE);
 		}
 	}
@@ -280,7 +280,7 @@ public class PreferencesActivity extends AppCompatActivity {
 		} else {
 			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			intent.setType("application/xml");
+			intent.setType("text/xml");
 			intent.putExtra(Intent.EXTRA_TITLE, DEFAULT_IMPORTEXPORT_FILENAME);
 			startActivityForResult(intent, EXPORT_REQUEST_CODE);
 		}
