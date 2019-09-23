@@ -24,8 +24,6 @@ import android.Manifest;
 import android.graphics.*;
 import android.media.*;
 import android.os.*;
-import android.os.storage.StorageManager;
-import android.os.storage.StorageVolume;
 import android.preference.*;
 import com.google.android.material.navigation.NavigationView;
 import androidx.fragment.app.FragmentManager;
