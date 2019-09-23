@@ -24,6 +24,8 @@ import android.Manifest;
 import android.graphics.*;
 import android.media.*;
 import android.os.*;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.preference.*;
 import com.google.android.material.navigation.NavigationView;
 import androidx.fragment.app.FragmentManager;
@@ -511,10 +513,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(true);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(true);
 			menu.findItem(R.id.menu_gotoRootFolder).setVisible(true);
+			menu.findItem(R.id.menu_gotoStorageFolder).setVisible(true);
     	} else {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(false);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(false);
 			menu.findItem(R.id.menu_gotoRootFolder).setVisible(false);
+			menu.findItem(R.id.menu_gotoStorageFolder).setVisible(false);
     	}
     	if(app.currentPage==PAGE_PODCASTS) {
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(true);
@@ -546,6 +550,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 			return true;
 		case R.id.menu_gotoRootFolder:
 			((BrowserFragment)currentFragment).gotoRootFolder();
+			return true;
+		case R.id.menu_gotoStorageFolder:
+			((BrowserFragment)currentFragment).gotoStorageFolder();
 			return true;
 		case R.id.menu_search:
 			startActivityForResult(new Intent(this, SearchActivity.class), 1);

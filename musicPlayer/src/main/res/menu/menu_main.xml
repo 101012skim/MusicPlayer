@@ -35,6 +35,10 @@
 	<item android:id="@+id/menu_gotoRootFolder"
 		  android:title="@string/gotoRootFolder"
 		  app:showAsAction="never" />
+
+	<item android:id="@+id/menu_gotoStorageFolder"
+		android:title="@string/gotoStorageFolder"
+		app:showAsAction="never"/>
 	
 	<item android:id="@+id/menu_songInfo"
 	    android:title="@string/songInfo" />

@@ -248,4 +248,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 	public void gotoRootFolder() {
 		gotoDirectory(new File("/"), null);
 	}
+	public void gotoStorageFolder() {
+    	gotoDirectory(new File("/storage"), null);
+	}
 }
