@@ -24,12 +24,9 @@ public class Constants {
 	public final static String PREFERENCE_LASTSONGPOSITION = "lastSongPosition";
 	public final static String PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID = "lastPlyaingSongFromPlaylistId";
 	public final static String PREFERENCE_LASTPAGE = "lastPage";
-	public final static String PREFERENCE_SHUFFLE = "shuffle";
-	public final static String PREFERENCE_REPEAT = "repeat";
-	public final static String PREFERENCE_REPEATALL = "repeatAll";
+	public final static String PREFERENCE_PLAY_MODE = "playMode";
 	public final static String PREFERENCE_BASSBOOST = "bassBoost";
 	public final static String PREFERENCE_BASSBOOSTSTRENGTH = "bassBoostStrength";
-	public final static String PREFERENCE_EQUALIZERPRESET = "equalizerPreset";
 	public final static String PREFERENCE_SHAKEENABLED = "shakeEnabled";
 	public final static String PREFERENCE_SONGSSORTINGMETHOD = "songsSortingMethod";
 	public final static String PREFERENCE_DISABLELOCKSCREEN = "disableLockScreen";
@@ -54,9 +51,7 @@ public class Constants {
 	public final static String DEFAULT_SONGSSORTINGMETHOD = "nat";
 	public final static boolean DEFAULT_DISABLELOCKSCREEN = false;
 	public final static String DEFAULT_BASEFOLDER = null;
-	public final static boolean DEFAULT_SHUFFLE = false;
-	public final static boolean DEFAULT_REPEAT = false;
-	public final static boolean DEFAULT_REPEATALL = false;
+	public final static int DEFAULT_PLAY_MODE = 0;
 	public final static boolean DEFAULT_BASSBOOST = false;
 	public final static int DEFAULT_BASSBOOSTSTRENGTH = 0;
 	public final static boolean DEFAULT_SHAKEENABLED = false;
@@ -82,13 +77,6 @@ public class Constants {
 	
 	// Notifications
 	public final static int NOTIFICATION_MAIN = 1;
-	public final static int NOTIFICATION_INDEXING_ONGOING = 2;
-	public final static int NOTIFICATION_INDEXING_COMPLETED = 3;
-	public final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING = 4;
-	public final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ERROR = 5;
-	
-	
-	// Other constants
-	public final static int IMAGES_CACHE_SIZE = 4 * 1024 * 1024; // 4MiB
-	public final static int SECOND_SEEKBAR_DURATION = 600000; // 10 minutes, in milliseconds
+	public final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING = 2;
+	public final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ERROR = 3;
 }

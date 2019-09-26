@@ -18,14 +18,14 @@ package com.andreadec.musicplayer;
 
 import android.app.*;
 import android.content.*;
-
-import androidx.core.widget.*;
 import android.view.*;
 import android.widget.*;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+
+import static com.andreadec.musicplayer.MusicService.*;
 
 class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelectedListener {
     private MainActivity activity;
@@ -49,17 +49,18 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
+        int currentPlayMode = activity.musicService.getPlayMode();
         switch (menuItem.getItemId()) {
             case R.id.shuffle:
-                activity.musicService.setShuffle(!activity.musicService.getShuffle());
+                activity.musicService.setPlayMode(currentPlayMode==PLAY_MODE_SHUFFLE ? PLAY_MODE_NORMAL : PLAY_MODE_SHUFFLE);
                 update();
                 break;
             case R.id.repeat:
-                activity.musicService.setRepeat(!activity.musicService.getRepeat());
+                activity.musicService.setPlayMode(currentPlayMode==PLAY_MODE_REPEAT_ONE ? PLAY_MODE_NORMAL : PLAY_MODE_REPEAT_ONE);
                 update();
                 break;
             case R.id.repeatAll:
-                activity.musicService.setRepeatAll(!activity.musicService.getRepeatAll());
+                activity.musicService.setPlayMode(currentPlayMode==PLAY_MODE_REPEAT_ALL ? PLAY_MODE_NORMAL : PLAY_MODE_REPEAT_ALL);
                 update();
                 break;
             case R.id.bass:
@@ -75,9 +76,10 @@ class SecondaryNavigationManager implements NavigationView.OnNavigationItemSelec
     }
 
     public void update() {
-        shuffle.setChecked(activity.musicService.getShuffle());
-        repeat.setChecked(activity.musicService.getRepeat());
-        repeatAll.setChecked(activity.musicService.getRepeatAll());
+        int currentPlayMode = activity.musicService.getPlayMode();
+        shuffle.setChecked(currentPlayMode==PLAY_MODE_SHUFFLE);
+        repeat.setChecked(currentPlayMode==PLAY_MODE_REPEAT_ONE);
+        repeatAll.setChecked(currentPlayMode==PLAY_MODE_REPEAT_ALL);
         bass.setChecked(activity.musicService.getBassBoostEnabled());
         shake.setChecked(activity.musicService.isShakeEnabled());
     }

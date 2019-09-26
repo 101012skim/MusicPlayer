@@ -33,8 +33,9 @@ import com.andreadec.musicplayer.models.*;
 
 public class MusicService extends Service implements OnCompletionListener {
 	private final static int METADATA_KEY_ARTWORK = 100;
-	private final static String NOTIFICATION_CHANNEL = "MUSICPLAYERNOTIFICATION";
+	private final static String NOTIFICATION_CHANNEL = "MusicPlayerNotification";
 	private final static String WAKE_LOCK_TAG = "MusicPlayer:WakeLock";
+	public final static int PLAY_MODE_NORMAL = 0, PLAY_MODE_SHUFFLE = 1, PLAY_MODE_REPEAT_ONE = 2, PLAY_MODE_REPEAT_ALL = 3;
 	
 	private final IBinder musicBinder = new MusicBinder();	
 	private NotificationManager notificationManager;
@@ -54,7 +55,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	private BassBoost bassBoost;
 	private boolean bassBoostAvailable;
 	
-	private boolean shuffle, repeat, repeatAll;
+	private int playMode;
 	private Random random;
 	
 	private TelephonyManager telephonyManager;
@@ -102,9 +103,7 @@ public class MusicService extends Service implements OnCompletionListener {
 		mediaPlayer.setOnCompletionListener(this);
 		mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK); // Enable the wake lock to keep CPU running when the screen is switched off
 		
-		shuffle = preferences.getBoolean(Constants.PREFERENCE_SHUFFLE, Constants.DEFAULT_SHUFFLE);
-		repeat = preferences.getBoolean(Constants.PREFERENCE_REPEAT, Constants.DEFAULT_REPEAT);
-		repeatAll = preferences.getBoolean(Constants.PREFERENCE_REPEATALL, Constants.DEFAULT_REPEATALL);
+		playMode = preferences.getInt(Constants.PREFERENCE_PLAY_MODE, Constants.DEFAULT_PLAY_MODE);
 		try { // This may fail if the device doesn't support bass boost
 			bassBoost = new BassBoost(1, mediaPlayer.getAudioSessionId());
 			bassBoost.setEnabled(preferences.getBoolean(Constants.PREFERENCE_BASSBOOST, Constants.DEFAULT_BASSBOOST));
@@ -226,9 +225,7 @@ public class MusicService extends Service implements OnCompletionListener {
 		unregisterReceiver(broadcastReceiver); // Disable broadcast receiver
 		
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putBoolean(Constants.PREFERENCE_SHUFFLE, shuffle);
-		editor.putBoolean(Constants.PREFERENCE_REPEAT, repeat);
-		editor.putBoolean(Constants.PREFERENCE_REPEATALL, repeatAll);
+		editor.putInt(Constants.PREFERENCE_PLAY_MODE, playMode);
 		if(bassBoostAvailable) {
 			editor.putBoolean(Constants.PREFERENCE_BASSBOOST, getBassBoostEnabled());
 			editor.putInt(Constants.PREFERENCE_BASSBOOSTSTRENGTH, getBassBoostStrength());
@@ -503,15 +500,14 @@ public class MusicService extends Service implements OnCompletionListener {
 			playItem(currentPlayingItem);
 			return;
 		}
-		
-		if(repeat) {
-			playItem(currentPlayingItem);
-			return;
-		}
-		
-		if(shuffle) {
-			randomItem();
-			return;
+
+		switch (playMode) {
+			case PLAY_MODE_REPEAT_ONE:
+				playItem(currentPlayingItem);
+				return;
+			case PLAY_MODE_SHUFFLE:
+				randomItem();
+				return;
 		}
 		
 		PlayableItem previousItem = currentPlayingItem.getPrevious();
@@ -525,18 +521,17 @@ public class MusicService extends Service implements OnCompletionListener {
 		if(currentPlayingItem==null) {
 			return;
 		}
-		
-		if(repeat) {
-			playItem(currentPlayingItem);
-			return;
+
+		switch (playMode) {
+			case PLAY_MODE_REPEAT_ONE:
+				playItem(currentPlayingItem);
+				return;
+			case PLAY_MODE_SHUFFLE:
+				randomItem();
+				return;
 		}
 		
-		if(shuffle) {
-			randomItem();
-			return;
-		}
-		
-		PlayableItem nextItem = currentPlayingItem.getNext(repeatAll);
+		PlayableItem nextItem = currentPlayingItem.getNext(playMode==PLAY_MODE_REPEAT_ALL);
 		if(nextItem==null) {
 			if(!isPlaying()) wakeLockRelease();
             sendBroadcast(new Intent("com.andreadec.musicplayer.newsong")); // Notify the activity that there are no more songs to be played
@@ -589,29 +584,12 @@ public class MusicService extends Service implements OnCompletionListener {
 	public void onCompletion(MediaPlayer player) {
 		nextItem();
 	}
-	
-	public boolean getRepeat() {
-		return repeat;
-	}
 
-	public void setRepeat(boolean repeat) {
-		this.repeat = repeat;
+	public int getPlayMode() {
+		return playMode;
 	}
-
-	public boolean getShuffle() {
-		return shuffle;
-	}
-
-	public void setShuffle(boolean shuffle) {
-		this.shuffle = shuffle;
-	}
-
-	public boolean getRepeatAll() {
-		return repeatAll;
-	}
-
-	public void setRepeatAll(boolean repeatAll) {
-		this.repeatAll = repeatAll;
+	public void setPlayMode(int playMode) {
+		this.playMode = playMode;
 	}
 
 	/* Phone state listener class. */
@@ -623,14 +601,11 @@ public class MusicService extends Service implements OnCompletionListener {
 	            	if(preferences.getBoolean(Constants.PREFERENCE_RESTARTPLAYBACKAFTERPHONECALL, Constants.DEFAULT_RESTARTPLAYBACKAFTERPHONECALL) && wasPlaying) play();
 	                break;
 	            case TelephonyManager.CALL_STATE_OFFHOOK:
-	            	wasPlaying = isPlaying();
+				case TelephonyManager.CALL_STATE_RINGING:
+					wasPlaying = isPlaying();
 	            	pause();
 	                break;
-	            case TelephonyManager.CALL_STATE_RINGING:
-	            	wasPlaying = isPlaying();
-	            	pause();
-	            	break;
-	        }
+			}
 	    }
 	}
 	

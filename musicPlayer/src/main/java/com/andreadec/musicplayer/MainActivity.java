@@ -25,7 +25,11 @@ import android.graphics.*;
 import android.media.*;
 import android.os.*;
 import android.preference.*;
+
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.PermissionChecker;
@@ -52,6 +56,7 @@ import com.andreadec.musicplayer.ui.*;
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnSeekBarChangeListener {
 	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1, PAGE_RADIOS=2, PAGE_PODCASTS=3;
 	private final static int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST=1;
+	private final static int SECOND_SEEKBAR_DURATION = 600000; // 10 minutes, in milliseconds
 
     private MusicPlayerApplication app;
 	
@@ -368,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	    		int duration = musicService.getDuration();
 	    		songDurationString = "/" + Utils.formatTime(duration);
 	    		seekBar1.setVisibility(View.VISIBLE);
-	    		if(duration>Constants.SECOND_SEEKBAR_DURATION) {
+	    		if(duration>SECOND_SEEKBAR_DURATION) {
 	    			imageButtonShowSeekbar2.setVisibility(View.VISIBLE);
 	    			imageButtonShowSeekbar2.setImageResource(R.drawable.expand);
 	    		} else {
@@ -414,14 +419,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 		int progress = musicService.getCurrentPosition();
 		int duration = musicService.getDuration();
 		seekBar1.setProgress(progress);
-		if(duration>Constants.SECOND_SEEKBAR_DURATION) {
-			int progress2 = progress%Constants.SECOND_SEEKBAR_DURATION;
+		if(duration>SECOND_SEEKBAR_DURATION) {
+			int progress2 = progress%SECOND_SEEKBAR_DURATION;
 			
-			int parts = duration/Constants.SECOND_SEEKBAR_DURATION;
-			if(progress>parts*Constants.SECOND_SEEKBAR_DURATION) {
-				seekBar2.setMax(duration-parts*Constants.SECOND_SEEKBAR_DURATION);
+			int parts = duration/SECOND_SEEKBAR_DURATION;
+			if(progress>parts*SECOND_SEEKBAR_DURATION) {
+				seekBar2.setMax(duration-parts*SECOND_SEEKBAR_DURATION);
 			} else {
-				seekBar2.setMax(Constants.SECOND_SEEKBAR_DURATION);
+				seekBar2.setMax(SECOND_SEEKBAR_DURATION);
 			}
 	    	seekBar2.setProgress(progress2);
 		}
@@ -464,6 +469,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     /* Manages songs opened from an external application */
     @Override
     protected void onNewIntent(Intent newIntent) {
+    	super.onNewIntent(newIntent);
     	setIntent(newIntent);
     	loadSongFromIntent();
     }
@@ -706,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 			if(seekBar.equals(seekBar1)) {
 				musicService.seekTo(progress);
 			} else if(seekBar.equals(seekBar2)) {
-				int progress2 = (seekBar1.getProgress()/Constants.SECOND_SEEKBAR_DURATION)*Constants.SECOND_SEEKBAR_DURATION;
+				int progress2 = (seekBar1.getProgress()/SECOND_SEEKBAR_DURATION)*SECOND_SEEKBAR_DURATION;
 				musicService.seekTo(progress2+progress);
 			}
 			updatePosition();
