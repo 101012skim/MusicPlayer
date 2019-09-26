@@ -102,7 +102,7 @@ public class PreferencesActivity extends AppCompatActivity {
             } else if(preference.equals(preferenceExport)) {
                 activity.doExport();
             } else if(preference.equals(preferencePodcastsDirectory)) {
-                String podcastsDirectory = preferences.getString(Constants.PREFERENCE_PODCASTSDIRECTORY, null);
+                String podcastsDirectory = preferences.getString(Preferences.PREFERENCE_PODCASTSDIRECTORY, null);
                 if(podcastsDirectory==null || podcastsDirectory.equals("")) {
                     podcastsDirectory = Podcast.DEFAULT_PODCASTS_PATH;
                 }
@@ -111,7 +111,7 @@ public class PreferencesActivity extends AppCompatActivity {
                     public void onFileChosen(String directory) {
                         if(directory==null) return;
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString(Constants.PREFERENCE_PODCASTSDIRECTORY, directory);
+                        editor.putString(Preferences.PREFERENCE_PODCASTSDIRECTORY, directory);
                         editor.apply();
                     }
                 });
@@ -131,7 +131,7 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         private void rescanBaseFolder() {
-            String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
+            String baseFolder = preferences.getString(Preferences.PREFERENCE_BASEFOLDER, Preferences.DEFAULT_BASEFOLDER);
             if(baseFolder==null) {
                 Toast.makeText(activity, R.string.baseFolderNotSetTitle, Toast.LENGTH_LONG).show();
                 return;
@@ -186,6 +186,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    	super.onActivityResult(requestCode, resultCode, resultData);
     	if(resultCode==RESULT_OK && resultData!=null) {
     		switch (requestCode) {
 				case IMPORT_REQUEST_CODE:

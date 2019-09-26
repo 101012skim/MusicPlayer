@@ -46,7 +46,7 @@ public class BrowserDirectory {
 		this.directory = directory;
 		mediaResolver = context.getContentResolver();
 		subdirs = getSubfoldersInDirectory(directory);
-		songs = getSongsInDirectory(directory, preferences.getString(Constants.PREFERENCE_SONGSSORTINGMETHOD, Constants.DEFAULT_SONGSSORTINGMETHOD), this);
+		songs = getSongsInDirectory(directory, preferences.getString(Preferences.PREFERENCE_SONGSSORTINGMETHOD, Preferences.DEFAULT_SONGSSORTINGMETHOD), this);
 	}
 	
 	public File getDirectory() {

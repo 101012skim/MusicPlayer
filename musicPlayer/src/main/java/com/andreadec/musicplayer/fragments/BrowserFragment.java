@@ -117,7 +117,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 	}
 	
 	private void initializeCurrentDirectory() {
-		final String lastDirectory = preferences.getString(Constants.PREFERENCE_LASTDIRECTORY, Constants.DEFAULT_LASTDIRECTORY); // Read the last used directory from preferences
+		final String lastDirectory = preferences.getString(Preferences.PREFERENCE_LASTDIRECTORY, Preferences.DEFAULT_LASTDIRECTORY); // Read the last used directory from preferences
 		File startDir;
 		if(lastDirectory==null) {
 			startDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
@@ -135,11 +135,11 @@ public class BrowserFragment extends MusicPlayerFragment {
 	
 	private String getCurrentDirectoryName(BrowserDirectory currentDirectory) {
 		String currentDirectoryName = currentDirectory.getDirectory().getAbsolutePath();
-		if(!preferences.getBoolean(Constants.PREFERENCE_SHOWRELATIVEPATHUNDERBASEDIRECTORY, Constants.DEFAULT_SHOWRELATIVEPATHUNDERBASEDIRECTORY)) {
+		if(!preferences.getBoolean(Preferences.PREFERENCE_SHOWRELATIVEPATHUNDERBASEDIRECTORY, Preferences.DEFAULT_SHOWRELATIVEPATHUNDERBASEDIRECTORY)) {
 			return currentDirectoryName;
 		}
 		
-		String baseDirectory = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
+		String baseDirectory = preferences.getString(Preferences.PREFERENCE_BASEFOLDER, Preferences.DEFAULT_BASEFOLDER);
 		
 		if(baseDirectory!=null && currentDirectoryName.startsWith(baseDirectory) && !currentDirectoryName.equals(baseDirectory)) {
 			return currentDirectoryName.substring(baseDirectory.length()+1); // +1 removes initial "/"
@@ -151,7 +151,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 	private void gotoParentDir() {
 		File currentDir = ((MusicPlayerApplication)activity.getApplication()).getCurrentDirectory().getDirectory();
 		final File parentDir = currentDir.getParentFile();
-		String baseDirectory = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
+		String baseDirectory = preferences.getString(Preferences.PREFERENCE_BASEFOLDER, Preferences.DEFAULT_BASEFOLDER);
 		
 		if(baseDirectory!=null && new File(baseDirectory).equals(currentDir)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -176,7 +176,7 @@ public class BrowserFragment extends MusicPlayerFragment {
 	}
 	
 	public void gotoBaseFolder() {
-		String baseFolder = preferences.getString(Constants.PREFERENCE_BASEFOLDER, Constants.DEFAULT_BASEFOLDER);
+		String baseFolder = preferences.getString(Preferences.PREFERENCE_BASEFOLDER, Preferences.DEFAULT_BASEFOLDER);
 		if(baseFolder==null) {
 			Utils.showMessageDialog(activity, R.string.baseFolderNotSetTitle, R.string.baseFolderNotSetMessage);
 		} else {

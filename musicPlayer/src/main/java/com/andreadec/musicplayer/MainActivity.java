@@ -26,10 +26,8 @@ import android.media.*;
 import android.os.*;
 import android.preference.*;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.PermissionChecker;
@@ -106,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 		}
         
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if(preferences.getBoolean(Constants.PREFERENCE_DISABLELOCKSCREEN, Constants.DEFAULT_DISABLELOCKSCREEN)) {
+        if(preferences.getBoolean(Preferences.PREFERENCE_DISABLELOCKSCREEN, Preferences.DEFAULT_DISABLELOCKSCREEN)) {
         	getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); // Disable lock screen for this activity
         }
 
@@ -203,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         serviceIntent = new Intent(this, MusicService.class);
 
         if(app.currentPage==-1) { // App just launched
-            if (preferences.getBoolean(Constants.PREFERENCE_OPENLASTPAGEONSTART, Constants.DEFAULT_OPENLASTPAGEONSTART)) {
-                openPage(preferences.getInt(Constants.PREFERENCE_LASTPAGE, Constants.DEFAULT_LASTPAGE));
+            if (preferences.getBoolean(Preferences.PREFERENCE_OPENLASTPAGEONSTART, Preferences.DEFAULT_OPENLASTPAGEONSTART)) {
+                openPage(preferences.getInt(Preferences.PREFERENCE_LASTPAGE, Preferences.DEFAULT_LASTPAGE));
             } else {
                 openPage(PAGE_BROWSER);
             }
@@ -214,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         loadSongFromIntent();
         
         View layoutPlaybackControls = findViewById(R.id.layoutPlaybackControls);
-        if(preferences.getBoolean(Constants.PREFERENCE_ENABLEGESTURES, Constants.DEFAULT_ENABLEGESTURES)) {
+        if(preferences.getBoolean(Preferences.PREFERENCE_ENABLEGESTURES, Preferences.DEFAULT_ENABLEGESTURES)) {
 	        final GestureDetectorCompat gestureDetector = new GestureDetectorCompat(this, new PlayerGestureListener());
 	        View layoutTop = findViewById(R.id.layoutTop);
 	        layoutTop.setOnTouchListener(new OnTouchListener() {
@@ -223,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 					return gestureDetector.onTouchEvent(event);
 				}
               });
-	        if(preferences.getBoolean(Constants.PREFERENCE_SHOWPLAYBACKCONTROLS, Constants.DEFAULT_SHOWPLAYBACKCONTROLS)) {
+	        if(preferences.getBoolean(Preferences.PREFERENCE_SHOWPLAYBACKCONTROLS, Preferences.DEFAULT_SHOWPLAYBACKCONTROLS)) {
 	        	layoutPlaybackControls.setVisibility(View.VISIBLE);
 	        }
         } else {
@@ -624,9 +622,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	
 	/* ALWAYS CALL THIS FUNCTION TO COMPLETELY CLOSE THE APPLICATION */
 	public void quitApplication() {
-		if(preferences.getBoolean(Constants.PREFERENCE_OPENLASTPAGEONSTART, Constants.DEFAULT_OPENLASTPAGEONSTART)) {
+		if(preferences.getBoolean(Preferences.PREFERENCE_OPENLASTPAGEONSTART, Preferences.DEFAULT_OPENLASTPAGEONSTART)) {
 			SharedPreferences.Editor editor = preferences.edit();
-			editor.putInt(Constants.PREFERENCE_LASTPAGE, app.currentPage);
+			editor.putInt(Preferences.PREFERENCE_LASTPAGE, app.currentPage);
 			editor.apply();
 		}
         app.currentPage = -1;
@@ -674,7 +672,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 		      public void onClick(DialogInterface dialog, int which) {
                   SharedPreferences.Editor editor = preferences.edit();
-                  editor.putString(Constants.PREFERENCE_BASEFOLDER, folder.getAbsolutePath());
+                  editor.putString(Preferences.PREFERENCE_BASEFOLDER, folder.getAbsolutePath());
                   editor.apply();
                   /*String[] paths = {folder.getAbsolutePath()};
                   MediaScannerConnection.scanFile(MainActivity.this, paths, null, null);*/
@@ -693,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 			return;
 		}
 		boolean executed = currentFragment.onBackPressed();
-		if(!executed && preferences.getBoolean(Constants.PREFERENCE_ENABLEBACKDOUBLEPRESSTOQUITAPP, Constants.DEFAULT_ENABLEBACKDOUBLEPRESSTOQUITAPP)) {
+		if(!executed && preferences.getBoolean(Preferences.PREFERENCE_ENABLEBACKDOUBLEPRESSTOQUITAPP, Preferences.DEFAULT_ENABLEBACKDOUBLEPRESSTOQUITAPP)) {
 			backPressedOnce = true;
 			Toast.makeText(this, R.string.pressAgainToQuitApp, Toast.LENGTH_SHORT).show();
 			new Handler().postDelayed(new Runnable() {

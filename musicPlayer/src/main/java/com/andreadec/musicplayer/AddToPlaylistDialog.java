@@ -116,7 +116,7 @@ public class AddToPlaylistDialog {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            List<BrowserSong> songs = BrowserDirectory.getSongsInDirectory(folder, preferences.getString(Constants.PREFERENCE_SONGSSORTINGMETHOD, Constants.DEFAULT_SONGSSORTINGMETHOD), null);
+            List<BrowserSong> songs = BrowserDirectory.getSongsInDirectory(folder, preferences.getString(Preferences.PREFERENCE_SONGSSORTINGMETHOD, Preferences.DEFAULT_SONGSSORTINGMETHOD), null);
             for(BrowserSong song : songs) {
                 playlist.addSong(song);
             }

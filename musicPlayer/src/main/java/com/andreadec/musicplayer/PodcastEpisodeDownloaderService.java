@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2015 Andrea De Cesare
+ * Copyright 2013-2019 Andrea De Cesare
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,20 @@ import java.net.*;
 import java.util.*;
 import android.app.*;
 import android.content.*;
+import android.os.Build;
+
 import androidx.core.app.*;
 import com.andreadec.musicplayer.models.*;
 
 public class PodcastEpisodeDownloaderService extends IntentService {
+	private final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING = 2;
+	private final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ERROR = 3;
 	private final static int NOTIFICATION_INTERVAL = 1000; // Milliseconds
+	private final static String NOTIFICATION_CHANNEL = "PodcastEpisodeDownloaderNotification";
 	private final static String STOP_DOWNLOAD_INTENT = "com.andreadec.musicplayer.stopdownload";
 	private NotificationManager notificationManager;
 	private NotificationCompat.Builder notificationBuilder;
+	private NotificationChannel notificationChannel;
 	private PendingIntent stopDownloadPendingIntent;
 	
 	private InputStream input;
@@ -47,7 +53,11 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 	public void onCreate () {
 		super.onCreate();
 		notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationBuilder = new NotificationCompat.Builder(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL, "Music Player", NotificationManager.IMPORTANCE_LOW);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+		notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL);
 		notificationBuilder.setSmallIcon(android.R.drawable.stat_sys_download);
 		notificationBuilder.setOngoing(true);
 		notificationBuilder.setProgress(100, 0, true);
@@ -76,7 +86,7 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 		String podcastsDirectory = intent.getStringExtra("podcastsDirectory");
 		notificationBuilder.setContentTitle(getResources().getString(R.string.podcastDownloading, title));
 		notificationBuilder.setContentText(getResources().getString(R.string.podcastDownloading, title));
-		notificationManager.notify(Constants.NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING, notificationBuilder.build());
+		notificationManager.notify(NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING, notificationBuilder.build());
 
 		String filename;
 		do {
@@ -134,7 +144,7 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 		unregisterReceiver(broadcastReceiver);
 		
 		sendBroadcast(intentCompleted);
-		notificationManager.cancel(Constants.NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING);
+		notificationManager.cancel(NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING);
 	}
 
 	private void showErrorNotification(String msg) {
@@ -142,7 +152,7 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 		errorNotification.setSmallIcon(android.R.drawable.stat_sys_download_done);
 		errorNotification.setContentTitle(getResources().getString(R.string.error));
 		errorNotification.setContentText(getResources().getString(R.string.podcastDownloadError)+": "+msg);
-		notificationManager.notify(Constants.NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ERROR, errorNotification.build());
+		notificationManager.notify(NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ERROR, errorNotification.build());
 	}
 	
 	private class NotificationThread extends Thread {
@@ -151,7 +161,7 @@ public class PodcastEpisodeDownloaderService extends IntentService {
 				String progress = Utils.formatFileSize(totalRead)+"/"+lengthString;
 	    		notificationBuilder.setContentText(progress);
 	        	notificationBuilder.setProgress(length, totalRead, false);
-	        	notificationManager.notify(Constants.NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING, notificationBuilder.build());
+	        	notificationManager.notify(NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING, notificationBuilder.build());
 	        	try { Thread.sleep(NOTIFICATION_INTERVAL); } catch(Exception e) {}
 			}
 		}

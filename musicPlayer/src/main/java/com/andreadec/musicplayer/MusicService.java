@@ -33,6 +33,7 @@ import com.andreadec.musicplayer.models.*;
 
 public class MusicService extends Service implements OnCompletionListener {
 	private final static int METADATA_KEY_ARTWORK = 100;
+	private final static int NOTIFICATION_ID = 1;
 	private final static String NOTIFICATION_CHANNEL = "MusicPlayerNotification";
 	private final static String WAKE_LOCK_TAG = "MusicPlayer:WakeLock";
 	public final static int PLAY_MODE_NORMAL = 0, PLAY_MODE_SHUFFLE = 1, PLAY_MODE_REPEAT_ONE = 2, PLAY_MODE_REPEAT_ALL = 3;
@@ -103,11 +104,11 @@ public class MusicService extends Service implements OnCompletionListener {
 		mediaPlayer.setOnCompletionListener(this);
 		mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK); // Enable the wake lock to keep CPU running when the screen is switched off
 		
-		playMode = preferences.getInt(Constants.PREFERENCE_PLAY_MODE, Constants.DEFAULT_PLAY_MODE);
+		playMode = preferences.getInt(Preferences.PREFERENCE_PLAY_MODE, Preferences.DEFAULT_PLAY_MODE);
 		try { // This may fail if the device doesn't support bass boost
 			bassBoost = new BassBoost(1, mediaPlayer.getAudioSessionId());
-			bassBoost.setEnabled(preferences.getBoolean(Constants.PREFERENCE_BASSBOOST, Constants.DEFAULT_BASSBOOST));
-			setBassBoostStrength(preferences.getInt(Constants.PREFERENCE_BASSBOOSTSTRENGTH, Constants.DEFAULT_BASSBOOSTSTRENGTH));
+			bassBoost.setEnabled(preferences.getBoolean(Preferences.PREFERENCE_BASSBOOST, Preferences.DEFAULT_BASSBOOST));
+			setBassBoostStrength(preferences.getInt(Preferences.PREFERENCE_BASSBOOSTSTRENGTH, Preferences.DEFAULT_BASSBOOSTSTRENGTH));
 			bassBoostAvailable = true;
 		} catch(Exception e) {
 			bassBoostAvailable = false;
@@ -115,7 +116,7 @@ public class MusicService extends Service implements OnCompletionListener {
 		random = new Random(System.nanoTime()); // Necessary for song shuffle
 		
 		shakeListener = new ShakeListener(this);
-		if(preferences.getBoolean(Constants.PREFERENCE_SHAKEENABLED, Constants.DEFAULT_SHAKEENABLED)) {
+		if(preferences.getBoolean(Preferences.PREFERENCE_SHAKEENABLED, Preferences.DEFAULT_SHAKEENABLED)) {
 			shakeListener.enable();
 		}
 		
@@ -170,7 +171,7 @@ public class MusicService extends Service implements OnCompletionListener {
                         nextItem();
                         break;
                     case AudioManager.ACTION_AUDIO_BECOMING_NOISY:
-                        if(preferences.getBoolean(Constants.PREFERENCE_STOPPLAYINGWHENHEADSETDISCONNECTED, Constants.DEFAULT_STOPPLAYINGWHENHEADSETDISCONNECTED)) {
+                        if(preferences.getBoolean(Preferences.PREFERENCE_STOPPLAYINGWHENHEADSETDISCONNECTED, Preferences.DEFAULT_STOPPLAYINGWHENHEADSETDISCONNECTED)) {
                             pause();
                         }
                         break;
@@ -183,7 +184,7 @@ public class MusicService extends Service implements OnCompletionListener {
         	loadLastSong();
         }
         
-        startForeground(Constants.NOTIFICATION_MAIN, notification);
+        startForeground(NOTIFICATION_ID, notification);
 	}
 	
 	/* Called when service is started. */
@@ -194,9 +195,9 @@ public class MusicService extends Service implements OnCompletionListener {
 	
 	// Returns true if the song has been successfully loaded
 	private void loadLastSong() {
-		if(preferences.getBoolean(Constants.PREFERENCE_OPENLASTSONGONSTART, Constants.DEFAULT_OPENLASTSONGONSTART)) {
-	        String lastPlayingSong = preferences.getString(Constants.PREFERENCE_LASTPLAYINGSONG, Constants.DEFAULT_LASTPLAYINGSONG);
-        	long lastPlayingSongFromPlaylistId = preferences.getLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, Constants.DEFAULT_LASTPLAYINGSONGFROMPLAYLISTID);
+		if(preferences.getBoolean(Preferences.PREFERENCE_OPENLASTSONGONSTART, Preferences.DEFAULT_OPENLASTSONGONSTART)) {
+	        String lastPlayingSong = preferences.getString(Preferences.PREFERENCE_LASTPLAYINGSONG, Preferences.DEFAULT_LASTPLAYINGSONG);
+        	long lastPlayingSongFromPlaylistId = preferences.getLong(Preferences.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, Preferences.DEFAULT_LASTPLAYINGSONGFROMPLAYLISTID);
         	if(lastPlayingSong!=null && (new File(lastPlayingSong).exists())) {
         		if(lastPlayingSongFromPlaylistId!=-1) {
         			PlaylistSong savedSong = Playlists.getSavedSongFromPlaylist(lastPlayingSongFromPlaylistId);
@@ -209,8 +210,8 @@ public class MusicService extends Service implements OnCompletionListener {
         			((MusicPlayerApplication)getApplication()).gotoDirectory(songDirectory);
         			playItem(song, false);
         		}
-		        if(preferences.getBoolean(Constants.PREFERENCE_SAVESONGPOSITION, Constants.DEFAULT_SAVESONGPOSITION)) {
-		        	int lastSongPosition = preferences.getInt(Constants.PREFERENCE_LASTSONGPOSITION, Constants.DEFAULT_LASTSONGPOSITION);
+		        if(preferences.getBoolean(Preferences.PREFERENCE_SAVESONGPOSITION, Preferences.DEFAULT_SAVESONGPOSITION)) {
+		        	int lastSongPosition = preferences.getInt(Preferences.PREFERENCE_LASTSONGPOSITION, Preferences.DEFAULT_LASTSONGPOSITION);
 		        	if(lastSongPosition<getDuration()) seekTo(lastSongPosition);
 		        }
         	}
@@ -221,39 +222,39 @@ public class MusicService extends Service implements OnCompletionListener {
 	@Override
 	public void onDestroy() {
 		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE); // Stop listen for telephony events
-		notificationManager.cancel(Constants.NOTIFICATION_MAIN);
+		notificationManager.cancel(NOTIFICATION_ID);
 		unregisterReceiver(broadcastReceiver); // Disable broadcast receiver
 		
 		SharedPreferences.Editor editor = preferences.edit();
-		editor.putInt(Constants.PREFERENCE_PLAY_MODE, playMode);
+		editor.putInt(Preferences.PREFERENCE_PLAY_MODE, playMode);
 		if(bassBoostAvailable) {
-			editor.putBoolean(Constants.PREFERENCE_BASSBOOST, getBassBoostEnabled());
-			editor.putInt(Constants.PREFERENCE_BASSBOOSTSTRENGTH, getBassBoostStrength());
+			editor.putBoolean(Preferences.PREFERENCE_BASSBOOST, getBassBoostEnabled());
+			editor.putInt(Preferences.PREFERENCE_BASSBOOSTSTRENGTH, getBassBoostStrength());
 		} else {
-			editor.remove(Constants.PREFERENCE_BASSBOOST);
-			editor.remove(Constants.PREFERENCE_BASSBOOSTSTRENGTH);
+			editor.remove(Preferences.PREFERENCE_BASSBOOST);
+			editor.remove(Preferences.PREFERENCE_BASSBOOSTSTRENGTH);
 		}
-		editor.putBoolean(Constants.PREFERENCE_SHAKEENABLED, isShakeEnabled());
+		editor.putBoolean(Preferences.PREFERENCE_SHAKEENABLED, isShakeEnabled());
 		if(currentPlayingItem!=null) {
 			if(currentPlayingItem instanceof BrowserSong) {
-				editor.putString(Constants.PREFERENCE_LASTPLAYINGSONG, currentPlayingItem.getPlayableUri());
-				editor.putInt(Constants.PREFERENCE_LASTSONGPOSITION, getCurrentPosition());
-				editor.putLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
+				editor.putString(Preferences.PREFERENCE_LASTPLAYINGSONG, currentPlayingItem.getPlayableUri());
+				editor.putInt(Preferences.PREFERENCE_LASTSONGPOSITION, getCurrentPosition());
+				editor.putLong(Preferences.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
 			} else if(currentPlayingItem instanceof PlaylistSong) {
-				editor.putString(Constants.PREFERENCE_LASTPLAYINGSONG, currentPlayingItem.getPlayableUri());
-				editor.putInt(Constants.PREFERENCE_LASTSONGPOSITION, getCurrentPosition());
-				editor.putLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, ((PlaylistSong)currentPlayingItem).getId());
+				editor.putString(Preferences.PREFERENCE_LASTPLAYINGSONG, currentPlayingItem.getPlayableUri());
+				editor.putInt(Preferences.PREFERENCE_LASTSONGPOSITION, getCurrentPosition());
+				editor.putLong(Preferences.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, ((PlaylistSong)currentPlayingItem).getId());
 			} else {
-				editor.putString(Constants.PREFERENCE_LASTPLAYINGSONG, null);
-				editor.putLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
+				editor.putString(Preferences.PREFERENCE_LASTPLAYINGSONG, null);
+				editor.putLong(Preferences.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
 			}
 		} else {
-			editor.putString(Constants.PREFERENCE_LASTPLAYINGSONG, null);
-			editor.putLong(Constants.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
+			editor.putString(Preferences.PREFERENCE_LASTPLAYINGSONG, null);
+			editor.putLong(Preferences.PREFERENCE_LASTPLAYINGSONGFROMPLAYLISTID, -1);
 		}
 
 		BrowserDirectory currentDir = ((MusicPlayerApplication)getApplication()).getCurrentDirectory();
-		if(currentDir!=null) editor.putString(Constants.PREFERENCE_LASTDIRECTORY, currentDir.getDirectory().getAbsolutePath());
+		if(currentDir!=null) editor.putString(Preferences.PREFERENCE_LASTDIRECTORY, currentDir.getDirectory().getAbsolutePath());
 		editor.apply();
 		
 		audioManager.unregisterRemoteControlClient(remoteControlClient);
@@ -434,11 +435,11 @@ public class MusicService extends Service implements OnCompletionListener {
             notification.bigContentView = notificationLayout;
         }
 		
-		notificationManager.notify(Constants.NOTIFICATION_MAIN, notification);
+		notificationManager.notify(NOTIFICATION_ID, notification);
 	}
 
     private void sendPlayingStateBroadcast() {
-        if(!preferences.getBoolean(Constants.PREFERENCE_SHARE_PLAYBACK_STATE, Constants.DEFAULT_SHARE_PLAYBACK_STATE)) return;
+        if(!preferences.getBoolean(Preferences.PREFERENCE_SHARE_PLAYBACK_STATE, Preferences.DEFAULT_SHARE_PLAYBACK_STATE)) return;
         Intent intent = new Intent();
         //intent.setAction("com.android.music.metachanged");
         intent.setAction("com.android.music.playstatechanged");
@@ -598,7 +599,7 @@ public class MusicService extends Service implements OnCompletionListener {
 		public void onCallStateChanged(int state, String incomingNumber) {
 	    	switch(state) {
 	            case TelephonyManager.CALL_STATE_IDLE:
-	            	if(preferences.getBoolean(Constants.PREFERENCE_RESTARTPLAYBACKAFTERPHONECALL, Constants.DEFAULT_RESTARTPLAYBACKAFTERPHONECALL) && wasPlaying) play();
+	            	if(preferences.getBoolean(Preferences.PREFERENCE_RESTARTPLAYBACKAFTERPHONECALL, Preferences.DEFAULT_RESTARTPLAYBACKAFTERPHONECALL) && wasPlaying) play();
 	                break;
 	            case TelephonyManager.CALL_STATE_OFFHOOK:
 				case TelephonyManager.CALL_STATE_RINGING:

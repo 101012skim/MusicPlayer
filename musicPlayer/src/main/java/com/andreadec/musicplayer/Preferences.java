@@ -16,7 +16,7 @@
 
 package com.andreadec.musicplayer;
 
-public class Constants {
+public class Preferences {
 	// Preferences
 	public final static String PREFERENCE_BASEFOLDER = "baseFolder";
 	public final static String PREFERENCE_LASTDIRECTORY = "lastDirectory";
@@ -41,11 +41,9 @@ public class Constants {
 	public final static String PREFERENCE_ENABLEGESTURES = "enableGestures";
 	public final static String PREFERENCE_SHOWPLAYBACKCONTROLS = "showPlaybackControls";
     public final static String PREFERENCE_SHARE_PLAYBACK_STATE = "sharePlaybackState";
-	
 	public final static String PREFERENCE_SHAKEINTERVAL = "shakeInterval";
 	public final static String PREFERENCE_SHAKETHRESHOLD = "shakeThreshold";
 	public final static String PREFERENCE_SHAKEACTION = "shakeAction";
-	
 	
 	// Default preferences values
 	public final static String DEFAULT_SONGSSORTINGMETHOD = "nat";
@@ -73,10 +71,4 @@ public class Constants {
 	public final static boolean DEFAULT_ENABLEGESTURES = false;
 	public final static boolean DEFAULT_SHOWPLAYBACKCONTROLS = true;
     public final static boolean DEFAULT_SHARE_PLAYBACK_STATE = false;
-	
-	
-	// Notifications
-	public final static int NOTIFICATION_MAIN = 1;
-	public final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ONGOING = 2;
-	public final static int NOTIFICATION_PODCAST_ITEM_DOWNLOAD_ERROR = 3;
 }

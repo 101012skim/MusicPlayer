@@ -160,7 +160,7 @@ public class PodcastsFragment extends MusicPlayerFragment {
 	}
 	
 	private void downloadEpisode(PodcastEpisode episode) {
-		String podcastsDirectory = preferences.getString(Constants.PREFERENCE_PODCASTSDIRECTORY, Podcast.DEFAULT_PODCASTS_PATH);
+		String podcastsDirectory = preferences.getString(Preferences.PREFERENCE_PODCASTSDIRECTORY, Podcast.DEFAULT_PODCASTS_PATH);
 		
 		if(!new File(podcastsDirectory).exists()) {
 			Utils.showMessageDialog(getActivity(), R.string.error, R.string.podcastDirectoryNotExist);

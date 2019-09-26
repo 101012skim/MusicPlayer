@@ -40,7 +40,7 @@ class ShakeListener implements SensorEventListener {
 		preferences = PreferenceManager.getDefaultSharedPreferences(musicService.getApplicationContext());
 		sensorManager = (SensorManager)musicService.getSystemService(Context.SENSOR_SERVICE);
 		
-		String shakeIntervalString = preferences.getString(Constants.PREFERENCE_SHAKEINTERVAL, Constants.DEFAULT_SHAKEINTERVAL);
+		String shakeIntervalString = preferences.getString(Preferences.PREFERENCE_SHAKEINTERVAL, Preferences.DEFAULT_SHAKEINTERVAL);
 		if(shakeIntervalString==null) {
 			shakeInterval = 1000;
 		} else {
@@ -51,7 +51,7 @@ class ShakeListener implements SensorEventListener {
 			}
 		}
 		
-		String shakeThresholdString = preferences.getString(Constants.PREFERENCE_SHAKETHRESHOLD, Constants.DEFAULT_SHAKETHRESHOLD);
+		String shakeThresholdString = preferences.getString(Preferences.PREFERENCE_SHAKETHRESHOLD, Preferences.DEFAULT_SHAKETHRESHOLD);
 		if(shakeThresholdString==null) {
 			shakeThreshold = 1000;
 		} else {
@@ -93,7 +93,7 @@ class ShakeListener implements SensorEventListener {
 	 
 			float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
 			if (speed > shakeThreshold) {
-				String shakeAction = preferences.getString(Constants.PREFERENCE_SHAKEACTION, Constants.DEFAULT_SHAKEACTION);
+				String shakeAction = preferences.getString(Preferences.PREFERENCE_SHAKEACTION, Preferences.DEFAULT_SHAKEACTION);
 				switch(shakeAction) {
                     case "playpause":
                         musicService.playPause();
