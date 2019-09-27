@@ -17,8 +17,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--<style name="MainActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
-    <style name="MainActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="MainActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
@@ -35,7 +34,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="ActionBarActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="ActionBarActivityTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
         <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
