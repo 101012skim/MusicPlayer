@@ -138,7 +138,7 @@ public class MusicService extends Service implements OnCompletionListener {
         remoteControlClient.setTransportControlFlags(RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE | RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS | RemoteControlClient.FLAG_KEY_MEDIA_NEXT);
         audioManager.registerRemoteControlClient(remoteControlClient);
 		
-		updateNotificationMessage();
+		updateNotification();
 		
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction("com.andreadec.musicplayer.quit");
@@ -294,7 +294,7 @@ public class MusicService extends Service implements OnCompletionListener {
 			mediaPlayer.setOnCompletionListener(this);
 			if(startPlaying) mediaPlayer.start();
 			
-			updateNotificationMessage();
+			updateNotification();
 			if(startPlaying) {
 				sendBroadcast(new Intent("com.andreadec.musicplayer.newsong")); // Sends a broadcast to the activity
 			}
@@ -302,7 +302,7 @@ public class MusicService extends Service implements OnCompletionListener {
 			return true;
 		} catch (Exception e) {
 			currentPlayingItem = null;
-			updateNotificationMessage();
+			updateNotification();
 			sendBroadcast(new Intent("com.andreadec.musicplayer.newsong")); // Sends a broadcast to the activity
 			return false;
 		}
@@ -342,7 +342,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	
 	
 	/* Updates the notification and the remote control client. */
-	private void updateNotificationMessage() {
+	private void updateNotification() {
         Bitmap image = null;
         if(currentPlayingItem!=null && currentPlayingItem.hasImage()) {
             image = ((MusicPlayerApplication)getApplication()).imagesCache.getImageSync(currentPlayingItem);
@@ -467,7 +467,7 @@ public class MusicService extends Service implements OnCompletionListener {
 			wakeLockAcquire();
 			mediaPlayer.start();
 		}
-		updateNotificationMessage();
+		updateNotification();
 		sendBroadcast(new Intent("com.andreadec.musicplayer.playpausechanged"));
 	}
 	
@@ -475,7 +475,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	public void play() {
 		if(currentPlayingItem==null) return;
 		if(!mediaPlayer.isPlaying()) mediaPlayer.start();
-		updateNotificationMessage();
+		updateNotification();
 		sendBroadcast(new Intent("com.andreadec.musicplayer.playpausechanged"));
 	}
 	
@@ -483,7 +483,7 @@ public class MusicService extends Service implements OnCompletionListener {
 	public void pause() {
 		if(currentPlayingItem==null) return;
 		if (mediaPlayer.isPlaying()) mediaPlayer.pause();
-		updateNotificationMessage();
+		updateNotification();
 		sendBroadcast(new Intent("com.andreadec.musicplayer.playpausechanged"));
 	}
 	
@@ -536,7 +536,7 @@ public class MusicService extends Service implements OnCompletionListener {
 		if(nextItem==null) {
 			if(!isPlaying()) wakeLockRelease();
             sendBroadcast(new Intent("com.andreadec.musicplayer.newsong")); // Notify the activity that there are no more songs to be played
-            updateNotificationMessage();
+            updateNotification();
 		} else {
 			playItem(nextItem);
 		}
