@@ -20,7 +20,7 @@
 
 <resources>
 	<dimen name="listImageSize">40dp</dimen>
-	<dimen name="songImageSize">140dp</dimen>
+	<dimen name="songImageSize">120dp</dimen>
 
 	<dimen name="notificationImageSize">100dp</dimen>
 	<dimen name="notificationButtonsSize">50dp</dimen>

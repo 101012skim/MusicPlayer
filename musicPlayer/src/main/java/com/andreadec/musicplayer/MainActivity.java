@@ -42,6 +42,8 @@ import android.graphics.Bitmap;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
@@ -52,7 +54,8 @@ import com.andreadec.musicplayer.models.*;
 import com.andreadec.musicplayer.ui.*;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnSeekBarChangeListener {
-	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1, PAGE_RADIOS=2, PAGE_PODCASTS=3;
+	private static final String TAG = "MainActivity";
+	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1;//, PAGE_RADIOS=2, PAGE_PODCASTS=3;
 	private final static int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST=1;
 	private final static int SECOND_SEEKBAR_DURATION = 600000; // 10 minutes, in milliseconds
 
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	private ImageButton imageButtonPrevious, imageButtonNext, imageButtonShowSeekbar2;
 	private SeekBar seekBar1, seekBar2;
 	private ImageView imageViewSongImage;
+	private ImageView imageViewNavigationHeader;
 	public MusicService musicService;
 	private ServiceConnection serviceConnection;
 	private Intent serviceIntent;
@@ -88,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	
 	private String intentFile;
 	private BrowserSong searchSong;
+	private int switchNavigationHeaderImageIndex = 0;
 
     public int screenSizeX, screenSizeY;
 	
@@ -124,12 +129,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         pages = new String[4];
         pages[PAGE_BROWSER] = getResources().getString(R.string.browser);
         pages[PAGE_PLAYLISTS] = getResources().getString(R.string.playlist);
-        pages[PAGE_RADIOS] = getResources().getString(R.string.radio);
-        pages[PAGE_PODCASTS] = getResources().getString(R.string.podcasts);
+        //pages[PAGE_RADIOS] = getResources().getString(R.string.radio);
+        //pages[PAGE_PODCASTS] = getResources().getString(R.string.podcasts);
         fragmentManager = getSupportFragmentManager();
         
         
         // MAIN NAVIGATION DRAWER
+
         drawerLayout = findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
@@ -139,12 +145,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 setTitle(getResources().getString(R.string.app_name));
-            }
-        };
+			}
+		};
         drawerLayout.setDrawerListener(drawerToggle);
+
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         NavigationView navigationView = findViewById(R.id.navigationView);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -155,12 +166,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case R.id.navigationPlaylist:
                         openPage(PAGE_PLAYLISTS);
                         break;
+                        /*
                     case R.id.navigationPodcast:
                         openPage(PAGE_PODCASTS);
                         break;
                     case R.id.navigationRadio:
                         openPage(PAGE_RADIOS);
                         break;
+                         */
                     case R.id.navigationPreferences:
                         startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
                         break;
@@ -227,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         } else {
         	layoutPlaybackControls.setVisibility(View.VISIBLE);
         }
-    }
+	}
     
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -282,11 +295,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             		updatePlayingItem();
             	} else if(intent.getAction().equals("com.andreadec.musicplayer.playpausechanged")) {
             		updatePlayPauseButton();
+            	/*
             	} else if(intent.getAction().equals("com.andreadec.musicplayer.podcastdownloadcompleted")) {
             		if(app.currentPage==PAGE_PODCASTS) {
             			PodcastsFragment podcastsFragment = (PodcastsFragment)currentFragment;
             			podcastsFragment.updateListView(true);
             		}
+            	 */
             	} else if(intent.getAction().equals("com.andreadec.musicplayer.quitactivity")) {
             		finish(); // I don't call quitActivity() because the service closes himself after sending this broadcast
             	}
@@ -319,12 +334,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     	case PAGE_PLAYLISTS:
     		fragment = new PlaylistFragment();
     		break;
+    		/*
     	case PAGE_RADIOS:
     		fragment = new RadioFragment();
     		break;
     	case PAGE_PODCASTS:
     		fragment = new PodcastsFragment();
     		break;
+    		 */
     	default:
     		return;
     	}
@@ -387,6 +404,39 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             imageViewSongImage.setVisibility(View.GONE);
             ((MusicPlayerApplication)getApplication()).imagesCache.getImageAsync(playingItem, imageViewSongImage);
+
+			// NavigationHeader Image
+			if (switchNavigationHeaderImageIndex > 10) {
+				switchNavigationHeaderImageIndex = 0;
+			} else {
+				switchNavigationHeaderImageIndex += 1;
+			}
+			imageViewNavigationHeader = findViewById(R.id.imageViewNavigationHeader);
+			if (imageViewNavigationHeader != null) {
+				if (switchNavigationHeaderImageIndex == 0) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0000);
+				} else if (switchNavigationHeaderImageIndex == 1 ) {
+				    imageViewNavigationHeader.setImageResource(R.drawable.hy_0001);
+				} else if (switchNavigationHeaderImageIndex == 2 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0002);
+				} else if (switchNavigationHeaderImageIndex == 3 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0003);
+				} else if (switchNavigationHeaderImageIndex == 4 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0004);
+				} else if (switchNavigationHeaderImageIndex == 5 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0005);
+				} else if (switchNavigationHeaderImageIndex == 6 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0006);
+				} else if (switchNavigationHeaderImageIndex == 7 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0007);
+				} else if (switchNavigationHeaderImageIndex == 8 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0008);
+				} else if (switchNavigationHeaderImageIndex == 9 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0009);
+				} else if (switchNavigationHeaderImageIndex == 9 ) {
+					imageViewNavigationHeader.setImageResource(R.drawable.hy_0010);
+				}
+			}
     	} else {
     		// No song loaded
     		textViewTitle.setText(R.string.noSong);
@@ -514,21 +564,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     	if(app.currentPage==PAGE_BROWSER) {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(true);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(true);
-			menu.findItem(R.id.menu_gotoRootFolder).setVisible(true);
+			//menu.findItem(R.id.menu_gotoRootFolder).setVisible(true);
 			menu.findItem(R.id.menu_gotoStorageFolder).setVisible(true);
     	} else {
     		menu.findItem(R.id.menu_setAsBaseFolder).setVisible(false);
     		menu.findItem(R.id.menu_gotoBaseFolder).setVisible(false);
-			menu.findItem(R.id.menu_gotoRootFolder).setVisible(false);
+			//menu.findItem(R.id.menu_gotoRootFolder).setVisible(false);
 			menu.findItem(R.id.menu_gotoStorageFolder).setVisible(false);
     	}
+    	/*
     	if(app.currentPage==PAGE_PODCASTS) {
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(true);
     		menu.findItem(R.id.menu_removeDownloadedEpisodes).setVisible(true);
     	} else {
+    	 */
     		menu.findItem(R.id.menu_removeAllEpisodes).setVisible(false);
     		menu.findItem(R.id.menu_removeDownloadedEpisodes).setVisible(false);
-    	}
+    	//}
     	if(musicService==null || musicService.getCurrentPlayingItem()==null) {
     		menu.findItem(R.id.menu_songInfo).setVisible(false);
     	} else {
@@ -536,10 +588,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     	}
     	return true;
     }
-    
-    /* A menu item has been selected. */
+
+
+	/* A menu item has been selected. */
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Log.i(TAG,"onOptionsItemSelected");
     	if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
           }
@@ -550,9 +604,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 		case R.id.menu_gotoBaseFolder:
 			((BrowserFragment)currentFragment).gotoBaseFolder();
 			return true;
+			/*
 		case R.id.menu_gotoRootFolder:
 			((BrowserFragment)currentFragment).gotoRootFolder();
 			return true;
+			 */
 		case R.id.menu_gotoStorageFolder:
 			((BrowserFragment)currentFragment).gotoStorageFolder();
 			return true;
@@ -566,10 +622,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 			setBaseFolder(((MusicPlayerApplication) getApplication()).getCurrentDirectory().getDirectory());
 			return true;
 		case R.id.menu_removeAllEpisodes:
-			((PodcastsFragment)currentFragment).removeAllEpisodes();
+			//((PodcastsFragment)currentFragment).removeAllEpisodes();
 			return true;
 		case R.id.menu_removeDownloadedEpisodes:
-			((PodcastsFragment)currentFragment).removeDownloadedEpisodes();
+			//((PodcastsFragment)currentFragment).removeDownloadedEpisodes();
 			return true;
         case R.id.menu_quit:
             quitApplication();
@@ -638,11 +694,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 	}
 	
 	public void playRadio(Radio radio) {
-		new PlayRadioTask(radio).execute();
+		//new PlayRadioTask(radio).execute();
 	}
 	
 	public void playPodcastEpisodeStreaming(PodcastEpisode episode) {
-		new PlayPodcastEpisodeStreamingTask(episode).execute();
+		//new PlayPodcastEpisodeStreamingTask(episode).execute();
 	}
 	
 	public PlayableItem getCurrentPlayingItem() {
@@ -657,10 +713,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 			openPage(PAGE_BROWSER);
 		} else if(playingItem instanceof PlaylistSong) {
 			openPage(PAGE_PLAYLISTS);
+			/*
 		} else if(playingItem instanceof Radio) {
 			openPage(PAGE_RADIOS);
 		} else if(playingItem instanceof PodcastEpisode) {
 			openPage(PAGE_PODCASTS);
+			 */
 		}
 		currentFragment.gotoPlayingItemPosition(playingItem);
 	}

@@ -40,10 +40,12 @@ public class AboutActivity extends AppCompatActivity {
 			version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {}
         
-        String about = "<h1>"+resources.getString(R.string.app_name)+"</h1>";
+        String about = "<h1>"+resources.getString(R.string.app_name)+ " for 한양공학대학원 </h1>";
         about += "<p>"+resources.getString(R.string.version, version)+"</p>";
+        about += "<h5>한양대학교 공학대학원 Contribution </h5>";
+        about += "<h5>        by 김상범, 김진한 </h5>";
         about += "<p>&copy; 2012-2019 Andrea De Cesare</p>";
-        about += "<p><a href=\"https://github.com/andreadec/MusicPlayer\">https://github.com/andreadec/MusicPlayer</a></p>";
+        about += "<p><a href=\"https://github.com/101012skim/MusicPlayer\">https://github.com/101012skim/MusicPlayer</a></p>";
         
         about += "<h2>&nbsp;</h2>";
         about += "<h2>"+resources.getString(R.string.license)+"</h2>";
@@ -52,6 +54,7 @@ public class AboutActivity extends AppCompatActivity {
         about += "<h2>&nbsp;</h2>";
         about += "<h2>"+resources.getString(R.string.libraries)+"</h2>";
         about += "<p>"+resources.getString(R.string.librariesUsed)+"</p>";
+
         
         about += "<h5>AndroidX Libraries</h5>";
         about += "<p>Copyright (c) 2005-2019, The Android Open Source Project<br>";

@@ -31,10 +31,11 @@
     <item android:id="@+id/menu_gotoBaseFolder"
         android:title="@string/gotoBaseFolder"
         app:showAsAction="never" />
-
+	<!--
 	<item android:id="@+id/menu_gotoRootFolder"
 		  android:title="@string/gotoRootFolder"
 		  app:showAsAction="never" />
+	-->
 
 	<item android:id="@+id/menu_gotoStorageFolder"
 		android:title="@string/gotoStorageFolder"

@@ -28,6 +28,7 @@
             android:id="@+id/navigationPlaylist"
             android:icon="@drawable/playlist"
             android:title="@string/playlist" />
+        <!--
         <item
             android:id="@+id/navigationPodcast"
             android:icon="@drawable/podcast"
@@ -36,6 +37,7 @@
             android:id="@+id/navigationRadio"
             android:icon="@drawable/radio"
             android:title="@string/radio" />
+            -->
     </group>
 
     <item>
