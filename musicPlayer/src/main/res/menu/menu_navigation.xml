@@ -20,10 +20,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
         <item
             android:id="@+id/navigationBrowser"
             android:icon="@drawable/audio"
             android:title="@string/browser" />
+
         <item
             android:id="@+id/navigationPlaylist"
             android:icon="@drawable/playlist"

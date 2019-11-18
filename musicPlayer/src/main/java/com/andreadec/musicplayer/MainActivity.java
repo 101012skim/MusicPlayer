@@ -140,11 +140,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                setTitle(pages[app.currentPage]);
+                //setTitle(pages[app.currentPage]);
             }
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                setTitle(getResources().getString(R.string.app_name));
+                //setTitle(getResources().getString(R.string.app_name));
 			}
 		};
         drawerLayout.setDrawerListener(drawerToggle);

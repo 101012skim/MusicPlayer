@@ -56,7 +56,8 @@ public class SongViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         } else {
             menu.setVisibility(View.GONE);
         }
-        title.setText(trackNumber + song.getTitle());
+        //title.setText(trackNumber + song.getTitle());
+        title.setText(song.getTitle());
         artist.setText(song.getArtist());
         if(song.equals(playingSong)) {
             card.setBackgroundResource(R.drawable.card_playing);
