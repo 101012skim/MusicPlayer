@@ -21,11 +21,11 @@
 <resources>
     <color name="lightGrey">#e6e6e6</color>
 
-    <color name="primary">#FF9800</color>
-    <color name="primaryDark">#F57C00</color>
-    <color name="accent">#FF5722</color>
+    <color name="primary">#00BCD4</color>
+    <color name="primaryDark">#019ADD</color>
+    <color name="accent">#1475BE</color>
     
     <color name="cardColor">@android:color/white</color>
-    <color name="cardPlayingColor">#ffe3a0</color>
+    <color name="cardPlayingColor">#CDF7FF</color>
     <color name="cardBorderColor">#ccc</color>
 </resources>
