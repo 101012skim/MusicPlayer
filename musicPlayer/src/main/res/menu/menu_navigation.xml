@@ -28,6 +28,10 @@
             android:id="@+id/navigationPlaylist"
             android:icon="@drawable/playlist"
             android:title="@string/playlist" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/podcast"
+            android:title="@string/about" />
         <!--
         <item
             android:id="@+id/navigationPodcast"

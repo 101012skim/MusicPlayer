@@ -55,7 +55,7 @@ import com.andreadec.musicplayer.ui.*;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnSeekBarChangeListener {
 	private static final String TAG = "MainActivity";
-	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1;//, PAGE_RADIOS=2, PAGE_PODCASTS=3;
+	public final static int PAGE_BROWSER=0, PAGE_PLAYLISTS=1; //, PAGE_RADIOS=2, PAGE_PODCASTS=3;
 	private final static int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST=1;
 	private final static int SECOND_SEEKBAR_DURATION = 600000; // 10 minutes, in milliseconds
 
@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case R.id.navigationPlaylist:
                         openPage(PAGE_PLAYLISTS);
                         break;
+					case R.id.about:
+						startActivity(new Intent(MainActivity.this, AboutActivity.class));
+						break;
                         /*
                     case R.id.navigationPodcast:
                         openPage(PAGE_PODCASTS);
