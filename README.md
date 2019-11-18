@@ -1,21 +1,20 @@
-# Music Player
+# Music Player for 한양공학대학원
 
 Music player application for Android.
 
-## Why another music player for Android
-There are many good music players for Android but I couldn't find one which let me organize my music as I used to, as files into folders.
-So I decided to write this application for my personal use and to publish it hoping it could be useful for other people too.
+한양대학교 공학대학원 Contribution
+by 김상범, 김진한
 
+https://github.com/101012skim/MusicPlayer
+
+## Please use Android Studio ##
 
 ## Features
 - Easily browse songs in folders
 - Manage playlists
-- Web radios playback
 - Playback control from notification panel
 - Repeat, shuffle
-- Bass booster, equalizer
 - Songs search by title or artist
-- Listen to podcasts
 - Possibility to execute commands shaking the device
 - Remote Control support
 - App is compatible with Android 4.1+
